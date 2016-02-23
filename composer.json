@@ -1,0 +1,29 @@
+{
+    "name": "nochso/writeme",
+    "description": "Write me to read me.",
+    "type": "application",
+    "require": {
+        "nikic/php-parser": "^2.0"
+    },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "^1.11",
+        "phpunit/phpunit": "^5.2"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marcel Voigt",
+            "email": "mv@noch.so"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "nochso\\WriteMe\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "nochso\\WriteMe\\Test\\": "test"
+        }
+    }
+}
