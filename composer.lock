@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7d7b2e1e7ce6fa8761f699d77ca185a7",
-    "content-hash": "0aee68d96fc9c863169f7c49e754627f",
+    "hash": "6783f736a463ca006b6bc3bb94a0c234",
+    "content-hash": "f230ae8d767375c9d955812e7d4f254a",
     "packages": [
         {
             "name": "nikic/php-parser",
@@ -57,6 +57,49 @@
                 "php"
             ],
             "time": "2015-12-04 15:28:43"
+        },
+        {
+            "name": "nochso/omni",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nochso/omni.git",
+                "reference": "309fb45dc3899f065004f799548c3cd3786bfcbf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nochso/omni/zipball/309fb45dc3899f065004f799548c3cd3786bfcbf",
+                "reference": "309fb45dc3899f065004f799548c3cd3786bfcbf",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "phpunit/phpunit": "^5.2"
+            },
+            "suggest": {
+                "fabpot/php-cs-fixer": "Automatically fix PHP code style issues. See namespace \\nochso\\Omni\\PhpCsFixer"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "nochso\\Omni\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcel Voigt",
+                    "email": "mv@noch.so"
+                }
+            ],
+            "description": "Helps with every day nuisances like path or EOL handling.",
+            "time": "2016-02-28 11:23:23"
         }
     ],
     "packages-dev": [
