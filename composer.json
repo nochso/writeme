@@ -4,7 +4,8 @@
     "type": "application",
     "require": {
         "nikic/php-parser": "^2.0",
-        "nochso/omni": "^0.1.1"
+        "nochso/omni": "^0.1.1",
+        "symfony/yaml": "^3.0"
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "^1.11",
