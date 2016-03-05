@@ -15,6 +15,9 @@ class TOC implements Placeholder
 
     public function apply(Document $document)
     {
+        if (!Converter::contains($this, $document)) {
+            return;
+        }
         $content = $document->getContent();
         $elements = [];
         $setext = '(?:^|[\r\n])([^\r\n]+)[\r\n]{1,2}([=-]+)(?:$|[\r\n])';
