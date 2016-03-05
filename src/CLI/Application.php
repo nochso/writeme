@@ -10,6 +10,7 @@ use nochso\Omni\VersionInfo;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Placeholder\API;
 use nochso\WriteMe\Placeholder\TOC;
 
 /**
@@ -43,6 +44,7 @@ final class Application
         }
         $this->context = $clif->newContext($globals);
         $this->stdio = Stdio::create();
+        $this->addPlaceholder(new API());
         $this->addPlaceholder(new TOC());
         $this->converter = new Converter();
     }
