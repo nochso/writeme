@@ -10,6 +10,11 @@ use nochso\WriteMe\Interfaces\Placeholder;
 class TOC implements Placeholder
 {
     /**
+     * Default maximum depth of header levels. Override this using `toc.max-depth`.
+     */
+    const MAX_DEPTH_DEFAULT = 3;
+
+    /**
      * @var array [level, header text] pairs
      */
     private $headers;
@@ -70,7 +75,7 @@ class TOC implements Placeholder
     private function createTOC()
     {
         $toc = '';
-        $maxDepth = $this->document->getFrontmatter()->get('toc.max-depth', 3);
+        $maxDepth = $this->document->getFrontmatter()->get('toc.max-depth', self::MAX_DEPTH_DEFAULT);
         $depthLimiter = function ($header) use ($maxDepth) {
             return $header[0] <= $maxDepth;
         };
