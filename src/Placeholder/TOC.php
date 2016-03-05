@@ -1,6 +1,7 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
+use nochso\Omni\Multiline;
 use nochso\Omni\Strings;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
@@ -20,19 +21,16 @@ class TOC implements Placeholder
         }
         $content = $document->getContent();
         $elements = [];
-        $setext = '(?:^|[\r\n])([^\r\n]+)[\r\n]{1,2}([=-]+)(?:$|[\r\n])';
-        $atx = '(?:^|[\r\n])(#+)(?:\s*)(.+)(?:\s*#*\s*)(?:$|[\r\n])';
-        $pattern = '/(?:' . $setext . '|' . $atx . ')/';
-        if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $count = count($match);
-                if ($count === 5) {
-                    $elements[] = [strlen($match[3]), trim($match[4])];
-                } elseif ($count === 3) {
-                    $level = Strings::startsWith($match[2], '=') ? 1 : 2;
-                    $elements[] = [$level, trim($match[1])];
-                }
+        $lines = Multiline::create($content);
+        $prevLine = null;
+        foreach ($lines as $line) {
+            if (preg_match('/^(#+)\s*(.+)\s*#*$/', $line, $matches)) {
+                $elements[] = [strlen($matches[1]), $matches[2]];
+            } elseif ($prevLine !== null && strlen($prevLine) !== 0 && preg_match('/^[=-]+$/', $line, $matches)) {
+                $level = Strings::startsWith($line, '=') ? 1 : 2;
+                $elements[] = [$level, trim($prevLine)];
             }
+            $prevLine = $line;
         }
 
         $toc = '';
