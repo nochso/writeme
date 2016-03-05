@@ -34,9 +34,12 @@ class TOC implements Placeholder
         }
 
         $toc = '';
+        $maxDepth = $document->getFrontmatter()->get('toc.max-depth', 3);
         foreach ($elements as $element) {
-            $indent = str_repeat('    ', $element[0] - 1);
-            $toc .= $indent . '- [' . $element[1] . '](#' . $this->getAnchor($element[1]) . ")\n";
+            if ($element[0] <= $maxDepth) {
+                $indent = str_repeat('    ', $element[0] - 1);
+                $toc .= $indent . '- [' . $element[1] . '](#' . $this->getAnchor($element[1]) . ")\n";
+            }
         }
         Converter::replace($this, $toc, $document);
     }
