@@ -1,7 +1,6 @@
 <?php
 namespace nochso\WriteMe;
 
-use nochso\Omni\DotArray;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Placeholder\Frontmatter;
 
@@ -9,14 +8,15 @@ final class Converter implements Interfaces\Converter
 {
     /**
      * @param \nochso\WriteMe\Document                 $document
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $placeholders
+     * @param \nochso\WriteMe\Interfaces\Placeholder[] $registeredPlaceholders Key must be the placeholder's identifier.
      */
-    public function convert(Document $document, array $placeholders)
+    public function convert(Document $document, array $registeredPlaceholders)
     {
-        // Collect registered and frontmatter placeholders
-        $placeholders = array_merge($placeholders, $this->extractFrontmatterPlaceholders($document));
+        // Get potential front-matter replacements
+        $frontMatterPlaceholders = $this->extractFrontmatterPlaceholders($document);
+        // Merge with priority on registered placeholders
+        $placeholders = $this->withMissing($registeredPlaceholders, $frontMatterPlaceholders);
         $this->applyPlaceholders($document, $placeholders);
-
         // Unescape left-over placeholders.
         $this->unescape($document);
     }
@@ -35,7 +35,7 @@ final class Converter implements Interfaces\Converter
     /**
      * @param \nochso\WriteMe\Document $document
      *
-     * @return \nochso\WriteMe\Interfaces\Placeholder[]
+     * @return \nochso\WriteMe\Interfaces\Placeholder[] Key is the dot-notation path
      */
     public function extractFrontmatterPlaceholders(Document $document)
     {
@@ -43,8 +43,9 @@ final class Converter implements Interfaces\Converter
         $frontmatter = $document->getFrontmatter();
         $placeholders = [];
         foreach ($identifiers as $identifier) {
-            $value = DotArray::get($frontmatter, $identifier);
-            $placeholders[] = new Frontmatter($identifier, $value);
+            //$value = DotArray::get($frontmatter, $identifier);
+            $value = $frontmatter->get($identifier);
+            $placeholders[$identifier] = new Frontmatter($identifier, $value);
         }
         return $placeholders;
     }
@@ -52,17 +53,36 @@ final class Converter implements Interfaces\Converter
     /**
      * Replace a placeholder's identifier in a document.
      *
-     * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder The placeholder being searched for by its identifier.
-     * @param string                                 $replacement The replacement string that replaces the placeholder.
-     * @param \nochso\WriteMe\Document               $document    The document whose content will be searched and replaced.
+     * @param string|\nochso\WriteMe\Interfaces\Placeholder $placeholder The placeholder being searched for by its identifier.
+     * @param string                                        $replacement The replacement string that replaces the placeholder.
+     * @param \nochso\WriteMe\Document                      $document    The document whose content will be searched and replaced.
      *
      * @return string
      */
-    public static function replace(Placeholder $placeholder, $replacement, Document $document)
+    public static function replace($placeholder, $replacement, Document $document)
     {
-        $quotedIdentifier = preg_quote($placeholder->getIdentifier(), '/');
+        if ($placeholder instanceof Placeholder) {
+            $placeholder = $placeholder->getIdentifier();
+        }
+        $quotedIdentifier = preg_quote($placeholder, '/');
         $pattern = '/(?<!@)(@(' . $quotedIdentifier . ')@)(?!@)/';
         $document->setContent(preg_replace($pattern, $replacement, $document->getContent()));
+    }
+
+    /**
+     * @param string|\nochso\WriteMe\Interfaces\Placeholder $placeholder
+     * @param \nochso\WriteMe\Document                      $document
+     *
+     * @return bool
+     */
+    public static function contains($placeholder, Document $document)
+    {
+        if ($placeholder instanceof Placeholder) {
+            $placeholder = $placeholder->getIdentifier();
+        }
+        $quotedIdentifier = preg_quote($placeholder, '/');
+        $pattern = '/(?<!@)(@(' . $quotedIdentifier . ')@)(?!@)/';
+        return preg_match($pattern, $document->getContent()) === 1;
     }
 
     /**
@@ -85,5 +105,26 @@ final class Converter implements Interfaces\Converter
             return $matches[2];
         }
         return [];
+    }
+
+    /**
+     * withMissing returns the original placeholders merged with additional placeholders.
+     *
+     * Original placeholders are preferred over additional ones with the same name.
+     *
+     * @param \nochso\WriteMe\Interfaces\Placeholder[] $originalPlaceholders
+     * @param \nochso\WriteMe\Interfaces\Placeholder[] $additionalPlaceholders
+     *
+     * @return \nochso\WriteMe\Interfaces\Placeholder[]
+     */
+    private function withMissing(array $originalPlaceholders, $additionalPlaceholders)
+    {
+        $placeholders = $originalPlaceholders;
+        foreach ($additionalPlaceholders as $key => $value) {
+            if (!isset($placeholders[$key])) {
+                $placeholders[$key] = $value;
+            }
+        }
+        return $placeholders;
     }
 }
