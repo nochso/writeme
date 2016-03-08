@@ -69,7 +69,7 @@ final class Application
             if (!is_file($sourceFile)) {
                 throw new \RuntimeException('File not found: ' . $sourceFile);
             }
-            $doc = new Document(file_get_contents($sourceFile));
+            $doc = Document::fromFile($sourceFile);
             $this->converter->convert($doc, $this->placeholders);
             $this->stdio->outln($doc->getContent());
         } catch (\Exception $e) {

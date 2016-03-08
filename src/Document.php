@@ -13,14 +13,20 @@ class Document
      * @var string
      */
     private $content = '';
+    /**
+     * @var string
+     */
+    private $filepath;
 
     /**
-     * @param string $content
+     * @param string      $content
+     * @param string|null $filepath
      */
-    public function __construct($content)
+    public function __construct($content, $filepath = null)
     {
         $this->frontmatter = new Frontmatter();
         $this->content = $this->frontmatter->extract($content);
+        $this->filepath = $filepath;
     }
 
     /**
@@ -45,5 +51,23 @@ class Document
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    /**
+     * @param string $filepath
+     *
+     * @return \nochso\WriteMe\Document
+     */
+    public static function fromFile($filepath)
+    {
+        return new self(file_get_contents($filepath), $filepath);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFilepath()
+    {
+        return $this->filepath;
     }
 }
