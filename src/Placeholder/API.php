@@ -6,6 +6,7 @@ use BetterReflection\Reflector\ClassReflector;
 use BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Nette\Utils\Finder;
+use nochso\Omni\Path;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
@@ -179,19 +180,39 @@ class API implements Placeholder
     }
 
     /**
-     * @param \nochso\WriteMe\Frontmatter $frontmatter
+     * @param \nochso\WriteMe\Document $doc
      *
      * @return \Nette\Utils\Finder
      */
-    private function getFiles(Frontmatter $frontmatter)
+    private function getFiles(Document $doc)
     {
+        $frontmatter = $doc->getFrontmatter();
         $findFiles = $frontmatter->get('api.file', ['*.php']);
         $fromFolders = $frontmatter->get('api.from', ['.']);
         $folderExclude = $frontmatter->get('api.folder-exclude', ['vendor', 'test', 'tests']);
+
+        $docPath = $doc->getFilepath();
+        // Make folder paths relative to the folder of the WRITEME file in case CWD differs.
+        if ($docPath !== null) {
+            $fromFolders = $this->makeFoldersRelativeToFile($docPath, $fromFolders);
+            $folderExclude = $this->makeFoldersRelativeToFile($docPath, $folderExclude);
+        }
         $files = Finder::findFiles($findFiles)
             ->from($fromFolders)
             ->exclude($folderExclude);
         return $files;
+    }
+
+    private function makeFoldersRelativeToFile($filepath, $folders)
+    {
+        $fileFolder = dirname($filepath);
+        $combiner = function ($path) use ($fileFolder) {
+            if (!Path::isAbsolute($path)) {
+                return Path::combine($fileFolder, $path);
+            }
+            return $path;
+        };
+        return array_map($combiner, $folders);
     }
 
     private function getVisibility(Frontmatter $frontmatter)
@@ -206,7 +227,7 @@ class API implements Placeholder
      */
     private function getClasses(Document $document)
     {
-        $files = $this->getFiles($document->getFrontmatter());
+        $files = $this->getFiles($document);
         $singleLocators = [];
         foreach ($files as $file) {
             $singleLocators[] = new SingleFileSourceLocator($file->getPathname());
