@@ -1,7 +1,7 @@
 <?php
 namespace nochso\WriteMe;
 
-use nochso\Omni\DotArray;
+use nochso\Omni\Dot;
 use nochso\Omni\EOL;
 use nochso\Omni\Strings;
 use Symfony\Component\Yaml\Yaml;
@@ -31,7 +31,7 @@ class Frontmatter
      */
     public function get($dotPath, $default = null)
     {
-        return DotArray::get($this->data, $dotPath, $default);
+        return Dot::get($this->data, $dotPath, $default);
     }
 
     /**

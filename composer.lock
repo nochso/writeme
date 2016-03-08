@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e028de24180168bc858bdcbd158c6396",
-    "content-hash": "538e9731b8b20f2c420eace2e68009bb",
+    "hash": "ca1d7e1c4cb1df0ec0b7a76f9ecb94c1",
+    "content-hash": "dd77905ab5ea7ec39071dc487ab9557a",
     "packages": [
         {
             "name": "aura/cli",
@@ -283,19 +283,20 @@
         },
         {
             "name": "nochso/omni",
-            "version": "0.2.0",
+            "version": "0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nochso/omni.git",
-                "reference": "86ccfef05e7c8ddc01318edb58e552367012ad97"
+                "reference": "cfc3c9ef7179ec765682aa841d922d9c574eaf9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nochso/omni/zipball/86ccfef05e7c8ddc01318edb58e552367012ad97",
-                "reference": "86ccfef05e7c8ddc01318edb58e552367012ad97",
+                "url": "https://api.github.com/repos/nochso/omni/zipball/cfc3c9ef7179ec765682aa841d922d9c574eaf9f",
+                "reference": "cfc3c9ef7179ec765682aa841d922d9c574eaf9f",
                 "shasum": ""
             },
             "require": {
+                "patchwork/utf8": "^1.3",
                 "php": "^5.6 || ^7.0"
             },
             "require-dev": {
@@ -309,7 +310,10 @@
             "autoload": {
                 "psr-4": {
                     "nochso\\Omni\\": "src/"
-                }
+                },
+                "files": [
+                    "src/bootstrap.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -322,7 +326,66 @@
                 }
             ],
             "description": "Helps with every day nuisances like path or EOL handling.",
-            "time": "2016-02-28 22:09:00"
+            "time": "2016-03-08 22:41:11"
+        },
+        {
+            "name": "patchwork/utf8",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tchwork/utf8.git",
+                "reference": "3bd61bc162ed5c5f4a11e40a0106acc255b451d9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tchwork/utf8/zipball/3bd61bc162ed5c5f4a11e40a0106acc255b451d9",
+                "reference": "3bd61bc162ed5c5f4a11e40a0106acc255b451d9",
+                "shasum": ""
+            },
+            "require": {
+                "lib-pcre": ">=7.3",
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-iconv": "Use iconv for best performance",
+                "ext-intl": "Use Intl for best performance",
+                "ext-mbstring": "Use Mbstring for best performance",
+                "ext-wfio": "Use WFIO for UTF-8 filesystem access on Windows"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Patchwork\\": "src/Patchwork/"
+                },
+                "classmap": [
+                    "src/Normalizer.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "(Apache-2.0 or GPL-2.0)"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                }
+            ],
+            "description": "Portable and performant UTF-8, Unicode and Grapheme Clusters for PHP",
+            "homepage": "https://github.com/tchwork/utf8",
+            "keywords": [
+                "grapheme",
+                "i18n",
+                "unicode",
+                "utf-8",
+                "utf8"
+            ],
+            "time": "2015-12-15 15:34:15"
         },
         {
             "name": "phpdocumentor/reflection-common",
