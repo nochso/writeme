@@ -46,7 +46,7 @@ class TOC implements Placeholder
         $prevLine = null;
         $isFenced = false;
         foreach ($lines as $line) {
-            if (preg_match('/^```[^`]/', $line)) {
+            if (preg_match('/^```(?!`)/', $line)) {
                 $isFenced = !$isFenced;
             }
             if (!$isFenced) {
