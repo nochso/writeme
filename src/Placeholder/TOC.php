@@ -44,8 +44,14 @@ class TOC implements Placeholder
         $this->headers = [];
         $lines = Multiline::create($this->document->getContent());
         $prevLine = null;
+        $isFenced = false;
         foreach ($lines as $line) {
-            $this->extractHeader($line, $prevLine);
+            if (preg_match('/^```[^`]/', $line)) {
+                $isFenced = !$isFenced;
+            }
+            if (!$isFenced) {
+                $this->extractHeader($line, $prevLine);
+            }
             $prevLine = $line;
         }
     }
