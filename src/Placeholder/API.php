@@ -203,9 +203,18 @@ class API implements Placeholder
         return $files;
     }
 
+    /**
+     * @param string $filepath
+     * @param array  $folders
+     *
+     * @return array
+     */
     private function makeFoldersRelativeToFile($filepath, $folders)
     {
         $fileFolder = dirname($filepath);
+        if ($fileFolder === '.') {
+            $fileFolder = '';
+        }
         $combiner = function ($path) use ($fileFolder) {
             if (!Path::isAbsolute($path)) {
                 return Path::combine($fileFolder, $path);
