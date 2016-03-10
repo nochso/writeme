@@ -1,5 +1,5 @@
 <?php
-namespace nochso\WriteMe\Placeholder;
+namespace nochso\WriteMe\Placeholder\API;
 
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
