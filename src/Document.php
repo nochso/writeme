@@ -89,9 +89,9 @@ class Document
                 $name = $matches[1];
                 $extension = $matches[2];
                 if (strtoupper($name) === $name) {
-                    $target = 'README'.$extension;
+                    $target = 'README' . $extension;
                 } else {
-                    $target = 'readme'.$extension;
+                    $target = 'readme' . $extension;
                 }
             }
         }
