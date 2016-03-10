@@ -71,7 +71,8 @@ final class Application
             }
             $doc = Document::fromFile($sourceFile);
             $this->converter->convert($doc, $this->placeholders);
-            $this->stdio->outln($doc->getContent());
+            $targetFile = $doc->saveTarget($getopt->get('--target'));
+            $this->stdio->outln(sprintf("Saved output from <<green>>%s<<reset>> to <<green>>%s<<reset>>.", $doc->getFilepath(), $targetFile));
         } catch (\Exception $e) {
             $this->stdio->exception($e);
             exit(Status::FAILURE);

@@ -70,4 +70,35 @@ class Document
     {
         return $this->filepath;
     }
+
+    /**
+     * @param string|null $overrideTarget
+     *
+     * @return string
+     */
+    public function saveTarget($overrideTarget = null)
+    {
+        $target = $overrideTarget;
+        // --target is optional. If empty, try the frontmatter key.
+        if ($target === null) {
+            $target = $this->frontmatter->get('target', null);
+        }
+        // Still empty: try replacing WRITEME* with README*
+        if ($target === null) {
+            if (preg_match('/^(writeme)((\..+)?)/i', $this->filepath, $matches)) {
+                $name = $matches[1];
+                $extension = $matches[2];
+                if (strtoupper($name) === $name) {
+                    $target = 'README'.$extension;
+                } else {
+                    $target = 'readme'.$extension;
+                }
+            }
+        }
+        if ($target === null) {
+            throw new \RuntimeException(sprintf('Could not guess target file name from CLI option, frontmatter key "target" or source file name "%s".', $this->filepath));
+        }
+        file_put_contents($target, $this->content);
+        return $target;
+    }
 }
