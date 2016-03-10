@@ -170,12 +170,6 @@ class API implements Placeholder
         } elseif ($class->isTrait()) {
             $type = 'T';
         }
-        if ($class->isAbstract()) {
-            $type = 'a' . $type;
-        }
-        if ($class->isFinal()) {
-            $type = 'f' . $type;
-        }
         return $type;
     }
 
