@@ -2,6 +2,7 @@
 namespace nochso\WriteMe\Placeholder;
 
 use BetterReflection\Reflection\ReflectionClass;
+use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflector\ClassReflector;
 use BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
@@ -79,10 +80,7 @@ class API implements Placeholder
             $api .= "\n";
             foreach ($class->getImmediateMethods() as $method) {
                 $methodDoc = new DocBlock($method->getDocComment());
-                if (($method->isPublic() && isset($visibility['public']))
-                    || ($method->isProtected() && isset($visibility['protected']))
-                    || ($method->isPrivate() && isset($visibility['private']))
-                ) {
+                if ($this->isMethodVisible($method, $visibility)) {
                     $api .= '        - ';
                     $api .= $this->mergeNameWithShortDescription($method->getName(), $methodDoc, '`' . $method->getName() . '()`');
                     $api .= "\n";
@@ -128,10 +126,7 @@ class API implements Placeholder
                 $api .= $baseHeader . "## Methods\n";
                 foreach ($class->getImmediateMethods() as $method) {
                     $methodDoc = new DocBlock($method->getDocComment());
-                    if (($method->isPublic() && isset($visibility['public']))
-                        || ($method->isProtected() && isset($visibility['protected']))
-                        || ($method->isPrivate() && isset($visibility['private']))
-                    ) {
+                    if ($this->isMethodVisible($method, $visibility)) {
                         $api .= '- ';
                         $api .= $this->mergeNameWithShortDescription($method->getName(), $methodDoc, '`' . $method->getName() . '()`');
                         $api .= "\n";
@@ -246,5 +241,18 @@ class API implements Placeholder
             return strnatcmp($ans, $bns);
         });
         return $classes;
+    }
+
+    /**
+     * @param \BetterReflection\Reflection\ReflectionMethod $method
+     * @param array                                         $visibility
+     *
+     * @return bool
+     */
+    private function isMethodVisible(ReflectionMethod $method, $visibility)
+    {
+        return ($method->isPublic() && isset($visibility['public']))
+            || ($method->isProtected() && isset($visibility['protected']))
+            || ($method->isPrivate() && isset($visibility['private']));
     }
 }
