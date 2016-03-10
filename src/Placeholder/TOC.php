@@ -76,6 +76,8 @@ class TOC implements Placeholder
     }
 
     /**
+     * @link https://github.com/jch/html-pipeline/blob/master/lib/html/pipeline/toc_filter.rb
+     *
      * @return string
      */
     private function createTOC()
@@ -86,9 +88,18 @@ class TOC implements Placeholder
             return $header[0] <= $maxDepth;
         };
         $this->headers = array_filter($this->headers, $depthLimiter);
+        $headerMap = [];
         foreach ($this->headers as $element) {
+            $anchor = $this->getAnchor($element[1]);
+            $uniqueSuffix = '';
+            if (!isset($headerMap[$anchor])) {
+                $headerMap[$anchor] = 0;
+            } else {
+                $headerMap[$anchor]++;
+                $uniqueSuffix = '-' . $headerMap[$anchor];
+            }
             $indent = str_repeat('    ', $element[0] - 1);
-            $toc .= $indent . '- [' . $element[1] . '](#' . $this->getAnchor($element[1]) . ")\n";
+            $toc .= $indent . '- [' . $element[1] . '](#' . $anchor . $uniqueSuffix . ")\n";
         }
         return $toc;
     }
