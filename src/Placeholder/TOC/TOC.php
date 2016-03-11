@@ -15,7 +15,7 @@ class TOC implements Placeholder
     const MAX_DEPTH_DEFAULT = 3;
 
     /**
-     * @var array [level, header text] pairs
+     * @var \nochso\WriteMe\Placeholder\TOC\HeaderList
      */
     private $headers;
     /**
@@ -41,7 +41,7 @@ class TOC implements Placeholder
 
     private function extractHeaders()
     {
-        $this->headers = [];
+        $this->headers = new HeaderList();
         $lines = Multiline::create($this->document->getContent());
         $prevLine = null;
         $isFenced = false;
@@ -64,42 +64,28 @@ class TOC implements Placeholder
     {
         // # ATX style header
         if (preg_match('/^(#+)\s*(.+)\s*#*$/', $line, $matches)) {
-            $this->headers[] = [strlen($matches[1]), $matches[2]];
+            $this->headers->add(new Header(strlen($matches[1]), $matches[2]));
             return;
         }
         // SETEXT style header
         // ---------|=========
         if ($prevLine !== null && strlen($prevLine) !== 0 && preg_match('/^[=-]+$/', $line, $matches)) {
             $level = Strings::startsWith($line, '=') ? 1 : 2;
-            $this->headers[] = [$level, trim($prevLine)];
+            $this->headers->add(new Header($level, trim($prevLine)));
         }
     }
 
     /**
-     * @link https://github.com/jch/html-pipeline/blob/master/lib/html/pipeline/toc_filter.rb
-     *
      * @return string
      */
     private function createTOC()
     {
         $toc = '';
         $maxDepth = $this->document->getFrontmatter()->get('toc.max-depth', self::MAX_DEPTH_DEFAULT);
-        $depthLimiter = function ($header) use ($maxDepth) {
-            return $header[0] <= $maxDepth;
-        };
-        $this->headers = array_filter($this->headers, $depthLimiter);
-        $headerMap = [];
-        foreach ($this->headers as $element) {
-            $anchor = $this->getAnchor($element[1]);
-            $uniqueSuffix = '';
-            if (!isset($headerMap[$anchor])) {
-                $headerMap[$anchor] = 0;
-            } else {
-                $headerMap[$anchor]++;
-                $uniqueSuffix = '-' . $headerMap[$anchor];
-            }
-            $indent = str_repeat('    ', $element[0] - 1);
-            $toc .= $indent . '- [' . $element[1] . '](#' . $anchor . $uniqueSuffix . ")\n";
+        $headers = $this->headers->getHeadersWithinMaxDepth($maxDepth);
+        foreach ($headers as $header) {
+            $indent = str_repeat('    ', $header->getLevel() - 1);
+            $toc .= $indent . '- [' . $header->getText() . '](#' . $header->getAnchor() . ")\n";
         }
         return $toc;
     }
