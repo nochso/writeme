@@ -2,7 +2,6 @@
 namespace nochso\WriteMe\Placeholder\API;
 
 use BetterReflection\Reflection\ReflectionClass;
-use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflector\ClassReflector;
 use BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
@@ -12,7 +11,6 @@ use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Interfaces\Placeholder;
-use phpDocumentor\Reflection\DocBlock;
 
 /**
  * API does stuff.
@@ -21,11 +19,6 @@ use phpDocumentor\Reflection\DocBlock;
  */
 class API implements Placeholder
 {
-    /**
-     * Override this using `api.visibility`.
-     */
-    const VISIBILITY_DEFAULT = ['public', 'protected'];
-
     /**
      * @return string
      */
@@ -40,8 +33,8 @@ class API implements Placeholder
     public function apply(Document $document)
     {
         $doSummary = Converter::contains('api.summary', $document);
-        $doApi = Converter::contains('api.advanced', $document);
-        if (!$doSummary && !$doApi) {
+        $doFullApi = Converter::contains('api.full', $document);
+        if (!$doSummary && !$doFullApi) {
             return;
         }
 
@@ -50,9 +43,9 @@ class API implements Placeholder
             $apiSummary = $this->createAPISummary($classes, $document->getFrontmatter());
             Converter::replace('api.summary', $apiSummary, $document);
         }
-        if ($doApi) {
-            $api = $this->createAPI($classes, $document->getFrontmatter());
-            Converter::replace('api.advanced', $api, $document);
+        if ($doFullApi) {
+            $api = $this->createFullAPI($classes, $document->getFrontmatter());
+            Converter::replace('api.full', $api, $document);
         }
     }
 
@@ -64,31 +57,9 @@ class API implements Placeholder
      */
     private function createAPISummary(array $classes, Frontmatter $frontmatter)
     {
-        $prevNamespace = null;
-        $visibility = $this->getVisibility($frontmatter);
-        $api = 'This is a summary of namespaces, classes, interfaces, traits and ' . implode('/', array_keys($visibility)) . ' methods';
-        foreach ($classes as $class) {
-            $namespace = $class->getNamespaceName();
-            if ($namespace !== $prevNamespace) {
-                $api .= "\n- `N` `" . $class->getNamespaceName() . "`\n";
-            }
-            $prevNamespace = $namespace;
-
-            $doc = new DocBlock($class->getDocComment());
-            $api .= '    - `' . $this->getShortClassType($class) . '` ';
-            $api .= $this->mergeNameWithShortDescription($class->getShortName(), $doc, '`' . $class->getShortName() . '`');
-            $api .= "\n";
-            foreach ($class->getImmediateMethods() as $method) {
-                $methodDoc = new DocBlock($method->getDocComment());
-                if ($this->isMethodVisible($method, $visibility)) {
-                    $api .= '        - ';
-                    $api .= $this->mergeNameWithShortDescription($method->getName(), $methodDoc, '`' . $method->getName() . '()`');
-                    $api .= "\n";
-                }
-            }
-        }
-
-        return $api;
+        $template = new Template();
+        $template->prepare($classes, $frontmatter);
+        return $template->render('summary.php');
     }
 
     /**
@@ -97,75 +68,11 @@ class API implements Placeholder
      *
      * @return string
      */
-    private function createAPI($classes, $frontmatter)
+    private function createFullAPI(array $classes, Frontmatter $frontmatter)
     {
-        $headerDepth = $frontmatter->get('api.header-depth', 3);
-        $baseHeader = str_repeat('#', $headerDepth);
-        $prevNamespace = null;
-        $visibility = $this->getVisibility($frontmatter);
-        $api = 'This is a summary of namespaces, classes, interfaces, traits and ' . implode('/', array_keys($visibility)) . ' methods.';
-        foreach ($classes as $class) {
-            $namespace = $class->getNamespaceName();
-            if ($namespace !== $prevNamespace) {
-                if ($prevNamespace === null) {
-                    $api .= "\n";
-                }
-                $api .= "\n---------\n";
-                $api .= "\n" . $baseHeader . ' Namespace `' . $class->getNamespaceName() . "`\n";
-            }
-            $prevNamespace = $namespace;
-
-            $doc = new DocBlock($class->getDocComment());
-            $api .= "\n" . $baseHeader . '# Class `' . $class->getShortName() . "`\n";
-            $api .= $this->mergeNameWithShortDescription($class->getShortName(), $doc, '`' . $class->getShortName() . '`', true);
-            if (strlen($doc->getLongDescription()) > 0) {
-                $api .= "\n\n" . $doc->getLongDescription();
-            }
-            $api .= "\n";
-            if (count($class->getImmediateMethods()) > 0) {
-                $api .= $baseHeader . "## Methods\n";
-                foreach ($class->getImmediateMethods() as $method) {
-                    $methodDoc = new DocBlock($method->getDocComment());
-                    if ($this->isMethodVisible($method, $visibility)) {
-                        $api .= '- ';
-                        $api .= $this->mergeNameWithShortDescription($method->getName(), $methodDoc, '`' . $method->getName() . '()`');
-                        $api .= "\n";
-                    }
-                }
-            }
-        }
-
-        return $api;
-    }
-
-    private function mergeNameWithShortDescription($name, DocBlock $doc, $displayName = null, $nameOptional = false)
-    {
-        if ($displayName === null) {
-            $displayName = $name;
-        }
-        $merged = $displayName;
-        $words = explode(' ', trim($doc->getShortDescription()), 2);
-        if (count($words) >= 2 && strtolower($words[0]) == strtolower($name)) {
-            $merged .= ' ' . $words[1];
-        } else {
-            if ($nameOptional) {
-                $merged = $doc->getShortDescription();
-            } else {
-                $merged .= ' ' . $doc->getShortDescription();
-            }
-        }
-        return rtrim($merged);
-    }
-
-    private function getShortClassType(ReflectionClass $class)
-    {
-        $type = 'C';
-        if ($class->isInterface()) {
-            $type = 'I';
-        } elseif ($class->isTrait()) {
-            $type = 'T';
-        }
-        return $type;
+        $template = new Template();
+        $template->prepare($classes, $frontmatter);
+        return $template->render('full.php');
     }
 
     /**
@@ -213,11 +120,6 @@ class API implements Placeholder
         return array_map($combiner, $folders);
     }
 
-    private function getVisibility(Frontmatter $frontmatter)
-    {
-        return array_flip($frontmatter->get('api.visibility', self::VISIBILITY_DEFAULT));
-    }
-
     /**
      * @param \nochso\WriteMe\Document $document
      *
@@ -241,18 +143,5 @@ class API implements Placeholder
             return strnatcmp($ans, $bns);
         });
         return $classes;
-    }
-
-    /**
-     * @param \BetterReflection\Reflection\ReflectionMethod $method
-     * @param array                                         $visibility
-     *
-     * @return bool
-     */
-    private function isMethodVisible(ReflectionMethod $method, $visibility)
-    {
-        return ($method->isPublic() && isset($visibility['public']))
-            || ($method->isProtected() && isset($visibility['protected']))
-            || ($method->isPrivate() && isset($visibility['private']));
     }
 }
