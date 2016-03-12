@@ -1,5 +1,5 @@
 <?php
-namespace nochso\WriteMe\Placeholder\TOC;
+namespace nochso\WriteMe\Placeholder;
 
 use nochso\Omni\Multiline;
 use nochso\Omni\Strings;
