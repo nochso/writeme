@@ -1,12 +1,12 @@
 <?php
-namespace nochso\WriteMe;
+namespace nochso\WriteMe\Markdown;
 
 use nochso\Omni\Path;
 
 /**
  * MarkdownTemplate to help write Markdown templates in pure PHP.
  */
-abstract class MarkdownTemplate
+abstract class Template
 {
     const INDENT_TAB = "\t";
     const INDENT_SPACE_TWO = ' ';
@@ -38,10 +38,8 @@ abstract class MarkdownTemplate
      */
     public function header($level, $text = '')
     {
-        $header = str_repeat('#', $this->headerStartLevel + $level);
-        $headerText = sprintf('%s %s', $header, $text);
-        // Trim trailing space if $text is empty.
-        return rtrim($headerText, ' ');
+        $header = new Header($this->headerStartLevel + $level, $text);
+        return $header->toMarkdown();
     }
 
     /**

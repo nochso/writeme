@@ -1,5 +1,5 @@
 <?php
-namespace nochso\WriteMe\Placeholder\TOC;
+namespace nochso\WriteMe\Markdown;
 
 /**
  * Header represents a single Markdown header.
@@ -72,5 +72,16 @@ class Header
             $uniqueSuffix = '-' . $this->uniqueCounter;
         }
         return $anchor . $uniqueSuffix;
+    }
+
+    /**
+     * @return string
+     */
+    public function toMarkdown()
+    {
+        $header = str_repeat('#', $this->level);
+        $headerText = sprintf('%s %s', $header, $this->text);
+        // Trim trailing space if $text is empty.
+        return rtrim($headerText, ' ');
     }
 }
