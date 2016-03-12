@@ -3,16 +3,13 @@ namespace nochso\WriteMe\Placeholder;
 
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
-use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Markdown;
 
-class TOC implements Placeholder
+/**
+ * TOC placeholder creates a table of contents from Markdown headers.
+ */
+class TOC extends AbstractPlaceholder
 {
-    /**
-     * Default maximum depth of header levels. Override this using `toc.max-depth`.
-     */
-    const MAX_DEPTH_DEFAULT = 3;
-
     /**
      * @var \nochso\WriteMe\Document
      */
@@ -25,6 +22,7 @@ class TOC implements Placeholder
 
     public function apply(Document $document)
     {
+        parent::apply($document);
         if (!Converter::contains($this, $document)) {
             return;
         }
@@ -43,12 +41,22 @@ class TOC implements Placeholder
     private function createTOC(Markdown\HeaderList $headerList)
     {
         $toc = '';
-        $maxDepth = $this->document->getFrontmatter()->get('toc.max-depth', self::MAX_DEPTH_DEFAULT);
+        $maxDepth = $this->options->getValue('toc.max-depth');
         $headers = $headerList->getHeadersWithinMaxDepth($maxDepth);
         foreach ($headers as $header) {
             $indent = str_repeat('    ', $header->getLevel() - 1);
             $toc .= $indent . '- [' . $header->getText() . '](#' . $header->getAnchor() . ")\n";
         }
         return $toc;
+    }
+
+    /**
+     * @return \nochso\WriteMe\Placeholder\OptionList[]
+     */
+    public function getOptions()
+    {
+        return new OptionList([
+            new Option('toc.max-depth', 'Maximum depth of header level to extract.', 3),
+        ]);
     }
 }

@@ -3,9 +3,8 @@ namespace nochso\WriteMe\Placeholder;
 
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
-use nochso\WriteMe\Interfaces\Placeholder;
 
-class Frontmatter implements Placeholder
+class Frontmatter extends AbstractPlaceholder
 {
     /**
      * @var

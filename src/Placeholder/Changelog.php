@@ -4,16 +4,11 @@ namespace nochso\WriteMe\Placeholder;
 use Nette\Utils\Finder;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
-use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Markdown\HeaderContent;
 use nochso\WriteMe\Markdown\Parser;
 
-class Changelog implements Placeholder
+class Changelog extends AbstractPlaceholder
 {
-    const FILE_NAME_DEFAULT = 'CHANGELOG.md';
-    const MAX_CHANGES_DEFAULT = 2;
-    const RELEASE_LEVEL_DEFAULT = 2;
-
     /**
      * @return string
      */
@@ -27,12 +22,13 @@ class Changelog implements Placeholder
      */
     public function apply(Document $document)
     {
+        parent::apply($document);
         $changelogPath = $this->findChangelog($document);
         $changelog = Document::fromFile($changelogPath);
         $parser = new Parser();
         $headerContentList = $parser->extractHeaderContents($changelog);
-        $maxChanges = $document->getFrontmatter()->get('changelog.max-changes', self::MAX_CHANGES_DEFAULT);
-        $releaseLevel = $document->getFrontmatter()->get('changelog.release-level', self::RELEASE_LEVEL_DEFAULT);
+        $maxChanges = $this->options->getValue('changelog.max-changes');
+        $releaseLevel = $this->options->getValue('changelog.release-level');
         $changes = 0;
         $latestChanges = '';
         /** @var HeaderContent $headerContent */
@@ -55,15 +51,29 @@ class Changelog implements Placeholder
     }
 
     /**
+     * @return \nochso\WriteMe\Placeholder\OptionList
+     */
+    public function getOptions()
+    {
+        return new OptionList([
+            new Option('changelog.max-changes', 'Maximum amount of releases to include.', 2),
+            new Option('changelog.release-level', 'The header level that represents a release header.', 2),
+            new Option('changelog.file', 'Filename of the CHANGELOG to extract releases from.', 'CHANGELOG.md'),
+            new Option('changelog.search-depth', 'How deep the folders should be searched.', 2),
+        ]);
+    }
+
+    /**
      * @param \nochso\WriteMe\Document $document
      *
      * @return \SplFileInfo
      */
     private function findChangelog(Document $document)
     {
-        $changelogName = $document->getFrontmatter()->get('changelog.file', self::FILE_NAME_DEFAULT);
+        $changelogName = $this->options->getValue('changelog.file');
+        $searchDepth = $this->options->getValue('changelog.search-depth');
         $folder = dirname($document->getFilepath());
-        $files = new \IteratorIterator(Finder::findFiles($changelogName)->from($folder)->limitDepth(2));
+        $files = new \IteratorIterator(Finder::findFiles($changelogName)->from($folder)->limitDepth($searchDepth));
         $files->next();
         if (!$files->valid()) {
             throw new \RuntimeException(sprintf("Unable to find changelog '%s' in folder '%s'", $changelogName, $folder));

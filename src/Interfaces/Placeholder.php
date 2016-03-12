@@ -14,4 +14,9 @@ interface Placeholder
      * @param \nochso\WriteMe\Document $document
      */
     public function apply(Document $document);
+
+    /**
+     * @return \nochso\WriteMe\Placeholder\OptionList
+     */
+    public function getOptions();
 }

@@ -10,14 +10,16 @@ use nochso\Omni\Path;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
-use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Placeholder\AbstractPlaceholder;
+use nochso\WriteMe\Placeholder\Option;
+use nochso\WriteMe\Placeholder\OptionList;
 
 /**
  * API does stuff.
  *
  * Second line.
  */
-class API implements Placeholder
+class API extends AbstractPlaceholder
 {
     /**
      * @return string
@@ -32,6 +34,7 @@ class API implements Placeholder
      */
     public function apply(Document $document)
     {
+        parent::apply($document);
         $doSummary = Converter::contains('api.summary', $document);
         $doFullApi = Converter::contains('api.full', $document);
         if (!$doSummary && !$doFullApi) {
@@ -47,6 +50,18 @@ class API implements Placeholder
             $api = $this->createFullAPI($classes, $document->getFrontmatter());
             Converter::replace('api.full', $api, $document);
         }
+    }
+
+    /**
+     * @return \nochso\WriteMe\Placeholder\OptionList
+     */
+    public function getOptions()
+    {
+        return new OptionList([
+            new Option('api.file', 'List of file patterns to parse.', ['*.php']),
+            new Option('api.from', 'List of folders to search files in.', ['.']),
+            new Option('api.folder-exclude', 'List of folders to exclude from the search.', ['vendor', 'test', 'tests']),
+        ]);
     }
 
     /**
@@ -82,10 +97,9 @@ class API implements Placeholder
      */
     private function getFiles(Document $doc)
     {
-        $frontmatter = $doc->getFrontmatter();
-        $findFiles = $frontmatter->get('api.file', ['*.php']);
-        $fromFolders = $frontmatter->get('api.from', ['.']);
-        $folderExclude = $frontmatter->get('api.folder-exclude', ['vendor', 'test', 'tests']);
+        $findFiles = $this->options->getValue('api.file');
+        $fromFolders = $this->options->getValue('api.from');
+        $folderExclude = $this->options->getValue('api.folder-exclude');
 
         $docPath = $doc->getFilepath();
         // Make folder paths relative to the folder of the WRITEME file in case CWD differs.
