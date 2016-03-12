@@ -38,6 +38,14 @@ class Document
     }
 
     /**
+     * @param Frontmatter $frontmatter
+     */
+    public function setFrontmatter($frontmatter)
+    {
+        $this->frontmatter = $frontmatter;
+    }
+
+    /**
      * @return string
      */
     public function getContent()
