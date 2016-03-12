@@ -11,6 +11,8 @@ use nochso\WriteMe\Document;
 class Parser
 {
     /**
+     * extractHeaders returns a HeaderList containing Header objects.
+     *
      * @param \nochso\WriteMe\Document $document
      *
      * @return \nochso\WriteMe\Markdown\HeaderList
