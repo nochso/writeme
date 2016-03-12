@@ -7,7 +7,7 @@ use nochso\WriteMe\Interfaces\Placeholder;
 
 class Changelog implements Placeholder
 {
-    const CHANGELOG_NAME_DEFAULT = 'CHANGELOG.md';
+    const FILE_NAME_DEFAULT = 'CHANGELOG.md';
 
     /**
      * @return string
@@ -32,7 +32,7 @@ class Changelog implements Placeholder
      */
     private function findChangelog(Document $document)
     {
-        $changelogName = $document->getFrontmatter()->get('changelog.file', self::CHANGELOG_NAME_DEFAULT);
+        $changelogName = $document->getFrontmatter()->get('changelog.file', self::FILE_NAME_DEFAULT);
         $folder = dirname($document->getFilepath());
         $files = new \IteratorIterator(Finder::findFiles($changelogName)->from($folder)->limitDepth(2));
         $files->next();
