@@ -32,6 +32,7 @@
     },
     "bin": ["bin/writeme"],
     "scripts": {
-        "cs": "php-cs-fixer fix"
+        "cs": "php-cs-fixer fix",
+        "wm": "php bin/writeme WRITEME.md"
     }
 }
