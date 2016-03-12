@@ -1,12 +1,12 @@
 <?php
-namespace nochso\WriteMe;
+namespace nochso\WriteMe\Markdown;
 
 use nochso\Omni\Path;
 
 /**
  * MarkdownTemplate to help write Markdown templates in pure PHP.
  */
-abstract class MarkdownTemplate
+abstract class Template
 {
     const INDENT_TAB = "\t";
     const INDENT_SPACE_TWO = ' ';
