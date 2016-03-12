@@ -38,10 +38,8 @@ abstract class Template
      */
     public function header($level, $text = '')
     {
-        $header = str_repeat('#', $this->headerStartLevel + $level);
-        $headerText = sprintf('%s %s', $header, $text);
-        // Trim trailing space if $text is empty.
-        return rtrim($headerText, ' ');
+        $header = new Header($this->headerStartLevel + $level, $text);
+        return $header->toMarkdown();
     }
 
     /**
