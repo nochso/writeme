@@ -7,14 +7,18 @@ use nochso\WriteMe\Document;
 class Frontmatter extends AbstractPlaceholder
 {
     /**
-     * @var
+     * @var string
      */
     private $identifier;
     /**
-     * @var
+     * @var mixed
      */
     private $value;
 
+    /**
+     * @param string $identifier
+     * @param mixed  $value
+     */
     public function __construct($identifier, $value)
     {
         $this->identifier = $identifier;
