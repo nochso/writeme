@@ -6,6 +6,8 @@ use nochso\Omni\Strings;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Markdown\Header;
+use nochso\WriteMe\Markdown\HeaderList;
 
 class TOC implements Placeholder
 {
@@ -15,7 +17,7 @@ class TOC implements Placeholder
     const MAX_DEPTH_DEFAULT = 3;
 
     /**
-     * @var \nochso\WriteMe\Placeholder\TOC\HeaderList
+     * @var \nochso\WriteMe\Markdown\HeaderList
      */
     private $headers;
     /**

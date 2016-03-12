@@ -1,5 +1,5 @@
 <?php
-namespace nochso\WriteMe\Placeholder\TOC;
+namespace nochso\WriteMe\Markdown;
 
 /**
  * HeaderList keeps track of multiple Markdown headers.
@@ -7,7 +7,7 @@ namespace nochso\WriteMe\Placeholder\TOC;
 class HeaderList
 {
     /**
-     * @var \nochso\WriteMe\Placeholder\TOC\Header[]
+     * @var \nochso\WriteMe\Markdown\Header[]
      */
     private $headers = [];
     /**
@@ -18,7 +18,7 @@ class HeaderList
     /**
      * Add a header while keeping track of duplicate texts for unique anchor links.
      *
-     * @param \nochso\WriteMe\Placeholder\TOC\Header $header
+     * @param \nochso\WriteMe\Markdown\Header $header
      */
     public function add(Header $header)
     {
@@ -31,7 +31,7 @@ class HeaderList
     }
 
     /**
-     * @return \nochso\WriteMe\Placeholder\TOC\Header[]
+     * @return \nochso\WriteMe\Markdown\Header[]
      */
     public function getHeaders()
     {
@@ -41,7 +41,7 @@ class HeaderList
     /**
      * @param int $maxDepth
      *
-     * @return \nochso\WriteMe\Placeholder\TOC\Header[]
+     * @return \nochso\WriteMe\Markdown\Header[]
      */
     public function getHeadersWithinMaxDepth($maxDepth)
     {

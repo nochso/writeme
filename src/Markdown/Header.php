@@ -1,5 +1,5 @@
 <?php
-namespace nochso\WriteMe\Placeholder\TOC;
+namespace nochso\WriteMe\Markdown;
 
 /**
  * Header represents a single Markdown header.
