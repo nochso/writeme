@@ -11,6 +11,8 @@ use nochso\WriteMe\Document;
 class Parser
 {
     /**
+     * extractHeaders returns a HeaderList containing Header objects.
+     *
      * @param \nochso\WriteMe\Document $document
      *
      * @return \nochso\WriteMe\Markdown\HeaderList
@@ -32,6 +34,45 @@ class Parser
                 }
             }
             $prevLine = $line;
+        }
+        return $headerList;
+    }
+
+    /**
+     * extractHeaderContents returns a HeaderList containing HeaderContent objects.
+     *
+     * @param \nochso\WriteMe\Document $document
+     *
+     * @return \nochso\WriteMe\Markdown\HeaderList
+     *
+     * @todo Refactor this as it mostly duplicates extractHeaders
+     */
+    public function extractHeaderContents(Document $document)
+    {
+        $headerList = new HeaderList();
+        $lines = Multiline::create($document->getContent());
+        $prevLine = null;
+        $isFenced = false;
+        $currentHeaderContent = null;
+        $isNewHeader = false;
+        foreach ($lines as $line) {
+            if (preg_match('/^```(?!`)/', $line)) {
+                $isFenced = !$isFenced;
+            }
+            if (!$isFenced) {
+                $header = $this->extractHeader($line, $prevLine);
+                if ($header !== null) {
+                    $currentHeaderContent = HeaderContent::fromHeader($header);
+                    $headerList->add($currentHeaderContent);
+                    $isNewHeader = true;
+                }
+            }
+            // Add content only if it's *after* the header line
+            if ($currentHeaderContent !== null && !$isNewHeader) {
+                $currentHeaderContent->addContent($line);
+            }
+            $prevLine = $line;
+            $isNewHeader = false;
         }
         return $headerList;
     }
