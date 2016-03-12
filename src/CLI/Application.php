@@ -11,6 +11,7 @@ use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Placeholder\API\API;
+use nochso\WriteMe\Placeholder\Changelog;
 use nochso\WriteMe\Placeholder\TOC;
 
 /**
@@ -46,6 +47,7 @@ final class Application
         $this->stdio = Stdio::create();
         $this->addPlaceholder(new API());
         $this->addPlaceholder(new TOC());
+        $this->addPlaceholder(new Changelog());
         $this->converter = new Converter();
     }
 
