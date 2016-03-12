@@ -26,7 +26,10 @@ class Parser
                 $isFenced = !$isFenced;
             }
             if (!$isFenced) {
-                $this->extractHeader($line, $prevLine, $headerList);
+                $header = $this->extractHeader($line, $prevLine);
+                if ($header !== null) {
+                    $headerList->add($header);
+                }
             }
             $prevLine = $line;
         }
@@ -34,26 +37,23 @@ class Parser
     }
 
     /**
-     * @param string                              $line
-     * @param string|null                         $prevLine
-     * @param \nochso\WriteMe\Markdown\HeaderList $headerList
+     * @param string      $line
+     * @param string|null $prevLine
      *
-     * @return bool
+     * @return \nochso\WriteMe\Markdown\Header|null
      */
-    private function extractHeader($line, $prevLine, HeaderList $headerList)
+    private function extractHeader($line, $prevLine)
     {
         // # ATX style header
         if (preg_match('/^(#+)\s*(.+)\s*#*$/', $line, $matches)) {
-            $headerList->add(new Header(strlen($matches[1]), $matches[2]));
-            return true;
+            return new Header(strlen($matches[1]), $matches[2]);
         }
         // SETEXT style header
         // ---------|=========
         if ($prevLine !== null && strlen($prevLine) !== 0 && preg_match('/^[=-]+$/', $line, $matches)) {
             $level = Strings::startsWith($line, '=') ? 1 : 2;
-            $headerList->add(new Header($level, trim($prevLine)));
-            return true;
+            return new Header($level, trim($prevLine));
         }
-        return false;
+        return null;
     }
 }
