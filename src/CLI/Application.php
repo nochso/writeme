@@ -9,6 +9,7 @@ use Aura\Cli\Status;
 use nochso\Omni\VersionInfo;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
+use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Placeholder\API\API;
 use nochso\WriteMe\Placeholder\Changelog;
@@ -150,8 +151,23 @@ final class Application
         }else{
 
             /*saving the doc*/
-            $save = implode(' -- ', $content); 
-            $doc = new Document($save, 'README.md');
+            $template = <<<'TAG'
+# @header@
+
+@body@
+
+## Installation
+
+```
+@install@
+```
+
+## License
+This project is released under the @license@ license.
+TAG;
+            $doc = new Document($template, 'README.md');
+            $doc->setFrontmatter(new Frontmatter($content));
+            $this->converter->convert($doc, $this->placeholders);
             $generate = $doc->saveTarget($dir.'/README.md');
 
             if($generate){
