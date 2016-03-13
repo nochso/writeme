@@ -2,27 +2,30 @@
 
 [![GitHub tag](https://img.shields.io/github/tag/nochso/writeme.svg)](https://github.com/nochso/writeme/releases)
 
-nochso/writeme makes creating and maintaining READMEs easier.
+nochso/writeme makes creating and maintaining READMEs easier by combining frontmatter and Markdown.
 
-For example the table of contents was generated from the `@toc@` placeholder in [WRITEME.md](WRITEME.md).
+For example the following table of contents was generated from the `@toc@` placeholder in [WRITEME.md](WRITEME.md).
 
 - [nochso/writeme](#package)
     - [Requirements](#requirements)
+    - [How it works](#how-it-works)
     - [Usage](#usage)
+        - [Custom frontmatter](#custom-frontmatter)
+        - [Escaping placeholders](#escaping-placeholders)
+        - [Specifying a target file name](#specifying-a-target-file-name)
+        - [Available placeholders](#available-placeholders)
+    - [License](#license)
 
 
 ## Requirements
 PHP 5.6.0, 7.0 or higher.
 
-## Usage
+## How it works
 Create a file `WRITEME.md` containing YAML frontmatter and Markdown content:
 
 ```markdown
 ---
-# This is the YAML frontmatter.
 package: vendor/name
-toc:
-    max-depth: 2 # Any headers deeper than this will not show up in the table of contents.
 ---
 # @package@
 
@@ -30,37 +33,120 @@ toc:
 
 ## Requirements
 ...
-
-## Usage
-
-### Nested
 ```
 
-Now run `bin/writeme WRITEME.md` to parse the file. `@placeholders@` will be replaced with the contents defined in the frontmatter.
+Now run `php bin/writeme WRITEME.md` and a `README.me` file will be created:
 
-Some placeholders have a special meaning. For example `@toc@` will be replaced with a table of contents of the Markdown headers:
-
-```
+```markdown
 # vendor/name
 
-- [vendor/name](#package)
+- [vendor/name](#vendor-name)
     - [Requirements](#requirements)
-    - [Usage](#usage)
-
 
 ## Requirements
 ...
+```
+
+Because you've defined `package` in the frontmatter, `@package@` turns into `vendor/name`. You can freely define any
+placeholders you might need.
+
+The only exceptions are registered placeholders. For example `@toc@` was replaced with a table of contents extracted
+from the Markdown headers in your content.
 
 ## Usage
 
-### Nested
+### Custom frontmatter
+As long as a registered placeholder does not collide with the keys defined in the frontmatter, you can define any kind
+of structure:
+```yaml
+greet: Hello
+user:
+    name: [Annyong, Tobias]
 ```
+You can access leaf nodes using dot notation (including escaping of dots, see `Dot` provided by [nochso/omni](https://github.com/nochso/omni)):
 
-To avoid replacing a placeholder, surround it with extra @ characters: `@@ignored@@`.
+`@greet@ @user.name.0@!` turns into `Hello Annyong!`
+
+### Escaping placeholders
+To avoid replacing a placeholder, surround it with extra `@` characters: `@@ignored@@`.
 
 Placeholders within fenced code blocks are currently ignored.
 
-By default files named `WRITEME*` will be saved to `README*`. This can be overriden with the `--target` CLI option or a `target` frontmatter key.
+### Specifying a target file name
+
+By default files named `WRITEME*` will be saved to `README*`. Names that are all upper/lower-case are preserved.
+This default behaviour can be overriden using the CLI option `--target <filename>` or frontmatter key `target`:
+
+```yaml
+target: DOCS.md
+```
+
+### Available placeholders
+
+#### API `@api@`
+
+API creates documentation from your PHP code.
+
+By default it will search for all `*.php` files in your project excluding the Composer `vendor` and `test*` folders.
+
+Currently there are two placeholders, each with a different template:
+
+- `@api.summary@`
+    - Indented list of namespaces, classes and methods including the first line of PHPDocs.
+- `@api.full@`
+    - Verbose documentation for each class and methods.
+
+##### Default options
+```yaml
+api:
+    file: ['*.php']
+    from: [.]
+    folder-exclude: [vendor, test, tests]
+```
+
+
+#### Changelog `@changelog@`
+
+Changelog fetches the most recent release notes from a CHANGELOG written in Markdown.
+
+This placeholder is intended for changelogs following the [keep-a-changelog](http://keepachangelog.com/) conventions.
+However it should work for any Markdown formatted list of releases: each release is identified by a Markdown header.
+What kind of header marks a release can be specified by the `changelog.release-level` option.
+
+##### Default options
+```yaml
+changelog:
+    max-changes: 2
+    release-level: 2
+    file: CHANGELOG.md
+    search-depth: 2
+```
+
+
+#### PlaceholderDocs `@placeholder-docs@`
+
+PlaceholderDocs creates documentation for registered placeholders.
+
+This includes the PHPDoc for the classes and their supported options.
+
+##### Default options
+```yaml
+placeholder-docs:
+    header-depth: 3
+```
+
+
+#### TOC `@toc@`
+
+TOC placeholder creates a table of contents from Markdown headers.
+
+##### Default options
+```yaml
+toc:
+    max-depth: 3
+```
+
+
 
 ## License
 nochso/writeme is released under the MIT license. See the [LICENSE](LICENSE.md) for the full license text.
