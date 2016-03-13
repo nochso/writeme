@@ -15,9 +15,16 @@ use nochso\WriteMe\Placeholder\Option;
 use nochso\WriteMe\Placeholder\OptionList;
 
 /**
- * API does stuff.
+ * API creates documentation from your PHP code.
  *
- * Second line.
+ * By default it will search for all `*.php` files in your project excluding the Composer `vendor` and `test*` folders.
+ *
+ * Currently there are two placeholders, each with a different template:
+ *
+ * - `@api.summary@`
+ *     - Indented list of namespaces, classes and methods including the first line of PHPDocs.
+ * - `@api.full@`
+ *     - Verbose documentation for each class and methods.
  */
 class API extends AbstractPlaceholder
 {

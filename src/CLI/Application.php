@@ -12,6 +12,7 @@ use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Placeholder\API\API;
 use nochso\WriteMe\Placeholder\Changelog;
+use nochso\WriteMe\Placeholder\PlaceholderDocs\PlaceholderDocs;
 use nochso\WriteMe\Placeholder\TOC;
 
 /**
@@ -45,9 +46,13 @@ final class Application
         }
         $this->context = $clif->newContext($globals);
         $this->stdio = Stdio::create();
+        $placeholderDocs = new PlaceholderDocs();
         $this->addPlaceholder(new API());
-        $this->addPlaceholder(new TOC());
         $this->addPlaceholder(new Changelog());
+        $this->addPlaceholder($placeholderDocs);
+        $this->addPlaceholder(new TOC());
+        // Docs should know about all placeholders, but TOC must be applied last
+        $placeholderDocs->setPlaceholders($this->placeholders);
         $this->converter = new Converter();
     }
 
