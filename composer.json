@@ -1,6 +1,7 @@
 {
     "name": "nochso/writeme",
-    "description": "Write me to read me.",
+    "description": "WRITEME to README: Maintain documentation using placeholders.",
+    "keywords": ["readme", "writeme", "markdown", "frontmatter", "yaml", "documentation", "api", "toc"],
     "type": "application",
     "require": {
         "symfony/yaml": "^3.0",
