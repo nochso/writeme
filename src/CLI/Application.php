@@ -95,17 +95,7 @@ final class Application
             'This command will walk you through creating your README.md file'
         ));
 
-        $this->stdio->outln(sprintf(
-            "Package name (<vendor>/<name>) [<<bold yellow>> $suggestedPath <<reset>>] :"
-        ));
-
-        $header = $this->stdio->in(1);
-
-        if ($header) {
-            $content['header'] = $header;
-        } else {
-            $content['header'] = $suggestedPath;
-        }
+        $content['header'] = $this->stdio->ask('Package name (e.g. vendor/name)', $suggestedPath, '/^.+\/.+$/');
 
         $suggestedInstallCommand = 'composer require ' .  str_replace(DIRECTORY_SEPARATOR, '\\', $content['header']);
 
