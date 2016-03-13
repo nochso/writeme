@@ -9,6 +9,7 @@ use Aura\Cli\Status;
 use nochso\Omni\VersionInfo;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
+use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Placeholder\API\API;
 use nochso\WriteMe\Placeholder\Changelog;
@@ -61,11 +62,132 @@ final class Application
         $this->placeholders[$placeholder->getIdentifier()] = $placeholder;
     }
 
+    protected function suggestPackageName()
+    {
+        $explode = explode(DIRECTORY_SEPARATOR, getcwd());
+        list($dir, $parentDir) = array_slice($explode, count($explode) - 2, 2);
+        return $dir . DIRECTORY_SEPARATOR . $parentDir;
+    }
+
+    /**
+     * [Optional] Interactive cli session to help user create a readme stdin. 
+     */
+    public function interactive()
+    {
+        /*
+            a variable to hold key/value pars for title => content
+            ex: ['license' => 'MIT']
+        */
+        $content = [];
+
+        /*current working directory to use as dir*/
+        $dir = getcwd();
+        $suggestedPath = $this->suggestPackageName();
+        $suggestedInstallCommand = 'composer require ' . str_replace(DIRECTORY_SEPARATOR, '\\', $suggestedPath);
+
+        $getopt = $this->context->getopt($this->getOptions());
+
+        $this->stdio->outln(sprintf(
+            '<<bold black yellowbg>>Welcome to writeme interactive generateor<<reset>>'
+        ));
+
+        $this->stdio->outln(sprintf(
+            'This command will walk you through creating your README.md file'
+        ));
+
+        $this->stdio->outln(sprintf(
+            "Package name (<vendor>/<name>) [<<bold yellow>> $suggestedPath <<reset>>] :"
+        ));
+
+        $header = $this->stdio->in(1);
+
+        if ($header) {
+            $content['header'] = $header;
+        } else {
+            $content['header'] = $suggestedPath;
+        }
+
+        $suggestedInstallCommand = 'composer require ' .  str_replace(DIRECTORY_SEPARATOR, '\\', $content['header']);
+
+        $this->stdio->outln(sprintf(
+            'Write one line description about what this package does, press enter to skip'
+        ));
+
+        $body = $this->stdio->in(1);
+
+        if ($body) {
+            $content['body'] = $body;
+        }
+
+        $this->stdio->outln(sprintf(
+            "Write one-line install command [<<bold yellow>> $suggestedInstallCommand <<reset>>] :"
+        ));
+
+        $install = $this->stdio->inln(1);
+
+        if ($install) {
+            $content['install'] = $install;
+        }
+
+        $this->stdio->outln(sprintf(
+            'Choose a license for this package [<<bold yellow>> MIT <<reset>>]'
+        ));
+
+        $license = $this->stdio->in(1);
+
+        if ($license) {
+            $content['license'] = $license;
+        }
+
+        $this->stdio->outln(sprintf(
+            'Do you want to generate a README.md file now? [<<bold yellow>> Y/n <<reset>>]'
+        ));
+
+        $response = $this->stdio->in(1);
+
+        if (!in_array($response, ['', 'y', 'Y'])) {
+            $this->stdio->outln(sprintf(' ERROR: EXITING ... README.md file not created.  '));
+            exit(Status::FAILURE);
+        } else {
+
+            /*saving the doc*/
+            $template = <<<'TAG'
+# @header@
+
+@body@
+
+## Installation
+
+```
+@install@
+```
+
+## License
+This project is released under the @license@ license.
+TAG;
+            $doc = new Document($template, 'README.md');
+            $doc->setFrontmatter(new Frontmatter($content));
+            $this->converter->convert($doc, $this->placeholders);
+            $generate = $doc->saveTarget($dir . '/README.md');
+
+            if ($generate) {
+                $this->stdio->outln(sprintf(' <<green bold>> YOUR README.md has been successfully created. <<reset>>'));
+            }
+        }
+    }
+
     public function run()
     {
         $this->stdio->outln($this->version->getInfo());
         $this->stdio->outln();
         try {
+
+            # For the interactive session. 
+            if (count($this->context->argv->get()) > 1 && $this->context->argv->get()[1] == '--init') {
+                $this->interactive();
+                exit(Status::USAGE);
+            }
+
             $getopt = $this->context->getopt($this->getOptions());
             $this->validate($getopt);
             $sourceFile = $getopt->get(1);
@@ -73,6 +195,7 @@ final class Application
                 $this->showHelp();
                 exit(Status::USAGE);
             }
+
             if (!is_file($sourceFile)) {
                 throw new \RuntimeException('File not found: ' . $sourceFile);
             }
