@@ -14,7 +14,7 @@
 <?= $this->getOptionListYaml($placeholder->getDefaultOptionList()) ?>
 ```
 
-<?php foreach ($placeholder->getDefaultOptionList() as $option): ?>
+<?php foreach ($placeholder->getDefaultOptionList()->getOptions() as $option): ?>
 * `<?= $option->getPath() ?>`
 <?= $this->indent(1, '*') ?> <?= $option->getDescription() ?>
 
