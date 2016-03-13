@@ -57,4 +57,12 @@ class OptionList
         }
         return $this->options[$path];
     }
+
+    /**
+     * @return \nochso\WriteMe\Placeholder\Option[]
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
 }
