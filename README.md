@@ -104,6 +104,12 @@ api:
     folder-exclude: [vendor, test, tests]
 ```
 
+* `api.file`
+    * List of file patterns to parse.
+* `api.from`
+    * List of folders to search files in.
+* `api.folder-exclude`
+    * List of folders to exclude from the search.
 
 #### Changelog `@changelog@`
 
@@ -122,6 +128,14 @@ changelog:
     search-depth: 2
 ```
 
+* `changelog.max-changes`
+    * Maximum amount of releases to include.
+* `changelog.release-level`
+    * The header level that represents a release header.
+* `changelog.file`
+    * Filename of the CHANGELOG to extract releases from.
+* `changelog.search-depth`
+    * How deep the folders should be searched.
 
 #### PlaceholderDocs `@placeholder-docs@`
 
@@ -135,6 +149,8 @@ placeholder-docs:
     header-depth: 3
 ```
 
+* `placeholder-docs.header-depth`
+    * Depth that headers start at
 
 #### TOC `@toc@`
 
@@ -146,6 +162,8 @@ toc:
     max-depth: 3
 ```
 
+* `toc.max-depth`
+    * Maximum depth of header level to extract.
 
 
 ## License
