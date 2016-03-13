@@ -9,7 +9,9 @@ use nochso\WriteMe\Placeholder\Option;
 use nochso\WriteMe\Placeholder\OptionList;
 
 /**
- * PlaceholderDocs.
+ * PlaceholderDocs creates documentation for registered placeholders.
+ *
+ * This includes the PHPDoc for the classes and their supported options.
  */
 class PlaceholderDocs extends AbstractPlaceholder
 {

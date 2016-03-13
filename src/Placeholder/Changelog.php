@@ -7,6 +7,13 @@ use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown\HeaderContent;
 use nochso\WriteMe\Markdown\Parser;
 
+/**
+ * Changelog fetches the most recent release notes from a CHANGELOG written in Markdown.
+ *
+ * This placeholder is intended for changelogs following the [keep-a-changelog](http://keepachangelog.com/) conventions.
+ * However it should work for any Markdown formatted list of releases: each release is identified by a Markdown header.
+ * What kind of header marks a release can be specified by the `changelog.release-level` option.
+ */
 class Changelog extends AbstractPlaceholder
 {
     /**
