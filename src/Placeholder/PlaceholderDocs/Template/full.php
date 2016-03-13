@@ -11,10 +11,10 @@
 <?= $this->header(2, 'Default options') ?>
 
 ```yaml
-<?= $this->getOptionListYaml($placeholder->getOptions()) ?>
+<?= $this->getOptionListYaml($placeholder->getDefaultOptionList()) ?>
 ```
 
-<?php foreach ($placeholder->getOptions() as $option): ?>
+<?php foreach ($placeholder->getDefaultOptionList() as $option): ?>
 * `<?= $option->getPath() ?>`
 <?= $this->indent(1, '*') ?> <?= $option->getDescription() ?>
 

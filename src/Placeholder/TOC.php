@@ -53,7 +53,7 @@ class TOC extends AbstractPlaceholder
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList[]
      */
-    public function getOptions()
+    public function getDefaultOptionList()
     {
         return new OptionList([
             new Option('toc.max-depth', 'Maximum depth of header level to extract.', 3),

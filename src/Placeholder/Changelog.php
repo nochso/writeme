@@ -60,7 +60,7 @@ class Changelog extends AbstractPlaceholder
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
-    public function getOptions()
+    public function getDefaultOptionList()
     {
         return new OptionList([
             new Option('changelog.max-changes', 'Maximum amount of releases to include.', 2),

@@ -26,9 +26,9 @@ interface Placeholder
     public function apply(Document $document);
 
     /**
-     * getOptions returns a list of options that are used by this placeholder.
+     * getDefaultOptionList returns the list of **default** options that are used by this placeholder.
      *
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
-    public function getOptions();
+    public function getDefaultOptionList();
 }

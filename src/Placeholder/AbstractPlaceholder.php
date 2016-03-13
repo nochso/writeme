@@ -26,7 +26,7 @@ abstract class AbstractPlaceholder implements Placeholder
      */
     public function apply(Document $document)
     {
-        $this->options = $this->getOptions();
+        $this->options = $this->getDefaultOptionList();
         $this->options->prepare($document->getFrontmatter());
     }
 
@@ -37,7 +37,7 @@ abstract class AbstractPlaceholder implements Placeholder
      *
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
-    public function getOptions()
+    public function getDefaultOptionList()
     {
         return new OptionList([]);
     }

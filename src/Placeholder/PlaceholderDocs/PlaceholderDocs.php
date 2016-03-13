@@ -57,7 +57,7 @@ class PlaceholderDocs extends AbstractPlaceholder
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
-    public function getOptions()
+    public function getDefaultOptionList()
     {
         return new OptionList([
             new Option('placeholder-docs.header-depth', 'Depth that headers start at', 3),

@@ -62,7 +62,7 @@ class API extends AbstractPlaceholder
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
-    public function getOptions()
+    public function getDefaultOptionList()
     {
         return new OptionList([
             new Option('api.file', 'List of file patterns to parse.', ['*.php']),
