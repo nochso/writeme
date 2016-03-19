@@ -187,12 +187,13 @@ TAG;
         try {
 
             $getopt = $this->context->getopt($this->getOptions());
-            
+
             # For the interactive session. 
             if($getopt->get('--init')){
                 $doc = $this->interactiveTemplateToDocument();
                 $doc->saveRaw();
-                // TODO Save converted output
+                $this->converter->convert($doc, $this->placeholders);
+                $generate = $doc->saveTarget(getcwd() . '/README.md');
                 exit(Status::USAGE);
             }
 
