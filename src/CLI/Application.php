@@ -173,10 +173,13 @@ TAG;
     public function interactiveTemplateToDocument()
     {
         $filepath = $this->stdio->ask('File name of the generated WRITEME file', 'WRITEME.md');
+        $targetPath = $this->stdio->ask('Path to target file after conversion', 'README.md');
+
         $template = new InteractiveTemplate($this->stdio);
         $generatedContent = $template->render('default.php');
         $doc = new Document($generatedContent, $filepath);
         $doc->setFrontmatter($template->getFrontmatter());
+        $doc->getFrontmatter()->set('target', $targetPath);
         return $doc;
     }
 
