@@ -11,6 +11,7 @@ use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Markdown\InteractiveTemplate;
 use nochso\WriteMe\Placeholder\API\API;
 use nochso\WriteMe\Placeholder\Changelog;
 use nochso\WriteMe\Placeholder\PlaceholderDocs\PlaceholderDocs;
@@ -166,6 +167,20 @@ TAG;
         }
     }
 
+    /**
+     * @return \nochso\WriteMe\Document
+     */
+    public function interactiveTemplateToDocument()
+    {
+        $template = new InteractiveTemplate($this->stdio);
+        $generatedContent = $template->render('default.php');
+        $doc = new Document($generatedContent);
+        $doc->setFrontmatter($template->getFrontmatter());
+        print_r($doc->getFrontmatter());
+        echo $doc->getContent();
+        return $doc;
+    }
+
     public function run()
     {
         $this->stdio->outln($this->version->getInfo());
@@ -174,7 +189,9 @@ TAG;
 
             # For the interactive session. 
             if (count($this->context->argv->get()) > 1 && $this->context->argv->get()[1] == '--init') {
-                $this->interactive();
+                $doc = $this->interactiveTemplateToDocument();
+                // TODO Save raw template for reuse
+                // TODO Save converted output
                 exit(Status::USAGE);
             }
 

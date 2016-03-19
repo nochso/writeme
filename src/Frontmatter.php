@@ -34,6 +34,11 @@ class Frontmatter
         return Dot::get($this->data, $dotPath, $default);
     }
 
+    public function set($dotPath, $value)
+    {
+        Dot::set($this->data, $dotPath, $value);
+    }
+
     /**
      * @param string $input
      */
