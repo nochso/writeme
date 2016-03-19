@@ -196,7 +196,7 @@ TAG;
                 $doc = $this->interactiveTemplateToDocument();
                 $doc->saveRaw();
                 $this->converter->convert($doc, $this->placeholders);
-                $generate = $doc->saveTarget(getcwd() . '/README.md');
+                $targetPath = $doc->saveTarget();
                 exit(Status::USAGE);
             }
 
