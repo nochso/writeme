@@ -195,8 +195,11 @@ TAG;
             if($getopt->get('--init')){
                 $doc = $this->interactiveTemplateToDocument();
                 $doc->saveRaw();
+                $this->stdio->outln();
+                $this->stdio->outln('Customized template written to ' . $doc->getFilepath());
                 $this->converter->convert($doc, $this->placeholders);
                 $targetPath = $doc->saveTarget();
+                $this->stdio->outln('Converted document written to ' . $targetPath);
                 exit(Status::USAGE);
             }
 
