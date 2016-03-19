@@ -172,12 +172,11 @@ TAG;
      */
     public function interactiveTemplateToDocument()
     {
+        $filepath = $this->stdio->ask('File name of the generated WRITEME file', 'WRITEME.md');
         $template = new InteractiveTemplate($this->stdio);
         $generatedContent = $template->render('default.php');
-        $doc = new Document($generatedContent);
+        $doc = new Document($generatedContent, $filepath);
         $doc->setFrontmatter($template->getFrontmatter());
-        print_r($doc->getFrontmatter());
-        echo $doc->getContent();
         return $doc;
     }
 
@@ -190,7 +189,7 @@ TAG;
             # For the interactive session. 
             if (count($this->context->argv->get()) > 1 && $this->context->argv->get()[1] == '--init') {
                 $doc = $this->interactiveTemplateToDocument();
-                // TODO Save raw template for reuse
+                $doc->saveRaw();
                 // TODO Save converted output
                 exit(Status::USAGE);
             }
