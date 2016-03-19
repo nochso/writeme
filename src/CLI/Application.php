@@ -186,15 +186,17 @@ TAG;
         $this->stdio->outln();
         try {
 
+            $getopt = $this->context->getopt($this->getOptions());
+            
             # For the interactive session. 
-            if (count($this->context->argv->get()) > 1 && $this->context->argv->get()[1] == '--init') {
+            if($getopt->get('--init')){
                 $doc = $this->interactiveTemplateToDocument();
                 $doc->saveRaw();
                 // TODO Save converted output
                 exit(Status::USAGE);
             }
 
-            $getopt = $this->context->getopt($this->getOptions());
+
             $this->validate($getopt);
             $sourceFile = $getopt->get(1);
             if ($sourceFile === null) {
@@ -231,6 +233,7 @@ TAG;
     private function getOptions()
     {
         return [
+            'init' => 'Initialize an Interactive session to generate a README.md file from questions',
             '#file' => 'Input file to be converted.',
             't,target:' => 'Path or name of output file. Optional if the name can be inferred otherwise (see description).',
         ];
