@@ -109,4 +109,18 @@ class Document
         file_put_contents($target, $this->content);
         return $target;
     }
+
+    /**
+     * saveRaw document including frontmatter.
+     */
+    public function saveRaw()
+    {
+        // Frontmatter implements __toString
+        $raw = sprintf(
+            "---\n%s\n---\n%s",
+            $this->getFrontmatter(),
+            $this->content
+        );
+        file_put_contents($this->getFilepath(), $raw);
+    }
 }
