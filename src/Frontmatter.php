@@ -85,4 +85,14 @@ class Frontmatter
         }
         return $input;
     }
+
+    /**
+     * __toString returns a YAML dump of all data.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return Yaml::dump($this->data);
+    }
 }
