@@ -125,6 +125,16 @@ final class Converter implements Interfaces\Converter
                 $placeholders[$key] = $value;
             }
         }
+        // Make sure custom frontmatter not related to placeholders is FIRST in the array.
+        // This must be done to ensure that the TOC placeholder gets called LAST.
+        uasort($placeholders, function ($a, $b) {
+            $aIsFrontmatter = $a instanceof Frontmatter;
+            $bIsFrontmatter = $b instanceof Frontmatter;
+            if ($aIsFrontmatter xor $bIsFrontmatter) {
+                return $aIsFrontmatter ? -1 : 1;
+            }
+            return 0;
+        });
         return $placeholders;
     }
 }
