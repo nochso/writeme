@@ -108,6 +108,24 @@ TAG;
     }
 
     /**
+     * Confirm a yes/no question.
+     *
+     * @param string $question     The question to confirm.
+     * @param bool   $defaultToYes Optional, defaults to true. If true, empty input means confirmation. If false, empty
+     *                             input means cancelling.
+     *
+     * @return bool
+     */
+    public function confirm($question, $defaultToYes = true)
+    {
+        $question = sprintf('%s (y/n)', $question);
+        $defaultChar = $defaultToYes ? 'y' : 'n';
+        $pattern = '/^(y|n)/i';
+        $answer = $this->ask($question, $defaultChar, $pattern);
+        return strtolower($answer[0]) === 'y';
+    }
+
+    /**
      * Validate user input using regular expressions or callable (must return true if valid).
      *
      * @param string               $input
