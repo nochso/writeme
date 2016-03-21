@@ -33,6 +33,11 @@ final class Converter implements Interfaces\Converter
     }
 
     /**
+     * extractFrontmatterPlaceholders returns new Frontmatter placeholders based on the document *content*.
+     *
+     * e.g. if a document's content contains a placeholder `@foo@` AND its value is found in the frontmatter,
+     * a new Placeholder/Frontmatter object is created and added to the returned array.
+     *
      * @param \nochso\WriteMe\Document $document
      *
      * @return \nochso\WriteMe\Interfaces\Placeholder[] Key is the dot-notation path
@@ -43,9 +48,11 @@ final class Converter implements Interfaces\Converter
         $frontmatter = $document->getFrontmatter();
         $placeholders = [];
         foreach ($identifiers as $identifier) {
-            //$value = DotArray::get($frontmatter, $identifier);
             $value = $frontmatter->get($identifier);
-            $placeholders[$identifier] = new Frontmatter($identifier, $value);
+            // If the value for this placeholder is not known, it should be ignored
+            if ($value !== null) {
+                $placeholders[$identifier] = new Frontmatter($identifier, $value);
+            }
         }
         return $placeholders;
     }
