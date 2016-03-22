@@ -1,20 +1,29 @@
 <?php /** @var \nochso\WriteMe\Markdown\InteractiveTemplate $this */ ?>
-<?php if ($this->ask('package.name', 'Enter the library or package name') !== null): ?>
-# @package.name@
+<?php $this->ask('composer.name', 'Enter the name as used on packagist', null, '/.+/'); ?>
+# @composer.name@
+
+<?php if ($this->ask('composer.description', 'Enter a one-line description of the project (optional)') !== ''): ?>
+@composer.description@
 <?php endif; ?>
 
-<?php if ($this->ask('package.description', 'Enter a description for this library or package') !== null): ?>
-@package.description@
+<?php if ($this->getStdio()->confirm('Would you like to add table of contents of all sections?')): ?>
+<?php $this->askForCustomPlaceholderOptionList('toc'); ?>
+@toc@
 <?php endif; ?>
 
-<?php if ($this->ask('package.install', 'Enter a composer install one-line code') !== null): ?>
-# Install
-```php
-@package.install@
-```php
+# Installation
+Installation through [Composer](https://getcomposer.org/) is preferred:
+
+    composer require @composer.name@
+
+<?php if ($this->getStdio()->confirm('Would you like to add a summary of all PHP classes and their methods?')): ?>
+<?php $this->askForCustomPlaceholderOptionList('api'); ?>
+# API summary
+@api.summary@
 <?php endif; ?>
 
-<?php if ($this->ask('package.composer.install', 'Enter the license of the library of package') !== null): ?>
+<?php if ($this->ask('license.name', 'Enter the license name e.g. MIT, BSD2, etc. (optional)') !== ''): ?>
 # License
-## @package.composer.install@
+This project is released under the @license.name@ license.
+
 <?php endif; ?>
