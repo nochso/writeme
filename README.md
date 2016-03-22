@@ -6,21 +6,33 @@ nochso/writeme makes creating and maintaining READMEs easier by combining frontm
 
 For example the following table of contents was generated from the `@toc@` placeholder in [WRITEME.md](WRITEME.md).
 
-- [nochso/writeme](#package)
-    - [Requirements](#requirements)
-    - [How it works](#how-it-works)
-    - [Usage](#usage)
-        - [Custom frontmatter](#custom-frontmatter)
-        - [Escaping placeholders](#escaping-placeholders)
-        - [Specifying a target file name](#specifying-a-target-file-name)
-        - [Available placeholders](#available-placeholders)
-    - [License](#license)
+- [nochso/writeme](#nochsowriteme)
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Introduction / example](#introduction--example)
+- [Usage](#usage)
+    - [Initializing a new template](#initializing-a-new-template)
+    - [Custom frontmatter](#custom-frontmatter)
+    - [Escaping placeholders](#escaping-placeholders)
+    - [Specifying a target file name](#specifying-a-target-file-name)
+    - [Available placeholders](#available-placeholders)
+        - [API `@api@`](#api-api)
+        - [Changelog `@changelog@`](#changelog-changelog)
+        - [TOC `@toc@`](#toc-toc)
+- [License](#license)
 
 
-## Requirements
+# Installation
+Installation through [Composer](https://getcomposer.org/) is preferred:
+
+    composer require nochso/writeme
+
+The `writeme` executable PHP file is now available in the `vendor/bin` directory.
+
+# Requirements
 PHP 5.6.0, 7.0 or higher.
 
-## How it works
+# Introduction / example
 Create a file `WRITEME.md` containing YAML frontmatter and Markdown content:
 
 ```markdown
@@ -31,19 +43,19 @@ package: vendor/name
 
 @toc@
 
-## Requirements
+# Requirements
 ...
 ```
 
-Now run `php bin/writeme WRITEME.md` and a `README.me` file will be created:
+Running `php bin/writeme WRITEME.md` will parse the template and convert it to `README.md`:
 
 ```markdown
 # vendor/name
 
 - [vendor/name](#vendor-name)
-    - [Requirements](#requirements)
+- [Requirements](#requirements)
 
-## Requirements
+# Requirements
 ...
 ```
 
@@ -53,9 +65,28 @@ placeholders you might need.
 The only exceptions are registered placeholders. For example `@toc@` was replaced with a table of contents extracted
 from the Markdown headers in your content.
 
-## Usage
+# Usage
 
-### Custom frontmatter
+If you've required `nochso/writeme` in your project using Composer, you can run the `writeme` file located in `vendor/bin`:
+
+    php vendor/bin/writeme
+
+Run it without any arguments to get an overview of available arguments.
+
+## Initializing a new template
+writeme comes with a template for a typical Composer based project available on Packagist. You can initialize
+your own WRITEME.md based on this template:
+
+    php vendor/bin/writeme --init
+
+Simply answer the questions. Some are optional and pressing enter will either skip them or use defaults.
+
+Some placeholders have default settings: you will be asked if you want to override these. Your custom settings will then
+be added to the YAML frontmatter.
+
+Once you're done, you should have two new files. The template and the resulting output, usually `WRITEME.md` and `README.md`.
+
+## Custom frontmatter
 As long as a registered placeholder does not collide with the keys defined in the frontmatter, you can define any kind
 of structure:
 ```yaml
@@ -67,12 +98,10 @@ You can access leaf nodes using dot notation (including escaping of dots, see `D
 
 `@greet@ @user.name.0@!` turns into `Hello Annyong!`
 
-### Escaping placeholders
+## Escaping placeholders
 To avoid replacing a placeholder, surround it with extra `@` characters: `@@ignored@@`.
 
-Placeholders within fenced code blocks are currently ignored.
-
-### Specifying a target file name
+## Specifying a target file name
 
 By default files named `WRITEME*` will be saved to `README*`. Names that are all upper/lower-case are preserved.
 This default behaviour can be overriden using the CLI option `--target <filename>` or frontmatter key `target`:
@@ -81,9 +110,9 @@ This default behaviour can be overriden using the CLI option `--target <filename
 target: DOCS.md
 ```
 
-### Available placeholders
+## Available placeholders
 
-#### API `@api@`
+### API `@api@`
 
 API creates documentation from your PHP code.
 
@@ -96,7 +125,7 @@ Currently there are two placeholders, each with a different template:
 - `@api.full@`
     - Verbose documentation for each class and methods.
 
-##### Default options
+#### Default options
 ```yaml
 api:
     file: ['*.php']
@@ -111,7 +140,7 @@ api:
 * `api.folder-exclude`
     * List of folders to exclude from the search.
 
-#### Changelog `@changelog@`
+### Changelog `@changelog@`
 
 Changelog fetches the most recent release notes from a CHANGELOG written in Markdown.
 
@@ -119,7 +148,7 @@ This placeholder is intended for changelogs following the [keep-a-changelog](htt
 However it should work for any Markdown formatted list of releases: each release is identified by a Markdown header.
 What kind of header marks a release can be specified by the `changelog.release-level` option.
 
-##### Default options
+#### Default options
 ```yaml
 changelog:
     max-changes: 2
@@ -137,26 +166,11 @@ changelog:
 * `changelog.search-depth`
     * How deep the folders should be searched.
 
-#### PlaceholderDocs `@placeholder-docs@`
-
-PlaceholderDocs creates documentation for registered placeholders.
-
-This includes the PHPDoc for the classes and their supported options.
-
-##### Default options
-```yaml
-placeholder-docs:
-    header-depth: 3
-```
-
-* `placeholder-docs.header-depth`
-    * Depth that headers start at
-
-#### TOC `@toc@`
+### TOC `@toc@`
 
 TOC placeholder creates a table of contents from Markdown headers.
 
-##### Default options
+#### Default options
 ```yaml
 toc:
     max-depth: 3
@@ -166,5 +180,5 @@ toc:
     * Maximum depth of header level to extract.
 
 
-## License
+# License
 nochso/writeme is released under the MIT license. See the [LICENSE](LICENSE.md) for the full license text.
