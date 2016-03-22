@@ -58,6 +58,30 @@ class FrontmatterTest extends \PHPUnit_Framework_TestCase
             ['content only', [], 'content only'],
             'Frontmatter must have newlines' => ['---xxx---', [], '---xxx---'],
             'Frontmatter must have surround newlines' => ["---xxx\n---\n", [], "---xxx\n---\n"],
+            'Single YAML string should end up in an array' => ["---\nxxx\n---", ['xxx'], ''],
         ];
+    }
+
+    public function testGet()
+    {
+        $fm = new Frontmatter(['foo' => ['first', 'second']]);
+        $this->assertNull($fm->get('missing.defaults.to.null'));
+        $this->assertSame('first', $fm->get('foo.0'));
+    }
+
+    public function testSet()
+    {
+        $fm = new Frontmatter();
+        $fm->set('foo.bar', 'baz');
+        $this->assertSame('baz', $fm->get('foo.bar'));
+        $fm->set('foo', 'replaced');
+        $this->assertSame('replaced', $fm->get('foo'));
+        $this->assertNull($fm->get('foo.bar'));
+    }
+
+    public function testToString()
+    {
+        $fm = new Frontmatter(['foo' => 'bar']);
+        $this->assertSame("foo: bar\n", (string)$fm);
     }
 }
