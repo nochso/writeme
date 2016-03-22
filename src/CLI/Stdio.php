@@ -138,6 +138,19 @@ TAG;
     }
 
     /**
+     * stripFormat removes all aura/cli formatting strings.
+     *
+     * @param string $input
+     *
+     * @return string The string with all formatting stripped away.
+     */
+    public function stripFormat($input)
+    {
+        $formatter = new Formatter();
+        return $formatter->format($input, false);
+    }
+
+    /**
      * Validate user input using regular expressions or callable (must return true if valid).
      *
      * @param string               $input
