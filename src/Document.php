@@ -38,9 +38,9 @@ class Document
     }
 
     /**
-     * @param Frontmatter $frontmatter
+     * @param \nochso\WriteMe\Frontmatter $frontmatter
      */
-    public function setFrontmatter($frontmatter)
+    public function setFrontmatter(Frontmatter $frontmatter)
     {
         $this->frontmatter = $frontmatter;
     }

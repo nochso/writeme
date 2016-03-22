@@ -1,9 +1,6 @@
 <?php
 namespace nochso\WriteMe;
 
-use nochso\WriteMe\Interfaces\Placeholder;
-use nochso\WriteMe\Placeholder\Frontmatter;
-
 final class Converter implements Interfaces\Converter
 {
     /**
@@ -51,7 +48,7 @@ final class Converter implements Interfaces\Converter
             $value = $frontmatter->get($identifier);
             // If the value for this placeholder is not known, it should be ignored
             if ($value !== null) {
-                $placeholders[$identifier] = new Frontmatter($identifier, $value);
+                $placeholders[$identifier] = new Placeholder\Frontmatter($identifier, $value);
             }
         }
         return $placeholders;
@@ -68,7 +65,7 @@ final class Converter implements Interfaces\Converter
      */
     public static function replace($placeholder, $replacement, Document $document)
     {
-        if ($placeholder instanceof Placeholder) {
+        if ($placeholder instanceof Interfaces\Placeholder) {
             $placeholder = $placeholder->getIdentifier();
         }
         $quotedIdentifier = preg_quote($placeholder, '/');
@@ -84,7 +81,7 @@ final class Converter implements Interfaces\Converter
      */
     public static function contains($placeholder, Document $document)
     {
-        if ($placeholder instanceof Placeholder) {
+        if ($placeholder instanceof Interfaces\Placeholder) {
             $placeholder = $placeholder->getIdentifier();
         }
         $quotedIdentifier = preg_quote($placeholder, '/');
@@ -135,8 +132,8 @@ final class Converter implements Interfaces\Converter
         // Make sure custom frontmatter not related to placeholders is FIRST in the array.
         // This must be done to ensure that the TOC placeholder gets called LAST.
         uasort($placeholders, function ($a, $b) {
-            $aIsFrontmatter = $a instanceof Frontmatter;
-            $bIsFrontmatter = $b instanceof Frontmatter;
+            $aIsFrontmatter = $a instanceof Placeholder\Frontmatter;
+            $bIsFrontmatter = $b instanceof Placeholder\Frontmatter;
             if ($aIsFrontmatter xor $bIsFrontmatter) {
                 return $aIsFrontmatter ? -1 : 1;
             }
