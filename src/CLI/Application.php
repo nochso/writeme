@@ -175,7 +175,7 @@ TAG;
         $filepath = $this->stdio->ask('File name of the generated WRITEME file', 'WRITEME.md');
         $targetPath = $this->stdio->ask('Path to target file after conversion', 'README.md');
 
-        $template = new InteractiveTemplate($this->stdio);
+        $template = new InteractiveTemplate($this->stdio, $this->placeholders);
         $generatedContent = $template->render('default.php');
         $doc = new Document($generatedContent, $filepath);
         $doc->setFrontmatter($template->getFrontmatter());

@@ -17,15 +17,21 @@ class InteractiveTemplate extends Template
      * @var \nochso\WriteMe\Frontmatter
      */
     private $frontmatter;
+    /**
+     * @var \nochso\WriteMe\Interfaces\Placeholder[]
+     */
+    private $placeholders;
 
     /**
-     * @param \nochso\WriteMe\CLI\Stdio $stdio
+     * @param \nochso\WriteMe\CLI\Stdio                $stdio
+     * @param \nochso\WriteMe\Interfaces\Placeholder[] $placeholders
      */
-    public function __construct(Stdio $stdio)
+    public function __construct(Stdio $stdio, $placeholders)
     {
         $this->stdio = $stdio;
         $this->frontmatter = new Frontmatter([]);
         $this->baseFolder = __DIR__ . '/../../template/init';
+        $this->placeholders = $placeholders;
     }
 
     /**
