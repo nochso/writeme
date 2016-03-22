@@ -4,6 +4,7 @@ namespace nochso\WriteMe\CLI;
 use Aura\Cli\Stdio\Formatter;
 use Aura\Cli\Stdio\Handle;
 use nochso\Omni\Multiline;
+use nochso\Omni\Strings;
 use nochso\Omni\Type;
 
 class Stdio extends \Aura\Cli\Stdio
@@ -135,6 +136,29 @@ TAG;
         $pattern = '/^(y|n)/i';
         $answer = $this->ask($question, $defaultChar, $pattern);
         return strtolower($answer[0]) === 'y';
+    }
+
+    /**
+     * displayList with keys and values.
+     *
+     * @param string[] $list       List of elements to display. Keys can be integers or strings.
+     * @param bool     $singleLine Optional, defaults to false. If true, all elements will be shown on a single line.
+     */
+    public function displayList($list, $singleLine = false)
+    {
+        $this->outln();
+        foreach ($list as $key => $value) {
+            if (Strings::startsWith((string)$value, (string)$key)) {
+                $this->out(sprintf('<<yellow>>%s<<reset>>%s', $key, mb_substr($value, mb_strlen($key))));
+            } else {
+                $this->out(sprintf('<<yellow>>%s<<reset>> %s', $key, $value));
+            }
+            if ($singleLine) {
+                $this->out(' ');
+            } else {
+                $this->out(PHP_EOL);
+            }
+        }
     }
 
     /**
