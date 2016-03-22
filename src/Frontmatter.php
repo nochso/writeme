@@ -45,6 +45,10 @@ class Frontmatter
     public function parse($input)
     {
         $this->data = Yaml::parse($input);
+        // Make sure we have an array because parse might return null for empty strings.
+        if ($this->data === null) {
+            $this->data = [];
+        }
     }
 
     /**
