@@ -1,6 +1,7 @@
 <?php
 namespace nochso\WriteMe\Markdown;
 
+use Nette\Utils\Finder;
 use nochso\Omni\Path;
 
 /**
@@ -85,7 +86,12 @@ abstract class Template
      */
     public function getAvailableTemplates()
     {
-        $paths = glob(Path::combine($this->baseFolder, '*.php'));
-        return array_map('basename', $paths);
+        $finder = Finder::findFiles('*.php')->in($this->baseFolder);
+        $filenames = [];
+        /** @var \SplFileInfo $fileinfo */
+        foreach ($finder as $fileinfo) {
+            $filenames[] = $fileinfo->getBasename();
+        }
+        return $filenames;
     }
 }
