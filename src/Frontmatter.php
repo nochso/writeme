@@ -2,8 +2,7 @@
 namespace nochso\WriteMe;
 
 use nochso\Omni\Dot;
-use nochso\Omni\EOL;
-use nochso\Omni\Strings;
+use nochso\Omni\Multiline;
 use Symfony\Component\Yaml\Yaml;
 
 class Frontmatter
@@ -40,54 +39,33 @@ class Frontmatter
     }
 
     /**
-     * @param string $input
+     * @return array The data extracted from the document frontmatter.
      */
-    public function parse($input)
+    public function getData()
     {
-        $this->data = Yaml::parse($input);
-        // Make sure we have an array because parse might return null for empty strings.
-        if ($this->data === null) {
-            $this->data = [];
-        }
+        return $this->data;
     }
 
     /**
      * Extract frontmatter from a raw document and return the remaining document content.
      *
-     * @param string $input
+     * @param string $input Raw file content
      *
-     * @return string The remaining document content.
+     * @return string The remaining document content after extracting the frontmatter into this object.
      */
     public function extract($input)
     {
-        // Content only because frontmatter must start with a separator
-        if (!Strings::startsWith($input, self::FRONTMATTER_SEPARATOR)) {
+        $this->data = [];
+        $lines = Multiline::create($input);
+        // Frontmatter is missing: assume everything is content.
+        if ($lines->first() !== self::FRONTMATTER_SEPARATOR) {
             return $input;
         }
-        $sections = explode(self::FRONTMATTER_SEPARATOR, $input);
-        $count = count($sections);
-        // Still content only because there must be at least 2 separators
-        if ($count < 3) {
-            return $input;
-        }
-        $this->parse($sections[1]);
-        // Implode all remaining sections so `---` can be used in the content without cutting off any content.
-        $content = implode(self::FRONTMATTER_SEPARATOR, array_slice($sections, 2));
-        return $this->trimFirstEOL($content);
-    }
-
-    /**
-     * @param $input
-     *
-     * @return string
-     */
-    private function trimFirstEOL($input)
-    {
-        $eol = (string) EOL::detectDefault($input);
-        if (Strings::startsWith($input, $eol)) {
-            return substr($input, strlen($eol));
-        }
-        return $input;
+        $frontmatterEnd = $this->findFrontmatterEndPosition($lines);
+        $rawFrontmatter = implode($lines->getEol(), array_slice($lines->toArray(), 1, $frontmatterEnd - 1));
+        $this->extractFrontmatter($rawFrontmatter);
+        $content = implode($lines->getEol(), array_slice($lines->toArray(), $frontmatterEnd + 1));
+        return $content;
     }
 
     /**
@@ -98,5 +76,37 @@ class Frontmatter
     public function __toString()
     {
         return Yaml::dump($this->data);
+    }
+
+    /**
+     * parseFrontmatter.
+     *
+     * @param $rawFrontmatter
+     */
+    private function extractFrontmatter($rawFrontmatter)
+    {
+        $this->data = Yaml::parse($rawFrontmatter);
+        if ($this->data === null) {
+            $this->data = [];
+        }
+        if (!is_array($this->data)) {
+            $this->data = [$this->data];
+        }
+    }
+
+    /**
+     * @param Multiline|array $lines It is assumed that the first line is known to be a valid separator.
+     *
+     * @return int Position of the second separator.
+     */
+    private function findFrontmatterEndPosition($lines)
+    {
+        foreach ($lines as $key => $line) {
+            if ($key > 0 && $line === self::FRONTMATTER_SEPARATOR) {
+                return $key;
+            }
+        }
+        // If there was no second separator, assume it's all frontmatter and no content
+        return count($lines);
     }
 }
