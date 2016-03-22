@@ -6,9 +6,9 @@ use nochso\Omni\Strings;
 use nochso\WriteMe\Document;
 
 /**
- * MarkdownParser extracts elements from Markdown content.
+ * HeaderParser extracts HeaderList objects from Markdown documents.
  */
-class Parser
+class HeaderParser
 {
     /**
      * extractHeaders returns a HeaderList containing Header objects.

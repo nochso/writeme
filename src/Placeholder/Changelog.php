@@ -5,7 +5,7 @@ use Nette\Utils\Finder;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown\HeaderContent;
-use nochso\WriteMe\Markdown\Parser;
+use nochso\WriteMe\Markdown\HeaderParser;
 
 /**
  * Changelog fetches the most recent release notes from a CHANGELOG written in Markdown.
@@ -35,7 +35,7 @@ class Changelog extends AbstractPlaceholder
         }
         $changelogPath = $this->findChangelog($document);
         $changelog = Document::fromFile($changelogPath);
-        $parser = new Parser();
+        $parser = new HeaderParser();
         $headerContentList = $parser->extractHeaderContents($changelog);
         $maxChanges = $this->options->getValue('changelog.max-changes');
         $releaseLevel = $this->options->getValue('changelog.release-level');

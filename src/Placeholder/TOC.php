@@ -27,7 +27,7 @@ class TOC extends AbstractPlaceholder
             return;
         }
         $this->document = $document;
-        $parser = new Markdown\Parser();
+        $parser = new Markdown\HeaderParser();
         $headerList = $parser->extractHeaders($document);
         $toc = $this->createTOC($headerList);
         Converter::replace($this, $toc, $document);
