@@ -5,6 +5,9 @@ use nochso\Omni\Dot;
 use nochso\Omni\Multiline;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Frontmatter provides the data from a frontmatter file string.
+ */
 class Frontmatter
 {
     const FRONTMATTER_SEPARATOR = '---';
@@ -23,8 +26,10 @@ class Frontmatter
     }
 
     /**
-     * @param string     $dotPath
-     * @param null|mixed $default
+     * Get frontmatter value using dot.notation as a key/path.
+     *
+     * @param string     $dotPath Dot notation path to look up
+     * @param null|mixed $default Default value to return if the element doesn't exist. Optional, defaults to NULL.
      *
      * @return mixed
      */
@@ -33,6 +38,12 @@ class Frontmatter
         return Dot::get($this->data, $dotPath, $default);
     }
 
+    /**
+     * Set a frontmatter value using dot.notation as a key/path.
+     *
+     * @param string $dotPath Dot notation path to set/replace a value
+     * @param mixed  $value
+     */
     public function set($dotPath, $value)
     {
         Dot::set($this->data, $dotPath, $value);
@@ -79,9 +90,9 @@ class Frontmatter
     }
 
     /**
-     * parseFrontmatter.
+     * extractFrontmatter into this object from a frontmatter string.
      *
-     * @param $rawFrontmatter
+     * @param string $rawFrontmatter
      */
     private function extractFrontmatter($rawFrontmatter)
     {
