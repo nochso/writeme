@@ -58,4 +58,12 @@ class InteractiveTemplate extends Template
     {
         return $this->frontmatter;
     }
+
+    /**
+     * @return \nochso\WriteMe\CLI\Stdio
+     */
+    public function getStdio()
+    {
+        return $this->stdio;
+    }
 }
