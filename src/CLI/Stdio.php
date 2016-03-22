@@ -98,12 +98,12 @@ TAG;
     {
         $prompt = $question;
         if ($default !== null) {
-            $prompt .= sprintf(' [<<bold yellow>>%s<<reset>>]', $default);
+            $prompt .= sprintf(' [<<yellow>>%s<<reset>>]', $default);
         }
-        $prompt .= ' ';
         $this->out($prompt);
 
         $input = $this->in();
+        $this->outln();
         // Keep asking
         while (!$this->validate($input, $validator)) {
             // Abort early if there's a default value available and user did not enter anything.
@@ -114,6 +114,7 @@ TAG;
             // Otherwise keep asking
             $this->out($prompt);
             $input = $this->in();
+            $this->outln();
         }
         return $input;
     }
