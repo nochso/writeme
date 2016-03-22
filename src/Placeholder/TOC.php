@@ -34,6 +34,16 @@ class TOC extends AbstractPlaceholder
     }
 
     /**
+     * @return \nochso\WriteMe\Placeholder\OptionList[]
+     */
+    public function getDefaultOptionList()
+    {
+        return new OptionList([
+            new Option('toc.max-depth', 'Maximum depth of header level to extract.', 3),
+        ]);
+    }
+
+    /**
      * convertMarkdownLinksToText by stripping links and leaving only the link text.
      *
      * @param string $markdown
@@ -71,15 +81,5 @@ class TOC extends AbstractPlaceholder
             $toc .= $indent . '- [' . $cleanHeader->getText() . '](#' . $cleanHeader->getAnchor() . ")\n";
         }
         return rtrim($toc, "\n");
-    }
-
-    /**
-     * @return \nochso\WriteMe\Placeholder\OptionList[]
-     */
-    public function getDefaultOptionList()
-    {
-        return new OptionList([
-            new Option('toc.max-depth', 'Maximum depth of header level to extract.', 3),
-        ]);
     }
 }

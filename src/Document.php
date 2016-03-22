@@ -30,6 +30,16 @@ class Document
     }
 
     /**
+     * @param string $filepath
+     *
+     * @return \nochso\WriteMe\Document
+     */
+    public static function fromFile($filepath)
+    {
+        return new self(file_get_contents($filepath), $filepath);
+    }
+
+    /**
      * @return \nochso\WriteMe\Frontmatter
      */
     public function getFrontmatter()
@@ -59,16 +69,6 @@ class Document
     public function setContent($content)
     {
         $this->content = $content;
-    }
-
-    /**
-     * @param string $filepath
-     *
-     * @return \nochso\WriteMe\Document
-     */
-    public static function fromFile($filepath)
-    {
-        return new self(file_get_contents($filepath), $filepath);
     }
 
     /**

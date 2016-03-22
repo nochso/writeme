@@ -63,16 +63,6 @@ final class Application
     }
 
     /**
-     * @todo Make this available in templates
-     */
-    protected function suggestPackageName()
-    {
-        $explode = explode(DIRECTORY_SEPARATOR, getcwd());
-        list($dir, $parentDir) = array_slice($explode, count($explode) - 2, 2);
-        return $dir . DIRECTORY_SEPARATOR . $parentDir;
-    }
-
-    /**
      * @return \nochso\WriteMe\Document
      */
     public function interactiveTemplateToDocument()
@@ -129,6 +119,16 @@ final class Application
             $this->stdio->exception($e);
             exit(Status::FAILURE);
         }
+    }
+
+    /**
+     * @todo Make this available in templates
+     */
+    protected function suggestPackageName()
+    {
+        $explode = explode(DIRECTORY_SEPARATOR, getcwd());
+        list($dir, $parentDir) = array_slice($explode, count($explode) - 2, 2);
+        return $dir . DIRECTORY_SEPARATOR . $parentDir;
     }
 
     /**

@@ -12,6 +12,16 @@ class HeaderContent extends Header
     private $content;
 
     /**
+     * @param \nochso\WriteMe\Markdown\Header $header
+     *
+     * @return \nochso\WriteMe\Markdown\HeaderContent
+     */
+    public static function fromHeader(Header $header)
+    {
+        return new self($header->getLevel(), $header->getText());
+    }
+
+    /**
      * @param string $line
      */
     public function addContent($line)
@@ -33,15 +43,5 @@ class HeaderContent extends Header
     public function getContent()
     {
         return $this->content;
-    }
-
-    /**
-     * @param \nochso\WriteMe\Markdown\Header $header
-     *
-     * @return \nochso\WriteMe\Markdown\HeaderContent
-     */
-    public static function fromHeader(Header $header)
-    {
-        return new self($header->getLevel(), $header->getText());
     }
 }
