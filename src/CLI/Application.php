@@ -172,11 +172,15 @@ TAG;
      */
     public function interactiveTemplateToDocument()
     {
-        $filepath = $this->stdio->ask('File name of the generated WRITEME file', 'WRITEME.md');
-        $targetPath = $this->stdio->ask('Path to target file after conversion', 'README.md');
-
         $template = new InteractiveTemplate($this->stdio, $this->placeholders);
-        $generatedContent = $template->render('default.php');
+        $availableTemplates = $template->getAvailableTemplates();
+        $templateIndex = $this->stdio->chooseFromList($availableTemplates, 'Choose an interactive template', true);
+        $templateFilepath = $availableTemplates[$templateIndex];
+
+        $filepath = $this->stdio->ask('Filepath of your new customized template', 'WRITEME.md');
+        $targetPath = $this->stdio->ask('Filepath to final result file', 'README.md');
+
+        $generatedContent = $template->render($templateFilepath);
         $doc = new Document($generatedContent, $filepath);
         $doc->setFrontmatter($template->getFrontmatter());
         $doc->getFrontmatter()->set('target', $targetPath);
@@ -199,7 +203,7 @@ TAG;
                 $this->converter->convert($doc, $this->placeholders);
                 $targetPath = $doc->saveTarget();
                 $this->stdio->outln('Converted document written to ' . $targetPath);
-                exit(Status::USAGE);
+                exit(Status::SUCCESS);
             }
 
             $this->validate($getopt);
