@@ -188,11 +188,10 @@ TAG;
         $this->stdio->outln($this->version->getInfo());
         $this->stdio->outln();
         try {
-
             $getopt = $this->context->getopt($this->getOptions());
 
             # For the interactive session. 
-            if($getopt->get('--init')){
+            if ($getopt->get('--init')) {
                 $doc = $this->interactiveTemplateToDocument();
                 $doc->saveRaw();
                 $this->stdio->outln();
@@ -202,7 +201,6 @@ TAG;
                 $this->stdio->outln('Converted document written to ' . $targetPath);
                 exit(Status::USAGE);
             }
-
 
             $this->validate($getopt);
             $sourceFile = $getopt->get(1);
