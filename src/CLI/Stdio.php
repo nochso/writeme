@@ -139,6 +139,30 @@ TAG;
     }
 
     /**
+     * Choose an element from a list.
+     *
+     * @param string[] $list       List of elements to choose from.
+     * @param string   $prompt     Optional question prompt to display.
+     * @param bool     $required   Optional, defaults to true. If true, user must select an element.
+     * @param bool     $singleLine Optional, defaults to false. If true, all elements will be shown on a single line.
+     *
+     * @return mixed|null The key of the selected element.
+     */
+    public function chooseFromList($list, $prompt = 'Choose an item', $required = true, $singleLine = false)
+    {
+        do {
+            $this->displayList($list, $singleLine);
+            $this->outln();
+            $this->out($prompt);
+            $in = $this->in();
+            if (!$required && $in === '') {
+                return null;
+            }
+        } while (!isset($list[$in]));
+        return $in;
+    }
+
+    /**
      * displayList with keys and values.
      *
      * @param string[] $list       List of elements to display. Keys can be integers or strings.
