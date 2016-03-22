@@ -53,6 +53,17 @@ class Stdio extends \Aura\Cli\Stdio
     }
 
     /**
+     * Gets user input from the command line and trims the end-of-line.
+     *
+     * @return string
+     */
+    public function in()
+    {
+        $this->out(' <<yellow>>><<reset>> ');
+        return parent::in();
+    }
+
+    /**
      * @param \Throwable $throwable
      */
     public function exception($throwable)
