@@ -34,6 +34,28 @@ class TOC extends AbstractPlaceholder
     }
 
     /**
+     * convertMarkdownLinksToText by stripping links and leaving only the link text.
+     *
+     * @param string $markdown
+     *
+     * @return string Markdown with links replaced by only the link text.
+     */
+    private function convertMarkdownLinksToText($markdown)
+    {
+        $regex = "
+/(?<!\\\\)\\[          # start of link text must not be escaped
+(.+?)
+(?<!\\\\)\\]           # end of link text must not be escaped
+(
+\\(.+?(?<!\\\\)\\)     # match either '(foo)'
+|
+\\ ?\\[.*?(?<!\\\\)\\] # or ' [foo]' or '[foo]' or '[]'
+)?                     # both are optional
+/x";
+        return preg_replace($regex, '$1', $markdown);
+    }
+
+    /**
      * @param \nochso\WriteMe\Markdown\HeaderList $headerList
      *
      * @return string
@@ -45,9 +67,10 @@ class TOC extends AbstractPlaceholder
         $headers = $headerList->getHeadersWithinMaxDepth($maxDepth);
         foreach ($headers as $header) {
             $indent = str_repeat('    ', $header->getLevel() - 1);
-            $toc .= $indent . '- [' . $header->getText() . '](#' . $header->getAnchor() . ")\n";
+            $cleanHeader = new Markdown\Header($header->getLevel(), $this->convertMarkdownLinksToText($header->getText()));
+            $toc .= $indent . '- [' . $cleanHeader->getText() . '](#' . $cleanHeader->getAnchor() . ")\n";
         }
-        return $toc;
+        return rtrim($toc, "\n");
     }
 
     /**
