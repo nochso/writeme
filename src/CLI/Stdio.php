@@ -139,6 +139,27 @@ TAG;
     }
 
     /**
+     * chooseAction based on a list of strings.
+     *
+     * @param string[] $actions    A list of available actions. If the keys contain strings, the keys will be used as
+     *                             shortcuts for the user to enter. Otherwise the shortcuts are created from the values.
+     * @param bool     $required   Optional, defaults to true. If true, user must select a valid action. If false,
+     *                             allow empty input and return null.
+     * @param bool     $singleLine Optional, defaults to true. If true, all actions will be shown on a single line.
+     *
+     * @return null|string The value of the selected item.
+     */
+    public function chooseAction($actions, $required = true, $singleLine = true)
+    {
+        $actionMap = $this->fillKeysWithActionShortcuts($actions);
+        $key = $this->chooseFromList($actionMap, 'Choose an action', $required, $singleLine);
+        if (isset($actionMap[$key])) {
+            return $actionMap[$key];
+        }
+        return null;
+    }
+
+    /**
      * Choose an element from a list.
      *
      * @param string[] $list       List of elements to choose from.
