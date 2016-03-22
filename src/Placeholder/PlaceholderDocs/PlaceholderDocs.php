@@ -12,6 +12,8 @@ use nochso\WriteMe\Placeholder\OptionList;
  * PlaceholderDocs creates documentation for registered placeholders.
  *
  * This includes the PHPDoc for the classes and their supported options.
+ *
+ * @internal
  */
 class PlaceholderDocs extends AbstractPlaceholder
 {
@@ -25,7 +27,11 @@ class PlaceholderDocs extends AbstractPlaceholder
      */
     public function setPlaceholders(array $placeholders)
     {
-        $this->placeholders = $placeholders;
+        // Don't output documentation about this placeholder itself.
+        // It's only for internal usage.
+        $this->placeholders = array_filter($placeholders, function ($p) {
+            return !$p instanceof self;
+        });
     }
 
     /**
