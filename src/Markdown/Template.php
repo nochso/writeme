@@ -77,4 +77,15 @@ abstract class Template
         $indent = str_repeat($this->indentStyle, $this->indentStartLevel + $level);
         return $indent . $text;
     }
+
+    /**
+     * getAvailableTemplates by looking into $baseFolder
+     *
+     * @return string[]
+     */
+    public function getAvailableTemplates()
+    {
+        $paths = glob(Path::combine($this->baseFolder, '*.php'));
+        return array_map('basename', $paths);
+    }
 }

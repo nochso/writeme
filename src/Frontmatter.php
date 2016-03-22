@@ -34,6 +34,11 @@ class Frontmatter
         return Dot::get($this->data, $dotPath, $default);
     }
 
+    public function set($dotPath, $value)
+    {
+        Dot::set($this->data, $dotPath, $value);
+    }
+
     /**
      * @param string $input
      */
@@ -79,5 +84,15 @@ class Frontmatter
             return substr($input, strlen($eol));
         }
         return $input;
+    }
+
+    /**
+     * __toString returns a YAML dump of all data.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return Yaml::dump($this->data);
     }
 }

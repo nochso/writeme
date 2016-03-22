@@ -30,6 +30,9 @@ class Changelog extends AbstractPlaceholder
     public function apply(Document $document)
     {
         parent::apply($document);
+        if (!Converter::contains($this->getIdentifier(), $document)) {
+            return;
+        }
         $changelogPath = $this->findChangelog($document);
         $changelog = Document::fromFile($changelogPath);
         $parser = new Parser();
