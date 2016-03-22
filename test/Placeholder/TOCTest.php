@@ -28,6 +28,10 @@ class TOCTest extends \PHPUnit_Framework_TestCase
                 '',
             ],
             [
+                '',
+                '',
+            ],
+            [
                 "@toc@\n# a",
                 "- [a](#a)\n# a",
             ],
