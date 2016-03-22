@@ -202,4 +202,54 @@ TAG;
         }
         return $validator($input);
     }
+
+    /**
+     * fillKeysWithActionShortcuts returns a new string array with string keys based on the beginnings of the strings.
+     *
+     * This is used for displaying a selection of actions for the user to choose from.
+     *
+     * @param string[] $actions The string array to fill with unique keys.
+     *
+     * @throws \InvalidArgumentException If the array values are not unique.
+     *
+     * @return string[] If the input array already contains strings as keys, the original input is returned.
+     */
+    private function fillKeysWithActionShortcuts($actions)
+    {
+        // Assume there's nothing to do if keys already contain strings
+        $stringKeys = array_filter(array_keys($actions), 'is_string');
+        if (count($stringKeys) > 0) {
+            return $actions;
+        }
+        if (count(array_unique(array_values($actions))) !== count($actions)) {
+            throw new \InvalidArgumentException('All actions must be unique.');
+        }
+        // Action => key
+        $flippedActions = array_flip($actions);
+        // Sort array by action keys so that 'a' becomes before 'aa'.
+        // This way the following loop won't assign prefix 'a' to string 'aa' first:
+        // If string 'a' followed, there would be no way to use it for another unique key.
+        $sortedFlippedActions = $flippedActions;
+        ksort($sortedFlippedActions);
+
+        $shortcutActionMap = [];
+        foreach ($sortedFlippedActions as $action => $originalKey) {
+            $shortcutLength = 1;
+            // Keep adding more characters until a unique shortcut is found.
+            do {
+                $shortcut = mb_substr($action, 0, $shortcutLength);
+                $shortcutLength++;
+            } while (isset($shortcutActionMap[$shortcut]));
+            $shortcutActionMap[$shortcut] = $action;
+        }
+        // Action => shortcut
+        $actionShortcutMap = array_flip($shortcutActionMap);
+        // Now make sure the new array is in the same order as the input
+        $actionMap = [];
+        foreach ($actions as $action) {
+            $shortcut = $actionShortcutMap[$action];
+            $actionMap[$shortcut] = $action;
+        }
+        return $actionMap;
+    }
 }
