@@ -2,6 +2,7 @@
 namespace nochso\WriteMe\Interfaces;
 
 use nochso\WriteMe\Document;
+use nochso\WriteMe\Placeholder\Call;
 
 interface Placeholder
 {
@@ -22,8 +23,18 @@ interface Placeholder
      * Apply changes to the content of a document.
      *
      * @param \nochso\WriteMe\Document $document
+     *
+     * @todo Remove this from the interface, instead use `call`
      */
     public function apply(Document $document);
+
+    /**
+     * Call a method on the placeholder and expect it to modify the document.
+     *
+     * @param \nochso\WriteMe\Placeholder\Call $call     Contains an optional method name and parameters
+     * @param \nochso\WriteMe\Document         $document The document to modify
+     */
+    public function call(Call $call, Document $document);
 
     /**
      * getDefaultOptionList returns the list of **default** options that are used by this placeholder.
