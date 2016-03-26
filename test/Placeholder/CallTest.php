@@ -60,4 +60,26 @@ class CallTest extends \PHPUnit_Framework_TestCase
         $document = new Document($rawDocument);
         $this->assertNull(Call::extractFirstCall($document));
     }
+
+    public function rawCallProvider()
+    {
+        return [
+            ['@foo@', '@foo@'],
+            ['x@foo@y', '@foo@'],
+            ['@foo@ @foo2@', '@foo@'],
+        ];
+    }
+
+    /**
+     * @dataProvider rawCallProvider
+     *
+     * @param string $rawDocument
+     * @param string $expectedRawCall
+     */
+    public function testExtractFirstCall_RawCall($rawDocument, $expectedRawCall)
+    {
+        $document = new Document($rawDocument);
+        $call = Call::extractFirstCall($document);
+        $this->assertSame($expectedRawCall, $call->getRawCall());
+    }
 }
