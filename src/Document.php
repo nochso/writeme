@@ -1,6 +1,8 @@
 <?php
 namespace nochso\WriteMe;
 
+use nochso\Omni\Path;
+
 class Document
 {
     const FRONTMATTER_SEPARATOR = '---';
@@ -93,7 +95,9 @@ class Document
         }
         // Still empty: try replacing WRITEME* with README*
         if ($target === null) {
-            if (preg_match('/^(writeme)((\..+)?)/i', $this->filepath, $matches)) {
+            // Only work with the actual file name
+            $filename = basename($this->filepath);
+            if (preg_match('/^(writeme)((\..+)?)/i', $filename, $matches)) {
                 $name = $matches[1];
                 $extension = $matches[2];
                 if (strtoupper($name) === $name) {
@@ -101,6 +105,7 @@ class Document
                 } else {
                     $target = 'readme' . $extension;
                 }
+                $target = Path::combine(dirname($this->filepath), $target);
             }
         }
         if ($target === null) {
