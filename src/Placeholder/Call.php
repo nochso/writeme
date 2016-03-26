@@ -29,6 +29,10 @@ class Call
      * @var mixed[]|array
      */
     private $parameters = [];
+    /**
+     * @var string
+     */
+    private $rawCall;
 
     /**
      * extractFirstCall to a Placeholder method from a Document.
@@ -44,6 +48,7 @@ class Call
         if (preg_match($pattern, $document->getContent(), $matches) === 1) {
             $call = new self();
             $call->identifier = $matches[1];
+            $call->rawCall = $matches[0];
             if (isset($matches[3])) {
                 $call->method = $matches[3];
             }
@@ -76,6 +81,14 @@ class Call
     public function getParameters()
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return string The string that caused this call, e.g. `@foo.bar@`
+     */
+    public function getRawCall()
+    {
+        return $this->rawCall;
     }
 
     /**
