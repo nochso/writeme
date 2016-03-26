@@ -4,6 +4,8 @@ namespace nochso\WriteMe\Placeholder\API;
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflector\Exception\IdentifierNotFound;
+use BetterReflection\Reflection\ReflectionParameter;
+use nochso\Omni\Multiline;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Markdown\Template as MarkdownTemplate;
 use nochso\WriteMe\Reflection\DocBlock;
@@ -224,6 +226,64 @@ class Template extends MarkdownTemplate
     public function getClassDocBlock(ReflectionClass $class)
     {
         return new DocBlock($class->getDocComment());
+    }
+
+    /**
+     * @param \BetterReflection\Reflection\ReflectionMethod $method
+     *
+     * @return \phpDocumentor\Reflection\DocBlock\Tag
+     */
+    public function getReturnTag(ReflectionMethod $method)
+    {
+        $doc = $this->getMethodDocBlock($method);
+        $returnTags = $doc->getTagsByName('return');
+        if (count($returnTags) === 0) {
+            return null;
+        }
+        return reset($returnTags);
+    }
+
+    public function formatParameter(ReflectionMethod $method, ReflectionParameter $parameter)
+    {
+        $code = '$' . $parameter->getName();
+        $text = '';
+        if ($parameter->isDefaultValueAvailable()) {
+            if ($parameter->isDefaultValueConstant()) {
+                $code .= ' = ' . $parameter->getDefaultValueConstantName();
+            }
+            $code .= ' = ' . $parameter->getDefaultValueAsString();
+        }
+        if ($parameter->isPassedByReference()) {
+            $code = '&' . $code;
+        }
+        $doc = $this->getMethodDocBlock($method);
+        $paramTags = $doc->getTagsByName('param');
+        $type = 'mixed';
+        /** @var \phpDocumentor\Reflection\DocBlock\Tag\ParamTag $paramTag */
+        foreach ($paramTags as $paramTag) {
+            if ($paramTag->getVariableName() === '$' . $parameter->getName() && $paramTag->getDescription() !== '') {
+                $text .= ' &mdash; ' . $paramTag->getDescription();
+                $type = $paramTag->getType();
+            }
+        }
+
+        return sprintf('%d. `%s` &mdash; `%s` %s', $parameter->getPosition() + 1, $code, $type, $text);
+    }
+
+    public function formatMethod(ReflectionMethod $method)
+    {
+//        $params = [];
+//        foreach ($method->getParameters() as $parameter) {
+//            $params[] = '$' . $parameter->getName();
+//        }
+        $ml = Multiline::create($method->getLocatedSource()->getSource());
+        return trim($ml[$method->getStartLine()-1]);
+//        return sprintf('%s(%s)', $method->getName(), implo/de(', ', $params));
+    }
+
+    public function formatClass(ReflectionClass $class){
+        $ml=Multiline::create($class->getLocatedSource()->getSource());
+        return trim($ml[$class->getStartLine()-1]);
     }
 
     /**
