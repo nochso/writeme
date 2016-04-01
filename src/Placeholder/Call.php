@@ -110,6 +110,18 @@ class Call
     }
 
     /**
+     * Replace the call in a document with a replacement string.
+     *
+     * @param string $replacement The replacement string for the call placeholder.
+     */
+    public function replace($replacement)
+    {
+        $replacementPattern = '${1}' . preg_quote($replacement);
+        $newContent = preg_replace(self::REGEX, $replacementPattern, $this->document->getContent(), 1);
+        $this->document->setContent($newContent);
+    }
+
+    /**
      * @param string $rawParameters
      */
     private function extractParameters($rawParameters)
