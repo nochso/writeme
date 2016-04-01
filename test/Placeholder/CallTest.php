@@ -93,4 +93,27 @@ class CallTest extends \PHPUnit_Framework_TestCase
         $call = Call::extractFirstCall($document);
         $this->assertSame($expectedRawCall, $call->getRawCall());
     }
+
+    public function replaceProvider()
+    {
+        return [
+            'Basic replacement' => ['@foo@', 'NEW'],
+            'Replace after escaped placeholder' => ['@@foo@@@foo@', '@@foo@@NEW'],
+            'Replace first placeholder only' => ['@foo@ @second.foo@', 'NEW @second.foo@'],
+        ];
+    }
+
+    /**
+     * @dataProvider replaceProvider
+     * 
+     * @param string $rawDocument
+     * @param string $expectedContent
+     */
+    public function testReplace($rawDocument, $expectedContent)
+    {
+        $document = new Document($rawDocument);
+        $call = Call::extractFirstCall($document);
+        $call->replace('NEW');
+        $this->assertSame($expectedContent, $document->getContent());
+    }
 }
