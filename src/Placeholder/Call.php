@@ -17,7 +17,12 @@ use PhpParser\ParserFactory;
  */
 class Call
 {
-    const REGEX = '/(?:(?<!@)(@@)?)(@([a-z]+)((?:\.)([a-z\.]+))?(\((.*)\))?@)/m';
+    const REGEX = '
+        /(?:(?<!@)(@@)?)    # Do not allow @ prefix unless it is escaped
+        (@([a-z]+)          # @abc
+        ((?:\.)([a-z\.]+))? # nothing or .foo or .foo.foo
+        (\((.*)\))?@)       # optional parameters with closing @
+        /mx';
     /**
      * @var string
      */
