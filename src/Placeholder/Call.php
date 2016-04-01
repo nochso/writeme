@@ -43,17 +43,17 @@ class Call
      */
     public static function extractFirstCall(Document $document)
     {
-        $pattern = '/@([a-z]+)((?:\.)([a-z\.]+))?( (.*))?@/m';
+        $pattern = '/(?:(?<!@)(@@)?)(@([a-z]+)((?:\.)([a-z\.]+))?(\((.*)\))?@)/m';
         $call = null;
         if (preg_match($pattern, $document->getContent(), $matches) === 1) {
             $call = new self();
-            $call->identifier = $matches[1];
-            $call->rawCall = $matches[0];
-            if (isset($matches[3])) {
-                $call->method = $matches[3];
+            $call->identifier = $matches[3];
+            $call->rawCall = $matches[2];
+            if (isset($matches[5]) && $matches[5] !== '') {
+                $call->method = $matches[5];
             }
-            if (isset($matches[5])) {
-                $call->extractParameters($matches[5]);
+            if (isset($matches[7])) {
+                $call->extractParameters($matches[7]);
             }
         }
         return $call;
