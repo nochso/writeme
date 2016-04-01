@@ -1,7 +1,6 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
-use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 
 /**
@@ -19,16 +18,12 @@ abstract class AbstractPlaceholder implements Placeholder
      */
     abstract public function getIdentifier();
 
-    /**
-     * Apply must be called by inheriting classes, otherwise options won't be prepared.
-     *
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(\nochso\WriteMe\Placeholder\Call $call)
     {
         $this->options = $this->getDefaultOptionList();
-        $this->options->prepare($document->getFrontmatter());
+        $this->options->prepare($call->getDocument()->getFrontmatter());        
     }
+
 
     /**
      * getOptions returns a list of options that are used by this placeholder.

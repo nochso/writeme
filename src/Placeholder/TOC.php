@@ -20,17 +20,14 @@ class TOC extends AbstractPlaceholder
         return 'toc';
     }
 
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
-        if (!Converter::contains($this, $document)) {
-            return;
-        }
-        $this->document = $document;
+        parent::call($call);
+        $this->document = $call->getDocument();
         $parser = new Markdown\HeaderParser();
-        $headerList = $parser->extractHeaders($document);
+        $headerList = $parser->extractHeaders($this->document);
         $toc = $this->createTOC($headerList);
-        Converter::replace($this, $toc, $document);
+        $call->replace($toc);
     }
 
     /**

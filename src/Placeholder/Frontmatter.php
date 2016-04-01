@@ -33,11 +33,8 @@ class Frontmatter extends AbstractPlaceholder
         return $this->identifier;
     }
 
-    /**
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        Converter::replace($this, $this->value, $document);
+        $call->replace($this->value);
     }
 }

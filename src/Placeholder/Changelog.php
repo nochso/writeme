@@ -24,16 +24,11 @@ class Changelog extends AbstractPlaceholder
         return 'changelog';
     }
 
-    /**
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
-        if (!Converter::contains($this->getIdentifier(), $document)) {
-            return;
-        }
-        $changelogPath = $this->findChangelog($document);
+        parent::call($call);
+        
+        $changelogPath = $this->findChangelog($call->getDocument());
         $changelog = Document::fromFile($changelogPath);
         $parser = new HeaderParser();
         $headerContentList = $parser->extractHeaderContents($changelog);
@@ -57,7 +52,7 @@ class Changelog extends AbstractPlaceholder
                 $latestChanges .= $headerContent->toMarkdown() . "\n";
             }
         }
-        Converter::replace($this, $latestChanges, $document);
+        $call->replace($latestChanges);
     }
 
     /**

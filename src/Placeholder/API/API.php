@@ -11,6 +11,7 @@ use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Placeholder\AbstractPlaceholder;
+use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\Option;
 use nochso\WriteMe\Placeholder\OptionList;
 
@@ -36,26 +37,21 @@ class API extends AbstractPlaceholder
         return 'api';
     }
 
-    /**
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
-        $doSummary = Converter::contains('api.summary', $document);
-        $doFullApi = Converter::contains('api.full', $document);
-        if (!$doSummary && !$doFullApi) {
-            return;
+        parent::call($call);
+        if ($call->getMethod() !== 'summary' && $call->getMethod() !== 'full') {
+            $call->replace('');
         }
 
-        $classes = $this->getClasses($document);
-        if ($doSummary) {
-            $apiSummary = $this->createAPISummary($classes, $document->getFrontmatter());
-            Converter::replace('api.summary', $apiSummary, $document);
+        $classes = $this->getClasses($call->getDocument());
+        if ($call->getMethod() === 'summary') {
+            $apiSummary = $this->createAPISummary($classes, $call->getDocument()->getFrontmatter());
+            $call->replace($apiSummary);
         }
-        if ($doFullApi) {
-            $api = $this->createFullAPI($classes, $document->getFrontmatter());
-            Converter::replace('api.full', $api, $document);
+        if ($call->getMethod() === 'full') {
+            $api = $this->createFullAPI($classes, $call->getDocument()->getFrontmatter());
+            $call->replace($api);
         }
     }
 
