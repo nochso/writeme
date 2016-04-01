@@ -1,6 +1,8 @@
 <?php
 namespace nochso\WriteMe;
 
+use nochso\WriteMe\Placeholder\Call;
+
 final class Converter implements Interfaces\Converter
 {
     /**
@@ -59,8 +61,14 @@ final class Converter implements Interfaces\Converter
      */
     public function applyPlaceholders(Document $document, array $placeholders)
     {
-        foreach ($placeholders as $placeholder) {
-            $placeholder->apply($document);
+        $call = Call::extractFirstCall($document);
+        while ($call !== null) {
+            if (isset($placeholders[$call->getIdentifier()])) {
+                $placeholders[$call->getIdentifier()]->call($call);
+            } else {
+                $call->replace('');
+            }
+            $call = Call::extractFirstCall($document);
         }
     }
 
