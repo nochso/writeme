@@ -116,7 +116,7 @@ class Call
      */
     public function replace($replacement)
     {
-        $replacementPattern = '${1}' . preg_quote($replacement);
+        $replacementPattern = '${1}' . addcslashes($replacement, '\\$');
         $newContent = preg_replace(self::REGEX, $replacementPattern, $this->document->getContent(), 1);
         $this->document->setContent($newContent);
     }
