@@ -46,6 +46,7 @@ class CallTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedIdentifier, $call->getIdentifier());
         $this->assertSame($expectedMethod, $call->getMethod());
         $this->assertSame($expectedParameters, $call->getParameters());
+        $this->assertSame($document, $call->getDocument());
     }
 
     public function extractFirstCallNullProvider()
