@@ -10,18 +10,19 @@ class CallTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['@identifier@', 'identifier', null, []],
+            ['@identifier(5)@', 'identifier', null, [5]],
             ['@@escaped@@ @identifier@', 'identifier', null, []],
             ['@@escaped@@@identifier@', 'identifier', null, []],
             ['@@escaped@@@@more.escaped@@@identifier@', 'identifier', null, []],
             ['@identifier.method@', 'identifier', 'method', []],
-            ['@identifier.method "string param"@', 'identifier', 'method', ['string param']],
-            ["@identifier.method 'string param'@", 'identifier', 'method', ['string param']],
-            ['@identifier.method 1@', 'identifier', 'method', [1]],
-            ['@identifier.method true@', 'identifier', 'method', [true]],
-            ['@identifier.method [1]@', 'identifier', 'method', [[1]]],
-            ['@identifier.method ["key" => "value"]@', 'identifier', 'method', [['key' => 'value']]],
-            ['@identifier.method ["key" => ["nested key" => true, 2]]@', 'identifier', 'method', [['key' => ['nested key' => true, 2]]]],
-            ['@identifier.method 1, 2, 3@', 'identifier', 'method', [1, 2, 3]],
+            ['@identifier.method("string param")@', 'identifier', 'method', ['string param']],
+            ["@identifier.method('string param')@", 'identifier', 'method', ['string param']],
+            ['@identifier.method(1)@', 'identifier', 'method', [1]],
+            ['@identifier.method(true)@', 'identifier', 'method', [true]],
+            ['@identifier.method([1])@', 'identifier', 'method', [[1]]],
+            ['@identifier.method(["key" => "value"])@', 'identifier', 'method', [['key' => 'value']]],
+            ['@identifier.method(["key" => ["nested key" => true, 2]])@', 'identifier', 'method', [['key' => ['nested key' => true, 2]]]],
+            ['@identifier.method(1, 2, 3)@', 'identifier', 'method', [1, 2, 3]],
             ['@identifier.firstcall@ @identifier.secondcall@', 'identifier', 'firstcall', []],
         ];
     }
