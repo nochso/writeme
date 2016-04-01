@@ -39,6 +39,10 @@ class Call
      * @var string
      */
     private $rawCall;
+    /**
+     * @var \nochso\WriteMe\Placeholder\Document
+     */
+    private $document;
 
     /**
      * extractFirstCall to a Placeholder method from a Document.
@@ -52,6 +56,7 @@ class Call
         $call = null;
         if (preg_match(self::REGEX, $document->getContent(), $matches) === 1) {
             $call = new self();
+            $call->document = $document;
             $call->identifier = $matches[3];
             $call->rawCall = $matches[2];
             if (isset($matches[5]) && $matches[5] !== '') {
@@ -94,6 +99,14 @@ class Call
     public function getRawCall()
     {
         return $this->rawCall;
+    }
+
+    /**
+     * @return \nochso\WriteMe\Placeholder\Document
+     */
+    public function getDocument()
+    {
+        return $this->document;
     }
 
     /**
