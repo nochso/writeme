@@ -10,6 +10,9 @@ class CallTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['@identifier@', 'identifier', null, []],
+            ['@@escaped@@ @identifier@', 'identifier', null, []],
+            ['@@escaped@@@identifier@', 'identifier', null, []],
+            ['@@escaped@@@@more.escaped@@@identifier@', 'identifier', null, []],
             ['@identifier.method@', 'identifier', 'method', []],
             ['@identifier.method "string param"@', 'identifier', 'method', ['string param']],
             ["@identifier.method 'string param'@", 'identifier', 'method', ['string param']],
@@ -47,6 +50,9 @@ class CallTest extends \PHPUnit_Framework_TestCase
             [''],
             ['invalid@'],
             ['some content'],
+            ['@@escaped@@'],
+            ['@@escaped@@@@anotherescaped@@'],
+            ['john@doe.com jane@doe.com'],
         ];
     }
 
