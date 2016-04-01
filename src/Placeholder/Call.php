@@ -97,7 +97,7 @@ class Call
     private function extractParameters($rawParameters)
     {
         // Kind of dirty, but way cleaner than regex magic.
-        $php = '<?php ' . $this->method . '(' . $rawParameters . ');';
+        $php = '<?php dummyMethod(' . $rawParameters . ');';
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
 
         try {
