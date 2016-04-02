@@ -12,16 +12,13 @@ class CallTest extends \PHPUnit_Framework_TestCase
         return [
             ['@identifier@', 'identifier', null, []],
             ['@identifier(5)@', 'identifier', null, [5]],
-            ['@@escaped@@ @identifier@', 'identifier', null, []],
-            ['@@escaped@@@identifier@', 'identifier', null, []],
-            ['@@escaped@@@@more.escaped@@@identifier@', 'identifier', null, []],
+            ['\@escaped\@ @identifier@', 'identifier', null, []],
+            ['\@escaped\@@identifier@', 'identifier', null, []],
+            ['\@escaped\@\@more.escaped\@@identifier@', 'identifier', null, []],
             ['@identifier.method@', 'identifier', 'method', []],
             ['@identifier.method("string param")@', 'identifier', 'method', ['string param']],
-            ['@identifier.method("@")@', 'identifier', 'method', ['@']],
-            ['@identifier.method("@")@ @identifier("")@', 'identifier', 'method', ['@']],
-            ['@identifier.method("@foo@")@', 'identifier', 'method', ['@foo@']],
-            ['@identifier.method("@()")@', 'identifier', 'method', ['@()']],
-            ["@identifier.method('@()')@", 'identifier', 'method', ['@()']],
+            ['@identifier.method("")@', 'identifier', 'method', ['']],
+            ['@identifier.method("")@ @identifier("")@', 'identifier', 'method', ['']],
             ["@identifier.method('string param')@", 'identifier', 'method', ['string param']],
             ['@identifier.method(1)@', 'identifier', 'method', [1]],
             ['@identifier.method(true)@', 'identifier', 'method', [true]],
@@ -58,8 +55,8 @@ class CallTest extends \PHPUnit_Framework_TestCase
             [''],
             ['invalid@'],
             ['some content'],
-            ['@@escaped@@'],
-            ['@@escaped@@@@anotherescaped@@'],
+            ['\@escaped\@'],
+            ['\@escaped\@\@anotherescaped\@'],
             ['john@doe.com jane@doe.com'],
         ];
     }
@@ -101,7 +98,7 @@ class CallTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'Basic replacement' => ['@foo@', 'NEW', 'NEW'],
-            'Replace after escaped placeholder' => ['@@foo@@@foo@', 'NEW', '@@foo@@NEW'],
+            'Replace after escaped placeholder' => ['\@foo\@@foo@', 'NEW', '\@foo\@NEW'],
             'Replace first placeholder only' => ['@foo@ @second.foo@', 'NEW', 'NEW @second.foo@'],
             'Properly regex-escape replacement' => ['@foo@ @second.foo@', 'NEW[]-()/\\ $0 \0', 'NEW[]-()/\\ $0 \0 @second.foo@'],
         ];

@@ -44,17 +44,21 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('', $doc->getContent());
     }
 
-    public function unescapeProvider()
+    /**
+     * Test data for both escaping and unescaping
+     */
+    public function complementaryEscapeProvider()
     {
         return [
-            ['@foo@', '@@foo@@'],
-            ['@foo.bar()@', '@@foo.bar()@@'],
-            ['@foo@@foo@', '@@foo@@@@foo@@'],
+            ['@foo@', '\\@foo\\@'],
+            ['@foo.bar()@', '\\@foo.bar()\\@'],
+            ['@foo@@foo@', '\\@foo\\@\\@foo\\@'],
+            ['\\@foo\\@', '\\\\@foo\\\\@'],
         ];
     }
 
     /**
-     * @dataProvider unescapeProvider
+     * @dataProvider complementaryEscapeProvider
      *
      * @param string $expectedContent
      * @param string $content
@@ -66,23 +70,13 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($expectedContent, $unescapedContent);
     }
 
-    public function escapeProvider()
-    {
-        // escape and unescape must be complementary.
-        $tests = $this->unescapeProvider();
-        foreach ($tests as &$test) {
-            $test = array_reverse($test);
-        }
-        return $tests;
-    }
-
     /**
-     * @dataProvider escapeProvider
+     * @dataProvider complementaryEscapeProvider
      *
-     * @param string $expectedContent
      * @param string $content
+     * @param string $expectedContent
      */
-    public function testEscape($expectedContent, $content)
+    public function testEscape($content, $expectedContent)
     {
         $converter = new Converter();
         $escapedContent = $converter->escape($content);
