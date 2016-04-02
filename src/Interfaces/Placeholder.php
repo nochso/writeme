@@ -6,6 +6,23 @@ use nochso\WriteMe\Placeholder\Call;
 interface Placeholder
 {
     /**
+     * Priority for placeholders that are independent of others.
+     */
+    const PRIORITY_FIRST = 0;
+    /**
+     * Priority for placeholders that need to be called after others have been
+     * called.
+     */
+    const PRIORITY_LAST = 1000;
+
+    /**
+     * Special identifier for placeholders that can react to any identifier.
+     *
+     * @see \nochso\WriteMe\Placeholder\Frontmatter
+     */
+    const IDENTIFIER_MATCH_ALL = '*';
+
+    /**
      * getIdentifier returns the default identifier to invoke this placeholder.
      *
      * For example an identifier `motd` would result in `@motd@` being
