@@ -102,7 +102,7 @@ class Call
     }
 
     /**
-     * @return \nochso\WriteMe\Placeholder\Document
+     * @return \nochso\WriteMe\Document
      */
     public function getDocument()
     {
