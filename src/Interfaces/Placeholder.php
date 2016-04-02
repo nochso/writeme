@@ -3,6 +3,10 @@ namespace nochso\WriteMe\Interfaces;
 
 use nochso\WriteMe\Placeholder\Call;
 
+/**
+ * Placeholder interface common to all placeholders that can be called/applied
+ * to a document.
+ */
 interface Placeholder
 {
     /**
@@ -43,7 +47,8 @@ interface Placeholder
     public function call(Call $call);
 
     /**
-     * getDefaultOptionList returns the list of **default** options that are used by this placeholder.
+     * getDefaultOptionList returns the list of **default** options that are
+     * used by this placeholder.
      *
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
