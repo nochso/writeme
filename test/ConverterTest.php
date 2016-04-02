@@ -43,4 +43,49 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $converter->convert($doc, $placeholders);
         $this->assertSame('', $doc->getContent());
     }
+
+    public function unescapeProvider()
+    {
+        return [
+            ['@foo@', '@@foo@@'],
+            ['@foo.bar()@', '@@foo.bar()@@'],
+            ['@foo@@foo@', '@@foo@@@@foo@@'],
+        ];
+    }
+
+    /**
+     * @dataProvider unescapeProvider
+     *
+     * @param string $expectedContent
+     * @param string $content
+     */
+    public function testUnescape($expectedContent, $content)
+    {
+        $converter = new Converter();
+        $unescapedContent = $converter->unescape($content);
+        $this->assertSame($expectedContent, $unescapedContent);
+    }
+
+    public function escapeProvider()
+    {
+        // escape and unescape must be complementary.
+        $tests = $this->unescapeProvider();
+        foreach ($tests as &$test) {
+            $test = array_reverse($test);
+        }
+        return $tests;
+    }
+
+    /**
+     * @dataProvider escapeProvider
+     *
+     * @param string $expectedContent
+     * @param string $content
+     */
+    public function testEscape($expectedContent, $content)
+    {
+        $converter = new Converter();
+        $escapedContent = $converter->escape($content);
+        $this->assertSame($expectedContent, $escapedContent);
+    }
 }
