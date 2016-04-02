@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "11b6f7966c4159f51d5caec59cd62cdc",
-    "content-hash": "dd77905ab5ea7ec39071dc487ab9557a",
+    "hash": "64db1eb48bd9c2302aa205f3604de41b",
+    "content-hash": "e872f86fc01b757a0ace084530fe640f",
     "packages": [
         {
             "name": "aura/cli",
@@ -283,16 +283,16 @@
         },
         {
             "name": "nochso/omni",
-            "version": "0.3.2",
+            "version": "0.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nochso/omni.git",
-                "reference": "f60249648c9a45e2ffb741cdbb1184f76de3d8a3"
+                "reference": "c1de6894b577aa014ad0aa3ca27cdfdf81540115"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nochso/omni/zipball/f60249648c9a45e2ffb741cdbb1184f76de3d8a3",
-                "reference": "f60249648c9a45e2ffb741cdbb1184f76de3d8a3",
+                "url": "https://api.github.com/repos/nochso/omni/zipball/c1de6894b577aa014ad0aa3ca27cdfdf81540115",
+                "reference": "c1de6894b577aa014ad0aa3ca27cdfdf81540115",
                 "shasum": ""
             },
             "require": {
@@ -301,6 +301,7 @@
             },
             "require-dev": {
                 "fabpot/php-cs-fixer": "^1.11",
+                "mikey179/vfsstream": "^1.6",
                 "phpunit/phpunit": "^5.2"
             },
             "suggest": {
@@ -323,7 +324,7 @@
                 }
             ],
             "description": "Helps with every day nuisances like path or EOL handling.",
-            "time": "2016-03-16 09:29:33"
+            "time": "2016-04-05 22:39:03"
         },
         {
             "name": "phpdocumentor/reflection-common",
