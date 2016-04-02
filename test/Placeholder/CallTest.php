@@ -2,6 +2,7 @@
 namespace nochso\WriteMe\Test\Placeholder;
 
 use nochso\WriteMe\Document;
+use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Placeholder\Call;
 
 class CallTest extends \PHPUnit_Framework_TestCase
@@ -118,5 +119,39 @@ class CallTest extends \PHPUnit_Framework_TestCase
         $call = Call::extractFirstCall($document);
         $call->replace($replacement);
         $this->assertSame($expectedContent, $document->getContent());
+    }
+
+    public function testIsReplaced()
+    {
+        $document = new Document('@foo@');
+        $call = Call::extractFirstCall($document);
+        $this->assertFalse($call->isReplaced());
+        $call->replace('');
+        $this->assertTrue($call->isReplaced());
+    }
+
+    public function testReplace_MustObserveStartPositionOfCall()
+    {
+        $document = new Document('@foo@ @foo@');
+        $call = Call::extractFirstCall($document, Placeholder::PRIORITY_FIRST, 5);
+        $call->replace('I MUST BE SECOND');
+        $this->assertSame('@foo@ I MUST BE SECOND', $document->getContent());
+    }
+
+    public function testGetStartPositionOfRawCall()
+    {
+        $document = new Document(' @test@');
+        $call = Call::extractFirstCall($document);
+        $this->assertSame(1, $call->getStartPositionOfRawCall());
+    }
+
+    public function testGetEndPositionOfRawCall()
+    {
+        $document = new Document('@test@ @test@');
+        $call = Call::extractFirstCall($document, Placeholder::PRIORITY_FIRST);
+        $this->assertSame(6, $call->getEndPositionOfRawCall());
+
+        $secondCall = Call::extractFirstCall($document, Placeholder::PRIORITY_FIRST, $call->getEndPositionOfRawCall());
+        $this->assertSame(13, $secondCall->getEndPositionOfRawCall(), 'End position must be absolute and not be influenced by an offset');
     }
 }
