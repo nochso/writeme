@@ -31,4 +31,15 @@ interface Placeholder
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
     public function getDefaultOptionList();
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called
+     * between multiple passes.
+     *
+     * Usually one of the `PRIORITY_*` constants defined by this interface will
+     * suffice. However any integer can be used.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities();
 }
