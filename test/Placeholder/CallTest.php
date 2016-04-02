@@ -18,6 +18,7 @@ class CallTest extends \PHPUnit_Framework_TestCase
             ['@identifier.method@', 'identifier', 'method', []],
             ['@identifier.method("string param")@', 'identifier', 'method', ['string param']],
             ['@identifier.method("@")@', 'identifier', 'method', ['@']],
+            ['@identifier.method("@")@ @identifier("")@', 'identifier', 'method', ['@']],
             ['@identifier.method("@foo@")@', 'identifier', 'method', ['@foo@']],
             ['@identifier.method("@()")@', 'identifier', 'method', ['@()']],
             ["@identifier.method('@()')@", 'identifier', 'method', ['@()']],
