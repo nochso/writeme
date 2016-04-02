@@ -2,15 +2,15 @@
 namespace nochso\WriteMe\Placeholder;
 
 use nochso\WriteMe\Document;
+use nochso\WriteMe\Interfaces\Placeholder;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\ParserFactory;
 
 /**
- * Call represents a call to Placeholder methods.
- * 
- * ```
+ * Call represents a specific call to a placeholder or one of its methods.
  *
+ * ```
  * @toc.sub 1@
  * ```
  * Where `toc` is the identifier, `sub` the method and parameters an array `[1]`
@@ -43,27 +43,48 @@ class Call
      * @var \nochso\WriteMe\Placeholder\Document
      */
     private $document;
+    /**
+     * @var bool
+     */
+    private $isReplaced = false;
+    /**
+     * @var int
+     */
+    private $rawCallFirstPosition;
+    /**
+     * @var int
+     */
+    private $priority;
 
     /**
      * extractFirstCall to a Placeholder method from a Document.
      *
      * @param \nochso\WriteMe\Document $document
+     * @param int                      $priority
+     * @param int                      $offset
      *
-     * @return \nochso\WriteMe\Placeholder\Call|null
+     * @return Call|null
      */
-    public static function extractFirstCall(Document $document)
+    public static function extractFirstCall(Document $document, $priority = Placeholder::PRIORITY_FIRST, $offset = 0)
     {
         $call = null;
-        if (preg_match(self::REGEX, $document->getContent(), $matches) === 1) {
+        $content = $document->getContent();
+        if ($offset > 0) {
+            $content = mb_substr($content, $offset);
+        }
+        if (preg_match(self::REGEX, $content, $matches, PREG_OFFSET_CAPTURE) === 1) {
             $call = new self();
             $call->document = $document;
-            $call->identifier = $matches[3];
-            $call->rawCall = $matches[2];
-            if (isset($matches[5]) && $matches[5] !== '') {
-                $call->method = $matches[5];
+            $call->priority = $priority;
+            $call->identifier = $matches[3][0];
+            $call->rawCall = $matches[2][0];
+            // Position of the match including additional offset from before
+            $call->rawCallFirstPosition = $matches[2][1] + $offset;
+            if (isset($matches[5]) && $matches[5][0] !== '') {
+                $call->method = $matches[5][0];
             }
             if (isset($matches[7])) {
-                $call->extractParameters($matches[7]);
+                $call->extractParameters($matches[7][0]);
             }
         }
         return $call;
@@ -102,7 +123,7 @@ class Call
     }
 
     /**
-     * @return \nochso\WriteMe\Document
+     * @return \nochso\WriteMe\Document The document that the call was found in.
      */
     public function getDocument()
     {
@@ -116,9 +137,50 @@ class Call
      */
     public function replace($replacement)
     {
+        if ($this->isReplaced()) {
+            throw new \LogicException(sprintf("The placeholder call '%s' has already been replaced.", $this->getRawCall()));
+        }
         $replacementPattern = '${1}' . addcslashes($replacement, '\\$');
-        $newContent = preg_replace(self::REGEX, $replacementPattern, $this->document->getContent(), 1);
-        $this->document->setContent($newContent);
+
+        // Split content before the placeholder start
+        $startContent = mb_substr($this->document->getContent(), 0, $this->rawCallFirstPosition);
+        $endContent = mb_substr($this->document->getContent(), $this->rawCallFirstPosition);
+        // Replace only that specific placeholder and nothing before it
+        $endContent = preg_replace(self::REGEX, $replacementPattern, $endContent, 1);
+        $this->document->setContent($startContent . $endContent);
+        $this->isReplaced = true;
+    }
+
+    /**
+     * @return int Start position of the raw call string in the document.
+     */
+    public function getStartPositionOfRawCall()
+    {
+        return $this->rawCallFirstPosition;
+    }
+
+    /**
+     * @return int End position of the raw call string in the document.
+     */
+    public function getEndPositionOfRawCall()
+    {
+        return $this->getStartPositionOfRawCall() + mb_strlen($this->getRawCall());
+    }
+
+    /**
+     * @return bool True if this call has been replaced by a placeholder.
+     */
+    public function isReplaced()
+    {
+        return $this->isReplaced;
+    }
+
+    /**
+     * @return int The priority at the time the call was extracted during conversion.
+     */
+    public function getPriority()
+    {
+        return $this->priority;
     }
 
     /**
