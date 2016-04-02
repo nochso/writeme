@@ -12,7 +12,7 @@ toc:
 
 @package@ makes creating and maintaining READMEs easier by combining frontmatter and Markdown.
 
-For example the following table of contents was generated from the `@@toc@@` placeholder in [WRITEME.md](WRITEME.md).
+For example the following table of contents was generated from the `\@toc\@` placeholder in [WRITEME.md](WRITEME.md).
 
 @toc@
 
@@ -33,9 +33,9 @@ Create a file `WRITEME.md` containing YAML frontmatter and Markdown content:
 ---
 package: vendor/name
 ---
-# @@package@@
+# \@package\@
 
-@@toc@@
+\@toc\@
 
 # Requirements
 ...
@@ -53,10 +53,10 @@ Running `php bin/writeme WRITEME.md` will parse the template and convert it to `
 ...
 ```
 
-Because you've defined `package` in the frontmatter, `@@package@@` turns into `vendor/name`. You can freely define any
+Because you've defined `package` in the frontmatter, `\@package\@` turns into `vendor/name`. You can freely define any
 placeholders you might need.
 
-The only exceptions are registered placeholders. For example `@@toc@@` was replaced with a table of contents extracted
+The only exceptions are registered placeholders. For example `\@toc\@` was replaced with a table of contents extracted
 from the Markdown headers in your content.
 
 # Usage
@@ -90,10 +90,10 @@ user:
 ```
 You can access leaf nodes using dot notation (including escaping of dots, see `Dot` provided by [nochso/omni](https://github.com/nochso/omni)):
 
-`@@greet@@ @@user.name.0@@!` turns into `Hello Annyong!`
+`\@greet\@ \@user.name.0\@!` turns into `Hello Annyong!`
 
 ## Escaping placeholders
-To avoid replacing a placeholder, surround it with extra `@` characters: `@@@ignored@@@`.
+To avoid replacing a placeholder, escape the `@` characters with backslashes: `\\@example.escape\\@`.
 
 ## Specifying a target file name
 

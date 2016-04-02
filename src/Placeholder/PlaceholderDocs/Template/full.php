@@ -3,7 +3,7 @@
 <?php $class = $this->getClassForPlaceholder($placeholder); ?>
 <?php $docBlock = $this->getClassDocBlock($class); ?>
 
-<?= $this->header(1, $class->getShortName()) ?> `@@<?= $placeholder->getIdentifier() ?>@@`
+<?= $this->header(1, $class->getShortName()) ?> `@<?= $placeholder->getIdentifier() ?>@`
 
 <?= $docBlock->getText() ?>
 

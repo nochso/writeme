@@ -18,16 +18,22 @@ use PhpParser\ParserFactory;
 class Call
 {
     const REGEX = '
-        /(?:(?<!@)(@@)?)    # Do not allow @ prefix unless it is escaped
-        (@([a-z-]+)         # @abc
-        ((?:\.)([a-z\.]+))? # nothing or .foo or .foo.foo
-        (\((.*?)\))?@)      # optional parameters with closing @
+        /(?<!\\\\)                 # Must not be escaped
+        (@(([a-z-]+)               # @abc
+        ((?:\\.)([a-z0-9\\.]+))?   # nothing or .foo or .foo.foo
+        (\\((.*?)\\))?(?<!\\\\))@) # optional parameters with closing non-escaped @
         /mx';
 
     const REGEX_ESCAPED = '
-        /(@@([a-z-]+)       # @@abc
-        ((?:\.)([a-z\.]+))? # nothing or .foo or .foo.foo
-        (\((.*?)\))?@@)     # optional parameters with closing @@
+        /(\\\\@(([a-z-]+)              # \@abc
+        ((?:\\.)([a-z0-9\\.]+))?       # nothing or .foo or .foo.foo
+        (\\((.*?)\\))?(?<!\\\\))\\\\@) # optional parameters with closing escaped @
+        /mx';
+
+    const REGEX_ESCAPED_ESCAPED = '
+        /(\\\\\\\\@(([a-z-]+)      # \\@abc
+        ((?:\\.)([a-z0-9\\.]+))?   # nothing or .foo or .foo.foo
+        (\\((.*?)\\))?)\\\\\\\\@)  # optional parameters with closing and double-escaped @
         /mx';
 
     /**
@@ -84,9 +90,9 @@ class Call
             $call->document = $document;
             $call->priority = $priority;
             $call->identifier = $matches[3][0];
-            $call->rawCall = $matches[2][0];
+            $call->rawCall = $matches[0][0];
             // Position of the match including additional offset from before
-            $call->rawCallFirstPosition = $matches[2][1] + $offset;
+            $call->rawCallFirstPosition = $matches[0][1] + $offset;
             if (isset($matches[5]) && $matches[5][0] !== '') {
                 $call->method = $matches[5][0];
             }
@@ -147,14 +153,10 @@ class Call
         if ($this->isReplaced()) {
             throw new \LogicException(sprintf("The placeholder call '%s' has already been replaced.", $this->getRawCall()));
         }
-        $replacementPattern = '${1}' . addcslashes($replacement, '\\$');
-
-        // Split content before the placeholder start
+        // Split content around the raw placeholder call
         $startContent = mb_substr($this->document->getContent(), 0, $this->rawCallFirstPosition);
-        $endContent = mb_substr($this->document->getContent(), $this->rawCallFirstPosition);
-        // Replace only that specific placeholder and nothing before it
-        $endContent = preg_replace(self::REGEX, $replacementPattern, $endContent, 1);
-        $this->document->setContent($startContent . $endContent);
+        $endContent = mb_substr($this->document->getContent(), $this->getEndPositionOfRawCall());
+        $this->document->setContent($startContent . $replacement . $endContent);
         $this->isReplaced = true;
     }
 

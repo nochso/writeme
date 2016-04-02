@@ -77,7 +77,11 @@ final class Converter
      */
     public function unescape($content)
     {
-        return preg_replace(Call::REGEX_ESCAPED, '@\2\3\5@', $content);
+        // First turn \@foo\@ into @foo@
+        $unescaped = preg_replace(Call::REGEX_ESCAPED, '@$2@', $content);
+        // Then allow writing \\@foo\\@ to achieve \@foo\@ in final output
+        $unescaped = preg_replace(Call::REGEX_ESCAPED_ESCAPED, '\\\\@$2\\\\@', $unescaped);
+        return $unescaped;
     }
 
     /**
@@ -87,10 +91,10 @@ final class Converter
      */
     public function escape($content)
     {
-        $escapedContent = $content;
-        do {
-            $escapedContent = preg_replace(Call::REGEX, '@$0@', $escapedContent, -1, $count);
-        } while ($count > 0);
+        // First escape an already escaped placeholder
+        $escapedContent = preg_replace(Call::REGEX_ESCAPED, '\\\\\\\\@$2\\\\\\\\@', $content);
+        // Escape not-yet-escaped placeholder
+        $escapedContent = preg_replace(Call::REGEX, '\\\\@$2\\\\@', $escapedContent);
         return $escapedContent;
     }
 }
