@@ -23,6 +23,13 @@ class Call
         ((?:\.)([a-z\.]+))? # nothing or .foo or .foo.foo
         (\((.*?)\))?@)      # optional parameters with closing @
         /mx';
+
+    const REGEX_ESCAPED = '
+        /(@@([a-z-]+)       # @@abc
+        ((?:\.)([a-z\.]+))? # nothing or .foo or .foo.foo
+        (\((.*?)\))?@@)     # optional parameters with closing @@
+        /mx';
+
     /**
      * @var string
      */
