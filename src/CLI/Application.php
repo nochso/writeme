@@ -34,7 +34,7 @@ final class Application
      */
     private $placeholders = [];
     /**
-     * @var \nochso\WriteMe\Interfaces\Converter
+     * @var \nochso\WriteMe\Converter
      */
     private $converter;
 

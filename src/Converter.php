@@ -3,7 +3,7 @@ namespace nochso\WriteMe;
 
 use nochso\WriteMe\Placeholder\Call;
 
-final class Converter implements Interfaces\Converter
+final class Converter
 {
     /**
      * @param \nochso\WriteMe\Document                 $document
