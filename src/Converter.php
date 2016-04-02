@@ -1,117 +1,96 @@
 <?php
+
 namespace nochso\WriteMe;
 
 use nochso\WriteMe\Placeholder\Call;
+use nochso\WriteMe\Placeholder\PlaceholderCollection;
 
 final class Converter
 {
     /**
-     * @param \nochso\WriteMe\Document                 $document
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $registeredPlaceholders Key must be the placeholder's identifier.
+     * Convert a document using a collection of placeholders.
+     *
+     * @param \nochso\WriteMe\Document                          $document
+     * @param \nochso\WriteMe\Placeholder\PlaceholderCollection $placeholders
      */
-    public function convert(Document $document, array $registeredPlaceholders)
+    public function convert(Document $document, PlaceholderCollection $placeholders)
     {
-        // Get potential front-matter replacements
-        $frontMatterPlaceholders = $this->extractFrontmatterPlaceholders($document);
-        // Merge with priority on registered placeholders
-        $placeholders = $this->withMissing($registeredPlaceholders, $frontMatterPlaceholders);
         $this->applyPlaceholders($document, $placeholders);
         // Unescape left-over placeholders.
-        $this->unescape($document);
+        $document->setContent($this->unescape($document->getContent()));
     }
 
     /**
-     * @param \nochso\WriteMe\Document                 $document
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $placeholders
+     * applyPlaceholders to a Document object.
+     *
+     * @param \nochso\WriteMe\Document                          $document     The document to modify.
+     * @param \nochso\WriteMe\Placeholder\PlaceholderCollection $placeholders The placeholders used to modify the
+     *                                                                        document.
      */
-    public function applyPlaceholders(Document $document, array $placeholders)
+    private function applyPlaceholders(Document $document, PlaceholderCollection $placeholders)
     {
-        $call = Call::extractFirstCall($document);
+        $priorities = $placeholders->getPriorities();
+        foreach ($priorities as $priority) {
+            $this->applyPlaceholdersAtPriority($document, $priority, $placeholders);
+        }
+    }
+
+    /**
+     * applyPlaceholdersAtPriority by calling only the placeholders that are relevant at a certain priority.
+     *
+     * @param Document                                          $document     The document to modify.
+     * @param int                                               $priority     The priority stage to consider.
+     *                                                                        Placeholders are only called when they've
+     *                                                                        listed that priority. See
+     *                                                                        `Placeholder::getCallPriorities()`
+     * @param \nochso\WriteMe\Placeholder\PlaceholderCollection $placeholders
+     */
+    private function applyPlaceholdersAtPriority(Document $document, $priority, PlaceholderCollection $placeholders)
+    {
+        $offset = 0;
+        $call = Call::extractFirstCall($document, $priority, $offset);
         while ($call !== null) {
-            if (isset($placeholders[$call->getIdentifier()])) {
-                $placeholders[$call->getIdentifier()]->call($call);
+            $callPlaceholders = $placeholders->getPlaceholdersForCall($call);
+            $isReplaced = false;
+            foreach ($callPlaceholders->toArray() as $placeholder) {
+                $placeholder->call($call);
+                if ($call->isReplaced()) {
+                    $isReplaced = true;
+                    break;
+                }
+            }
+            if ($isReplaced) {
+                // Anything could have changed in content. Start from the beginning.
+                $offset = 0;
             } else {
-                $call->replace('');
+                // The call was skipped by all placeholders. Ignore it at this priority.
+                $offset = $call->getEndPositionOfRawCall();
             }
-            $call = Call::extractFirstCall($document);
+            $call = Call::extractFirstCall($document, $priority, $offset);
         }
     }
 
     /**
-     * extractFrontmatterPlaceholders returns new Frontmatter placeholders based on the document *content*.
-     *
-     * e.g. if a document's content contains a placeholder `@foo@` AND its value is found in the frontmatter,
-     * a new Placeholder/Frontmatter object is created and added to the returned array.
-     *
-     * @param \nochso\WriteMe\Document $document
-     *
-     * @return \nochso\WriteMe\Interfaces\Placeholder[] Key is the dot-notation path
+     * @param string $content
+     * 
+     * @return string
      */
-    public function extractFrontmatterPlaceholders(Document $document)
+    public function unescape($content)
     {
-        $identifiers = self::extractIdentifiers($document);
-        $frontmatter = $document->getFrontmatter();
-        $placeholders = [];
-        foreach ($identifiers as $identifier) {
-            $value = $frontmatter->get($identifier);
-            // If the value for this placeholder is not known, it should be ignored
-            if ($value !== null) {
-                $placeholders[$identifier] = new Placeholder\Frontmatter($identifier, $value);
-            }
-        }
-        return $placeholders;
+        return preg_replace(Call::REGEX_ESCAPED, '@\2\3\5@', $content);
     }
 
     /**
-     * @param \nochso\WriteMe\Document $document
+     * @param string $content
+     *
+     * @return string
      */
-    public function unescape(Document $document)
+    public function escape($content)
     {
-        $document->setContent(preg_replace('/@@([^@\r\n]+)@@/', '@\1@', $document->getContent()));
-    }
-
-    /**
-     * @param \nochso\WriteMe\Document $document
-     *
-     * @return array
-     */
-    public function extractIdentifiers(Document $document)
-    {
-        $pattern = '/(?<!@)(@([^@\r\n]+)@)(?!@)/';
-        if (preg_match_all($pattern, $document->getContent(), $matches)) {
-            return $matches[2];
-        }
-        return [];
-    }
-
-    /**
-     * withMissing returns the original placeholders merged with additional placeholders.
-     *
-     * Original placeholders are preferred over additional ones with the same name.
-     *
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $originalPlaceholders
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $additionalPlaceholders
-     *
-     * @return \nochso\WriteMe\Interfaces\Placeholder[]
-     */
-    private function withMissing(array $originalPlaceholders, $additionalPlaceholders)
-    {
-        $placeholders = $originalPlaceholders;
-        foreach ($additionalPlaceholders as $key => $value) {
-            if (!isset($placeholders[$key])) {
-                $placeholders[$key] = $value;
-            }
-        }
-        // Make sure custom frontmatter not related to placeholders is FIRST in the array.
-        // This must be done to ensure that the TOC placeholder gets called LAST.
-        uasort($placeholders, function ($a, $b) {
-            $aIsFrontmatter = $a instanceof Placeholder\Frontmatter;
-            $bIsFrontmatter = $b instanceof Placeholder\Frontmatter;
-            if ($aIsFrontmatter xor $bIsFrontmatter) {
-                return $aIsFrontmatter ? -1 : 1;
-            }
-            return 0;
-        });
-        return $placeholders;
+        $escapedContent = $content;
+        do {
+            $escapedContent = preg_replace(Call::REGEX, '@$0@', $escapedContent, -1, $count);
+        } while ($count > 0);
+        return $escapedContent;
     }
 }
