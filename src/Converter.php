@@ -6,41 +6,6 @@ use nochso\WriteMe\Placeholder\Call;
 final class Converter implements Interfaces\Converter
 {
     /**
-     * Replace a placeholder's identifier in a document.
-     *
-     * @param string|\nochso\WriteMe\Interfaces\Placeholder $placeholder The placeholder being searched for by its identifier.
-     * @param string                                        $replacement The replacement string that replaces the placeholder.
-     * @param \nochso\WriteMe\Document                      $document    The document whose content will be searched and replaced.
-     *
-     * @return string
-     */
-    public static function replace($placeholder, $replacement, Document $document)
-    {
-        if ($placeholder instanceof Interfaces\Placeholder) {
-            $placeholder = $placeholder->getIdentifier();
-        }
-        $quotedIdentifier = preg_quote($placeholder, '/');
-        $pattern = '/(?<!@)(@(' . $quotedIdentifier . ')@)(?!@)/';
-        $document->setContent(preg_replace($pattern, $replacement, $document->getContent()));
-    }
-
-    /**
-     * @param string|\nochso\WriteMe\Interfaces\Placeholder $placeholder
-     * @param \nochso\WriteMe\Document                      $document
-     *
-     * @return bool
-     */
-    public static function contains($placeholder, Document $document)
-    {
-        if ($placeholder instanceof Interfaces\Placeholder) {
-            $placeholder = $placeholder->getIdentifier();
-        }
-        $quotedIdentifier = preg_quote($placeholder, '/');
-        $pattern = '/(?<!@)(@(' . $quotedIdentifier . ')@)(?!@)/';
-        return preg_match($pattern, $document->getContent()) === 1;
-    }
-
-    /**
      * @param \nochso\WriteMe\Document                 $document
      * @param \nochso\WriteMe\Interfaces\Placeholder[] $registeredPlaceholders Key must be the placeholder's identifier.
      */
