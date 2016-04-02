@@ -7,7 +7,6 @@ use BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Nette\Utils\Finder;
 use nochso\Omni\Path;
-use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Placeholder\AbstractPlaceholder;
@@ -65,6 +64,16 @@ class API extends AbstractPlaceholder
             new Option('api.from', 'List of folders to search files in.', ['.']),
             new Option('api.folder-exclude', 'List of folders to exclude from the search.', ['vendor', 'test', 'tests']),
         ]);
+    }
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_FIRST];
     }
 
     /**

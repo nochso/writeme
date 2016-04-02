@@ -3,7 +3,6 @@ namespace nochso\WriteMe\Placeholder\PlaceholderDocs;
 
 use BetterReflection\Reflection\ReflectionClass;
 use nochso\WriteMe\Converter;
-use nochso\WriteMe\Document;
 use nochso\WriteMe\Placeholder\AbstractPlaceholder;
 use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\Option;
@@ -66,5 +65,15 @@ class PlaceholderDocs extends AbstractPlaceholder
         return new OptionList([
             new Option('placeholder-docs.header-depth', 'Depth that headers start at', 2),
         ]);
+    }
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_FIRST];
     }
 }

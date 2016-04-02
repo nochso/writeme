@@ -1,8 +1,6 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
-use nochso\WriteMe\Converter;
-use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown;
 
 /**
@@ -78,5 +76,15 @@ class TOC extends AbstractPlaceholder
             $toc .= $indent . '- [' . $cleanHeader->getText() . '](#' . $cleanHeader->getAnchor() . ")\n";
         }
         return rtrim($toc, "\n");
+    }
+
+    /**
+     * TOC must be called as late as possible!
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_LAST];
     }
 }

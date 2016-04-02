@@ -2,7 +2,6 @@
 namespace nochso\WriteMe\Placeholder;
 
 use Nette\Utils\Finder;
-use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown\HeaderContent;
 use nochso\WriteMe\Markdown\HeaderParser;
@@ -66,6 +65,16 @@ class Changelog extends AbstractPlaceholder
             new Option('changelog.file', 'Filename of the CHANGELOG to extract releases from.', 'CHANGELOG.md'),
             new Option('changelog.search-depth', 'How deep the folders should be searched.', 2),
         ]);
+    }
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_FIRST];
     }
 
     /**
