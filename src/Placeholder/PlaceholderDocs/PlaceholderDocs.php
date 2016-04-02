@@ -54,6 +54,7 @@ class PlaceholderDocs extends AbstractPlaceholder
         $template->setHeaderStartLevel($this->options->getValue('placeholder-docs.header-depth'));
         $template->prepare($classes, $this->placeholders);
         $docs = $template->render('full.php');
+        $docs = (new Converter())->escape($docs); 
         $call->replace($docs);
     }
 
