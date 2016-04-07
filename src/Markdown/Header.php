@@ -22,15 +22,29 @@ class Header
      * @var int
      */
     private $uniqueCounter = 0;
+    /**
+     * @var int
+     */
+    private $lineIndex;
 
     /**
      * @param int    $level
      * @param string $text
+     * @param int    $lineIndex
      */
-    public function __construct($level, $text)
+    public function __construct($level, $text, $lineIndex = null)
     {
         $this->level = $level;
         $this->text = $text;
+        $this->lineIndex = $lineIndex;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUniqueCounter()
+    {
+        return $this->uniqueCounter;
     }
 
     /**
@@ -72,6 +86,14 @@ class Header
             $uniqueSuffix = '-' . $this->uniqueCounter;
         }
         return $anchor . $uniqueSuffix;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLineIndex()
+    {
+        return $this->lineIndex;
     }
 
     /**
