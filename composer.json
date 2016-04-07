@@ -29,6 +29,9 @@
     "autoload-dev": {
         "psr-4": {
             "nochso\\WriteMe\\Test\\": "test"
+        },
+        "psr-0": {
+            "phpDocumentor\\": "vendor/phpdocumentor/reflection-docblock/tests"
         }
     },
     "bin": ["bin/writeme"],
