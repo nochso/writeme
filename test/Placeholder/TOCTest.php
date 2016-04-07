@@ -41,6 +41,39 @@ class TOCTest extends \PHPUnit_Framework_TestCase
                 "@toc@\n# [link text](target.md) in **header**",
                 "- [link text in **header**](#link-text-in-header)\n# [link text](target.md) in **header**",
             ],
+            'Sub-TOC and no preceding header' => [
+                <<<TAG
+@toc.sub@
+## 2-1
+## 2-2
+# ignore me
+TAG
+,
+                <<<TAG
+- [2-1](#2-1)
+- [2-2](#2-2)
+## 2-1
+## 2-2
+# ignore me
+TAG
+
+            ],
+            'Sub-TOC' => [
+                <<<TAG
+# ignore me
+@toc.sub@
+## sub 1
+# ignore me again
+TAG
+,
+                <<<TAG
+# ignore me
+- [sub 1](#sub-1)
+## sub 1
+# ignore me again
+TAG
+
+            ],
         ];
     }
 }
