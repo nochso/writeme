@@ -102,14 +102,14 @@ user:
     name: [Annyong, Tobias]
 key.has.dots: yes
 ---
-> @greet@ @user.name.0@!
+@greet@ @user.name.0@!
 key has dots: @key\.has\.dots@
 ```
 
 Frontmatter values are accessed using dot-notation, resulting in this output:
 
 ```markdown
-> Hello Annyong!
+Hello Annyong!
 key has dots: yes
 ```
 

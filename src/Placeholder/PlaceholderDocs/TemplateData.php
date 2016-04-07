@@ -4,9 +4,9 @@ namespace nochso\WriteMe\Placeholder\PlaceholderDocs;
 use BetterReflection\Reflection\ReflectionClass;
 use nochso\Omni\Dot;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Markdown\DocBlock;
 use nochso\WriteMe\Markdown\Template as MarkdownTemplate;
 use nochso\WriteMe\Placeholder\OptionList;
-use phpDocumentor\Reflection\DocBlock;
 use Symfony\Component\Yaml\Yaml;
 
 class TemplateData extends MarkdownTemplate
