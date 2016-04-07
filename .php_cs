@@ -1,4 +1,7 @@
 <?php
 require_once 'vendor/autoload.php';
 use nochso\Omni\PhpCsFixer\PrettyPSR;
-return PrettyPSR::createIn(['src', 'test']);
+
+$config = PrettyPSR::createIn(['src', 'test']);
+$config->getFinder()->notName('DocBlockTest.php');
+return $config;
