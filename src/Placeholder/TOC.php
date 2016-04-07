@@ -24,7 +24,13 @@ class TOC extends AbstractPlaceholder
         $this->document = $call->getDocument();
         $parser = new Markdown\HeaderParser();
         $headerList = $parser->extractHeaders($this->document);
-        $toc = $this->createTOC($headerList);
+        if ($call->getMethod() === null) {
+            $toc = $this->createTOC($headerList);
+        } elseif ($call->getMethod() === 'sub') {
+            $toc = $this->createSubTOC($call, $headerList);
+        } else {
+            return;
+        }
         $call->replace($toc);
     }
 
@@ -67,12 +73,37 @@ class TOC extends AbstractPlaceholder
      */
     private function createTOC(Markdown\HeaderList $headerList)
     {
-        $toc = '';
         $maxDepth = $this->options->getValue('toc.max-depth');
         $headers = $headerList->getHeadersWithinMaxDepth($maxDepth);
+        return $this->formatTOC($headers);
+    }
+
+    private function createSubTOC(Call $call, Markdown\HeaderList $headerList)
+    {
+        $lines = Multiline::create($call->getDocument()->getContent());
+        $lineIndex = $lines->getLineIndexByCharacterPosition($call->getStartPositionOfRawCall());
+        $headers = $headerList->getHeadersBelowLine($lineIndex);
+        return $this->formatTOC($headers);
+    }
+
+    /**
+     * @param Markdown\Header[] $headers
+     *
+     * @return mixed
+     */
+    private function formatTOC(array $headers)
+    {
+        $toc = '';
+        // Normalize indentation of headers
+        $minLevel = PHP_INT_MAX;
         foreach ($headers as $header) {
-            $indent = str_repeat('    ', $header->getLevel() - 1);
-            $cleanHeader = new Markdown\Header($header->getLevel(), $this->convertMarkdownLinksToText($header->getText()));
+            $minLevel = min($minLevel, $header->getLevel());
+        }
+        foreach ($headers as $header) {
+            $indent = str_repeat('    ', $header->getLevel() - $minLevel);
+            // Recreate the header without Markdown links
+            $cleanHeader = clone $header;
+            $cleanHeader->setText($this->convertMarkdownLinksToText($header->getText()));
             $toc .= $indent . '- [' . $cleanHeader->getText() . '](#' . $cleanHeader->getAnchor() . ")\n";
         }
         return rtrim($toc, "\n");

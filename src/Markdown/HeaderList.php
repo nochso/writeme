@@ -50,4 +50,33 @@ class HeaderList
         };
         return array_filter($this->headers, $limiter);
     }
+
+    /**
+     * @param int $lineIndex
+     *
+     * @return \nochso\WriteMe\Markdown\Header[]
+     */
+    public function getHeadersBelowLine($lineIndex)
+    {
+        $below = false;
+        $headers = [];
+        // Keep track of indentation level of the directly preceding header
+        $parentLevel = 1;
+        foreach ($this->headers as $header) {
+            if (!$below) {
+                if ($header->getLineIndex() > $lineIndex) {
+                    // we've just passed the position of the placeholder call
+                    $below = true;
+                } else {
+                    // if not, keep updating the level of the previous header
+                    $parentLevel = $header->getLevel();
+                }
+            }
+            // Collect headers below parent, but ignore headers that are too "big"
+            if ($below && $header->getLevel() > $parentLevel) {
+                $headers[] = $header;
+            }
+        }
+        return $headers;
+    }
 }

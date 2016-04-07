@@ -72,6 +72,14 @@ class Header
     }
 
     /**
+     * @param string $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
+
+    /**
      * @see https://github.com/jch/html-pipeline/blob/master/lib/html/pipeline/toc_filter.rb
      *
      * @return string
