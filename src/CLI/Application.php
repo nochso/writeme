@@ -49,10 +49,10 @@ final class Application
         $this->context = $clif->newContext($globals);
         $this->stdio = Stdio::create();
         $this->placeholders = new PlaceholderCollection([
+            new Frontmatter(),
+            new TOC(),
             new API(),
             new Changelog(),
-            new TOC(),
-            new Frontmatter(),
         ]);
         $placeholderDocs = new PlaceholderDocs();
         $placeholderDocs->setPlaceholders($this->placeholders->toArray());
