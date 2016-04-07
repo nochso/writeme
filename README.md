@@ -170,6 +170,8 @@ Currently there are two placeholders, each with a different template:
 
 - `@api.summary@`
     - Indented list of namespaces, classes and methods including the first line of PHPDocs.
+- `@api.short@`
+    - Indented list of namespaces and classes including the first line of PHPDocs.
 - `@api.full@`
     - Verbose documentation for each class and methods.
 

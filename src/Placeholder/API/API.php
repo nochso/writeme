@@ -23,6 +23,8 @@ use nochso\WriteMe\Placeholder\OptionList;
  *
  * - `@api.summary@`
  *     - Indented list of namespaces, classes and methods including the first line of PHPDocs.
+ * - `@api.short@`
+ *     - Indented list of namespaces and classes including the first line of PHPDocs.
  * - `@api.full@`
  *     - Verbose documentation for each class and methods.
  */
@@ -39,19 +41,14 @@ class API extends AbstractPlaceholder
     public function call(Call $call)
     {
         parent::call($call);
-        if ($call->getMethod() !== 'summary' && $call->getMethod() !== 'full') {
+        if (!in_array($call->getMethod(), ['summary', 'full', 'short'])) {
             $call->replace('');
+            return;
         }
-
         $classes = $this->getClasses($call->getDocument());
-        if ($call->getMethod() === 'summary') {
-            $apiSummary = $this->createAPISummary($classes, $call->getDocument()->getFrontmatter());
-            $call->replace($apiSummary);
-        }
-        if ($call->getMethod() === 'full') {
-            $api = $this->createFullAPI($classes, $call->getDocument()->getFrontmatter());
-            $call->replace($api);
-        }
+        $template = new Template();
+        $template->prepare($classes, $call->getDocument()->getFrontmatter());
+        $call->replace($template->render($call->getMethod() . '.php'));
     }
 
     /**
