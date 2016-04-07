@@ -80,7 +80,7 @@ abstract class Template
     }
 
     /**
-     * getAvailableTemplates by looking into $baseFolder
+     * getAvailableTemplates by looking into $baseFolder.
      *
      * @return string[]
      */

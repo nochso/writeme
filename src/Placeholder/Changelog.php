@@ -26,7 +26,7 @@ class Changelog extends AbstractPlaceholder
     public function call(Call $call)
     {
         parent::call($call);
-        
+
         $changelogPath = $this->findChangelog($call->getDocument());
         $changelog = Document::fromFile($changelogPath);
         $parser = new HeaderParser();

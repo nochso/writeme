@@ -82,6 +82,6 @@ class FrontmatterTest extends \PHPUnit_Framework_TestCase
     public function testToString()
     {
         $fm = new Frontmatter(['foo' => 'bar']);
-        $this->assertSame("foo: bar\n", (string)$fm);
+        $this->assertSame("foo: bar\n", (string) $fm);
     }
 }

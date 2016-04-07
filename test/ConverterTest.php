@@ -45,7 +45,7 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test data for both escaping and unescaping
+     * Test data for both escaping and unescaping.
      */
     public function complementaryEscapeProvider()
     {

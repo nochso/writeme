@@ -1,5 +1,4 @@
 <?php
-
 namespace nochso\WriteMe;
 
 use nochso\WriteMe\Placeholder\Call;

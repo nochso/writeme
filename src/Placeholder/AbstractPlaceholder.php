@@ -21,9 +21,8 @@ abstract class AbstractPlaceholder implements Placeholder
     public function call(\nochso\WriteMe\Placeholder\Call $call)
     {
         $this->options = $this->getDefaultOptionList();
-        $this->options->prepare($call->getDocument()->getFrontmatter());        
+        $this->options->prepare($call->getDocument()->getFrontmatter());
     }
-
 
     /**
      * getOptions returns a list of options that are used by this placeholder.

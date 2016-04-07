@@ -193,7 +193,7 @@ TAG;
     {
         $this->outln();
         foreach ($list as $key => $value) {
-            if (Strings::startsWith((string)$value, (string)$key)) {
+            if (Strings::startsWith((string) $value, (string) $key)) {
                 $this->out(sprintf('<<yellow>>%s<<reset>>%s', $key, mb_substr($value, mb_strlen($key))));
             } else {
                 $this->out(sprintf('<<yellow>>%s<<reset>> %s', $key, $value));
