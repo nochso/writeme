@@ -4,8 +4,8 @@ namespace nochso\WriteMe\Placeholder\API;
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use nochso\WriteMe\Frontmatter;
+use nochso\WriteMe\Markdown\DocBlock;
 use nochso\WriteMe\Markdown\Template as MarkdownTemplate;
-use phpDocumentor\Reflection\DocBlock;
 
 /**
  * Template to help write custom API templates.
