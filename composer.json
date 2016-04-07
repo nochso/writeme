@@ -8,7 +8,7 @@
         "aura/cli": "^2.1",
         "nette/finder": "^2.3",
         "roave/better-reflection": "^1.0",
-        "nochso/omni": "^0.3.5"
+        "nochso/omni": "^0.3.6"
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "^1.11",
