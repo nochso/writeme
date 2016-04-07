@@ -64,7 +64,7 @@ class PlaceholderDocs extends AbstractPlaceholder
     public function getDefaultOptionList()
     {
         return new OptionList([
-            new Option('placeholder-docs.header-depth', 'Depth that headers start at', 2),
+            new Option('placeholder-docs.header-depth', 'Depth that headers start at', 1),
         ]);
     }
 

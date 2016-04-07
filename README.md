@@ -7,21 +7,39 @@ nochso/writeme makes creating and maintaining READMEs easier by combining frontm
 For example the following table of contents was generated from the `@toc@` placeholder in [WRITEME.md](WRITEME.md).
 
 - [nochso/writeme](#nochsowriteme)
+- [Introduction](#introduction)
 - [Installation](#installation)
 - [Requirements](#requirements)
-- [Introduction / example](#introduction--example)
 - [Usage](#usage)
+    - [Running writeme](#running-writeme)
     - [Initializing a new template](#initializing-a-new-template)
-    - [Custom frontmatter](#custom-frontmatter)
     - [Escaping placeholders](#escaping-placeholders)
     - [Specifying a target file name](#specifying-a-target-file-name)
-    - [Available placeholders](#available-placeholders)
-        - [API `@api@`](#api-api)
-        - [Changelog `@changelog@`](#changelog-changelog)
-        - [TOC `@toc@`](#toc-toc)
+- [Available placeholders](#available-placeholders)
+    - [Frontmatter `@*@`](#frontmatter-)
+    - [TOC `@toc@`](#toc-toc)
+    - [API `@api@`](#api-api)
+    - [Changelog `@changelog@`](#changelog-changelog)
 - [License](#license)
 
+# Introduction
+writeme can be considered a template engine with a focus on typical Markdown documents like readme, change logs,
+project documentation etc. Even though it's geared towards Markdown, other Markup languages and plain text will work.
 
+A writeme document can contain [YAML](https://learnxinyminutes.com/docs/yaml/) frontmatter and text content:
+
+```markdown
+---
+answer: 42
+---
+@answer@
+```
+The frontmatter placeholder `@answer@` will be converted to `42` by running `writeme <file>`. This is pretty basic,
+however there are other [types of placeholders](#available-placeholders) you can use.
+
+You could even write your own by implementing the `Placeholder` interface. For example the documentation of each
+placeholder is automatically generated from the PHPDocs of the placeholder classes. That way this README is easily
+updated.
 # Installation
 Installation through [Composer](https://getcomposer.org/) is preferred:
 
@@ -30,46 +48,16 @@ Installation through [Composer](https://getcomposer.org/) is preferred:
 The `writeme` executable PHP file is now available in the `vendor/bin` directory.
 
 # Requirements
-PHP 5.6.0, 7.0 or higher.
-
-# Introduction / example
-Create a file `WRITEME.md` containing YAML frontmatter and Markdown content:
-
-```markdown
----
-package: vendor/name
----
-# @package@
-
-@toc@
-
-# Requirements
-...
-```
-
-Running `php bin/writeme WRITEME.md` will parse the template and convert it to `README.md`:
-
-```markdown
-# vendor/name
-
-- [vendor/name](#vendor-name)
-- [Requirements](#requirements)
-
-# Requirements
-...
-```
-
-Because you've defined `package` in the frontmatter, `@package@` turns into `vendor/name`. You can freely define any
-placeholders you might need.
-
-The only exceptions are registered placeholders. For example `@toc@` was replaced with a table of contents extracted
-from the Markdown headers in your content.
+This project is written for and tested with PHP 5.6, 7.0 and HHVM.
 
 # Usage
 
-If you've required `nochso/writeme` in your project using Composer, you can run the `writeme` file located in `vendor/bin`:
+## Running writeme
 
-    php vendor/bin/writeme
+If you've required `nochso/writeme` in your project using Composer, you can run the `writeme` executable PHP file located in
+`vendor/bin`:
+
+    vendor/bin/writeme
 
 Run it without any arguments to get an overview of available arguments.
 
@@ -77,29 +65,18 @@ Run it without any arguments to get an overview of available arguments.
 writeme comes with a template for a typical Composer based project available on Packagist. You can initialize
 your own WRITEME.md based on this template:
 
-    php vendor/bin/writeme --init
+    writeme --init
 
 Simply answer the questions. Some are optional and pressing enter will either skip them or use defaults.
 
-Some placeholders have default settings: you will be asked if you want to override these. Your custom settings will then
-be added to the YAML frontmatter.
+Some placeholders have default settings: you will be asked if you want to override these. Your custom settings will
+then be added to the YAML frontmatter.
 
-Once you're done, you should have two new files. The template and the resulting output, usually `WRITEME.md` and `README.md`.
-
-## Custom frontmatter
-As long as a registered placeholder does not collide with the keys defined in the frontmatter, you can define any kind
-of structure:
-```yaml
-greet: Hello
-user:
-    name: [Annyong, Tobias]
-```
-You can access leaf nodes using dot notation (including escaping of dots, see `Dot` provided by [nochso/omni](https://github.com/nochso/omni)):
-
-`@greet@ @user.name.0@!` turns into `Hello Annyong!`
+Once you're done, you should have two new files. The template and the resulting output, usually `WRITEME.md` and
+`README.md`.
 
 ## Escaping placeholders
-To avoid replacing a placeholder, surround it with extra `@` characters: `@@ignored@@`.
+To avoid replacing a placeholder, escape the `@` characters with backslashes: `\@example.escape\@`.
 
 ## Specifying a target file name
 
@@ -110,9 +87,53 @@ This default behaviour can be overriden using the CLI option `--target <filename
 target: DOCS.md
 ```
 
-## Available placeholders
+# Available placeholders
 
-### API `@api@`
+## Frontmatter `@*@`
+
+Frontmatter placeholders return values defined in the frontmatter.
+
+You can define any kind of structure as long as it doesn't collide with the name of any other available placeholder:
+
+```yaml
+---
+greet: Hello
+user:
+    name: [Annyong, Tobias]
+key.has.dots: yes
+---
+> @greet@ @user.name.0@!
+key has dots: @key\.has\.dots@
+```
+
+Frontmatter values are accessed using dot-notation, resulting in this output:
+
+```markdown
+> Hello Annyong!
+key has dots: yes
+```
+
+Using dots in the keys themselves is possible by escaping them with backslashes. See the `Dot` class provided by
+[nochso/omni](https://github.com/nochso/omni).
+
+### Default options
+This placeholder has no default options.
+
+
+## TOC `@toc@`
+
+TOC placeholder creates a table of contents from Markdown headers.
+
+### Default options
+```yaml
+toc:
+    max-depth: 3
+```
+
+* `toc.max-depth`
+    * Maximum depth of header level to extract.
+
+## API `@api@`
 
 API creates documentation from your PHP code.
 
@@ -125,7 +146,7 @@ Currently there are two placeholders, each with a different template:
 - `@api.full@`
     - Verbose documentation for each class and methods.
 
-#### Default options
+### Default options
 ```yaml
 api:
     file: ['*.php']
@@ -140,7 +161,7 @@ api:
 * `api.folder-exclude`
     * List of folders to exclude from the search.
 
-### Changelog `@changelog@`
+## Changelog `@changelog@`
 
 Changelog fetches the most recent release notes from a CHANGELOG written in Markdown.
 
@@ -148,7 +169,7 @@ This placeholder is intended for changelogs following the [keep-a-changelog](htt
 However it should work for any Markdown formatted list of releases: each release is identified by a Markdown header.
 What kind of header marks a release can be specified by the `changelog.release-level` option.
 
-#### Default options
+### Default options
 ```yaml
 changelog:
     max-changes: 2
@@ -165,19 +186,6 @@ changelog:
     * Filename of the CHANGELOG to extract releases from.
 * `changelog.search-depth`
     * How deep the folders should be searched.
-
-### TOC `@toc@`
-
-TOC placeholder creates a table of contents from Markdown headers.
-
-#### Default options
-```yaml
-toc:
-    max-depth: 3
-```
-
-* `toc.max-depth`
-    * Maximum depth of header level to extract.
 
 
 # License
