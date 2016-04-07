@@ -2,7 +2,6 @@
 namespace nochso\WriteMe\Placeholder;
 
 use Nette\Utils\Finder;
-use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown\HeaderContent;
 use nochso\WriteMe\Markdown\HeaderParser;
@@ -24,16 +23,11 @@ class Changelog extends AbstractPlaceholder
         return 'changelog';
     }
 
-    /**
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
-        if (!Converter::contains($this->getIdentifier(), $document)) {
-            return;
-        }
-        $changelogPath = $this->findChangelog($document);
+        parent::call($call);
+        
+        $changelogPath = $this->findChangelog($call->getDocument());
         $changelog = Document::fromFile($changelogPath);
         $parser = new HeaderParser();
         $headerContentList = $parser->extractHeaderContents($changelog);
@@ -57,7 +51,7 @@ class Changelog extends AbstractPlaceholder
                 $latestChanges .= $headerContent->toMarkdown() . "\n";
             }
         }
-        Converter::replace($this, $latestChanges, $document);
+        $call->replace($latestChanges);
     }
 
     /**
@@ -71,6 +65,16 @@ class Changelog extends AbstractPlaceholder
             new Option('changelog.file', 'Filename of the CHANGELOG to extract releases from.', 'CHANGELOG.md'),
             new Option('changelog.search-depth', 'How deep the folders should be searched.', 2),
         ]);
+    }
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_FIRST];
     }
 
     /**

@@ -9,10 +9,11 @@ use Aura\Cli\Status;
 use nochso\Omni\VersionInfo;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
-use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Markdown\InteractiveTemplate;
 use nochso\WriteMe\Placeholder\API\API;
 use nochso\WriteMe\Placeholder\Changelog;
+use nochso\WriteMe\Placeholder\Frontmatter;
+use nochso\WriteMe\Placeholder\PlaceholderCollection;
 use nochso\WriteMe\Placeholder\PlaceholderDocs\PlaceholderDocs;
 use nochso\WriteMe\Placeholder\TOC;
 
@@ -30,11 +31,11 @@ final class Application
      */
     private $context;
     /**
-     * @var \nochso\WriteMe\Interfaces\Placeholder[]
+     * @var \nochso\WriteMe\Placeholder\PlaceholderCollection
      */
-    private $placeholders = [];
+    private $placeholders;
     /**
-     * @var \nochso\WriteMe\Interfaces\Converter
+     * @var \nochso\WriteMe\Converter
      */
     private $converter;
 
@@ -47,19 +48,16 @@ final class Application
         }
         $this->context = $clif->newContext($globals);
         $this->stdio = Stdio::create();
+        $this->placeholders = new PlaceholderCollection([
+            new API(),
+            new Changelog(),
+            new TOC(),
+            new Frontmatter(),
+        ]);
         $placeholderDocs = new PlaceholderDocs();
-        $this->addPlaceholder(new API());
-        $this->addPlaceholder(new Changelog());
-        $this->addPlaceholder($placeholderDocs);
-        $this->addPlaceholder(new TOC());
-        // Docs should know about all placeholders, but TOC must be applied last
-        $placeholderDocs->setPlaceholders($this->placeholders);
+        $placeholderDocs->setPlaceholders($this->placeholders->toArray());
+        $this->placeholders->add($placeholderDocs);
         $this->converter = new Converter();
-    }
-
-    public function addPlaceholder(Placeholder $placeholder)
-    {
-        $this->placeholders[$placeholder->getIdentifier()] = $placeholder;
     }
 
     /**

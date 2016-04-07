@@ -1,43 +1,37 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
-use nochso\WriteMe\Converter;
-use nochso\WriteMe\Document;
+use nochso\WriteMe\Interfaces\Placeholder;
 
 class Frontmatter extends AbstractPlaceholder
 {
-    /**
-     * @var string
-     */
-    private $identifier;
-    /**
-     * @var mixed
-     */
-    private $value;
-
-    /**
-     * @param string $identifier
-     * @param mixed  $value
-     */
-    public function __construct($identifier, $value)
-    {
-        $this->identifier = $identifier;
-        $this->value = $value;
-    }
-
     /**
      * @return string
      */
     public function getIdentifier()
     {
-        return $this->identifier;
+        return Placeholder::IDENTIFIER_MATCH_ALL;
+    }
+
+    public function call(Call $call)
+    {
+        $path = $call->getIdentifier();
+        if ($call->getMethod() !== null) {
+            $path .= '.' . $call->getMethod();
+        }
+        $value = $call->getDocument()->getFrontmatter()->get($path);
+        if ($value !== null) {
+            $call->replace($value);
+        }
     }
 
     /**
-     * @param \nochso\WriteMe\Document $document
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
      */
-    public function apply(Document $document)
+    public function getCallPriorities()
     {
-        Converter::replace($this, $this->value, $document);
+        return [self::PRIORITY_FIRST];
     }
 }

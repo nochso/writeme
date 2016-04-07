@@ -2,33 +2,31 @@
 namespace nochso\WriteMe\Test\Placeholder;
 
 use nochso\WriteMe\Document;
+use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\TOC;
 
 class TOCTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider applyProvider
+     * @dataProvider callProvider
      *
      * @param string $input
      * @param string $expected
      */
-    public function testApply($input, $expected)
+    public function testCall($input, $expected)
     {
         $document = new Document($input);
         $toc = new TOC();
-        $toc->apply($document);
+        $call = Call::extractFirstCall($document);
+        $toc->call($call);
         $this->assertSame($expected, $document->getContent());
     }
 
-    public function applyProvider()
+    public function callProvider()
     {
         return [
             [
                 '@toc@',
-                '',
-            ],
-            [
-                '',
                 '',
             ],
             [

@@ -1,10 +1,31 @@
 <?php
 namespace nochso\WriteMe\Interfaces;
 
-use nochso\WriteMe\Document;
+use nochso\WriteMe\Placeholder\Call;
 
+/**
+ * Placeholder interface common to all placeholders that can be called/applied
+ * to a document.
+ */
 interface Placeholder
 {
+    /**
+     * Priority for placeholders that are independent of others.
+     */
+    const PRIORITY_FIRST = 0;
+    /**
+     * Priority for placeholders that need to be called after others have been
+     * called.
+     */
+    const PRIORITY_LAST = 1000;
+
+    /**
+     * Special identifier for placeholders that can react to any identifier.
+     *
+     * @see \nochso\WriteMe\Placeholder\Frontmatter
+     */
+    const IDENTIFIER_MATCH_ALL = '*';
+
     /**
      * getIdentifier returns the default identifier to invoke this placeholder.
      *
@@ -12,23 +33,35 @@ interface Placeholder
      * recognized as a placeholder. This **overrides** default behaviour of
      * freely defining placeholders in the frontmatter: `@motd@` will not be
      * replaced by its frontmatter content. Instead the placeholder needs to
-     * modify the document itself in method `apply`.
+     * modify the document itself when being `call`ed.
      *
      * @return string
      */
     public function getIdentifier();
 
     /**
-     * Apply changes to the content of a document.
+     * Call a method on the placeholder and expect it to modify the document.
      *
-     * @param \nochso\WriteMe\Document $document
+     * @param \nochso\WriteMe\Placeholder\Call $call Contains an optional method name and parameters
      */
-    public function apply(Document $document);
+    public function call(Call $call);
 
     /**
-     * getDefaultOptionList returns the list of **default** options that are used by this placeholder.
+     * getDefaultOptionList returns the list of **default** options that are
+     * used by this placeholder.
      *
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
     public function getDefaultOptionList();
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called
+     * between multiple passes.
+     *
+     * Usually one of the `PRIORITY_*` constants defined by this interface will
+     * suffice. However any integer can be used.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities();
 }

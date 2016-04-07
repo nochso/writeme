@@ -1,8 +1,6 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
-use nochso\WriteMe\Converter;
-use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown;
 
 /**
@@ -20,17 +18,14 @@ class TOC extends AbstractPlaceholder
         return 'toc';
     }
 
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
-        if (!Converter::contains($this, $document)) {
-            return;
-        }
-        $this->document = $document;
+        parent::call($call);
+        $this->document = $call->getDocument();
         $parser = new Markdown\HeaderParser();
-        $headerList = $parser->extractHeaders($document);
+        $headerList = $parser->extractHeaders($this->document);
         $toc = $this->createTOC($headerList);
-        Converter::replace($this, $toc, $document);
+        $call->replace($toc);
     }
 
     /**
@@ -81,5 +76,15 @@ class TOC extends AbstractPlaceholder
             $toc .= $indent . '- [' . $cleanHeader->getText() . '](#' . $cleanHeader->getAnchor() . ")\n";
         }
         return rtrim($toc, "\n");
+    }
+
+    /**
+     * TOC must be called as late as possible!
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_LAST];
     }
 }

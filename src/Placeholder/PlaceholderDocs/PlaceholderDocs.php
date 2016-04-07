@@ -3,8 +3,8 @@ namespace nochso\WriteMe\Placeholder\PlaceholderDocs;
 
 use BetterReflection\Reflection\ReflectionClass;
 use nochso\WriteMe\Converter;
-use nochso\WriteMe\Document;
 use nochso\WriteMe\Placeholder\AbstractPlaceholder;
+use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\Option;
 use nochso\WriteMe\Placeholder\OptionList;
 
@@ -42,12 +42,9 @@ class PlaceholderDocs extends AbstractPlaceholder
         return 'placeholder-docs';
     }
 
-    /**
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
+        parent::call($call);
 
         $classes = [];
         foreach ($this->placeholders as $placeholder) {
@@ -57,7 +54,8 @@ class PlaceholderDocs extends AbstractPlaceholder
         $template->setHeaderStartLevel($this->options->getValue('placeholder-docs.header-depth'));
         $template->prepare($classes, $this->placeholders);
         $docs = $template->render('full.php');
-        Converter::replace($this, $docs, $document);
+        $docs = (new Converter())->escape($docs); 
+        $call->replace($docs);
     }
 
     /**
@@ -68,5 +66,15 @@ class PlaceholderDocs extends AbstractPlaceholder
         return new OptionList([
             new Option('placeholder-docs.header-depth', 'Depth that headers start at', 2),
         ]);
+    }
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_FIRST];
     }
 }

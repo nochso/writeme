@@ -7,10 +7,10 @@ use BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Nette\Utils\Finder;
 use nochso\Omni\Path;
-use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Placeholder\AbstractPlaceholder;
+use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\Option;
 use nochso\WriteMe\Placeholder\OptionList;
 
@@ -36,26 +36,21 @@ class API extends AbstractPlaceholder
         return 'api';
     }
 
-    /**
-     * @param \nochso\WriteMe\Document $document
-     */
-    public function apply(Document $document)
+    public function call(Call $call)
     {
-        parent::apply($document);
-        $doSummary = Converter::contains('api.summary', $document);
-        $doFullApi = Converter::contains('api.full', $document);
-        if (!$doSummary && !$doFullApi) {
-            return;
+        parent::call($call);
+        if ($call->getMethod() !== 'summary' && $call->getMethod() !== 'full') {
+            $call->replace('');
         }
 
-        $classes = $this->getClasses($document);
-        if ($doSummary) {
-            $apiSummary = $this->createAPISummary($classes, $document->getFrontmatter());
-            Converter::replace('api.summary', $apiSummary, $document);
+        $classes = $this->getClasses($call->getDocument());
+        if ($call->getMethod() === 'summary') {
+            $apiSummary = $this->createAPISummary($classes, $call->getDocument()->getFrontmatter());
+            $call->replace($apiSummary);
         }
-        if ($doFullApi) {
-            $api = $this->createFullAPI($classes, $document->getFrontmatter());
-            Converter::replace('api.full', $api, $document);
+        if ($call->getMethod() === 'full') {
+            $api = $this->createFullAPI($classes, $call->getDocument()->getFrontmatter());
+            $call->replace($api);
         }
     }
 
@@ -69,6 +64,16 @@ class API extends AbstractPlaceholder
             new Option('api.from', 'List of folders to search files in.', ['.']),
             new Option('api.folder-exclude', 'List of folders to exclude from the search.', ['vendor', 'test', 'tests']),
         ]);
+    }
+
+    /**
+     * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
+     *
+     * @return int[]
+     */
+    public function getCallPriorities()
+    {
+        return [self::PRIORITY_FIRST];
     }
 
     /**
