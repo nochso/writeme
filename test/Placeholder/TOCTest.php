@@ -8,21 +8,22 @@ use nochso\WriteMe\Placeholder\TOC;
 class TOCTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider callProvider
+     * @dataProvider tocProvider
      *
      * @param string $input
      * @param string $expected
      */
-    public function testCall($input, $expected)
+    public function testToc($input, $expected)
     {
         $document = new Document($input);
         $toc = new TOC();
+        $toc->prepare($document);
         $call = Call::extractFirstCall($document);
-        $toc->call($call);
+        $toc->toc($call);
         $this->assertSame($expected, $document->getContent());
     }
 
-    public function callProvider()
+    public function tocProvider()
     {
         return [
             [
@@ -41,6 +42,28 @@ class TOCTest extends \PHPUnit_Framework_TestCase
                 "@toc@\n# [link text](target.md) in **header**",
                 "- [link text in **header**](#link-text-in-header)\n# [link text](target.md) in **header**",
             ],
+        ];
+    }
+
+    /**
+     * @dataProvider tocSubProvider
+     *
+     * @param string $input
+     * @param string $expected
+     */
+    public function testTocSub($input, $expected)
+    {
+        $document = new Document($input);
+        $toc = new TOC();
+        $toc->prepare($document);
+        $call = Call::extractFirstCall($document);
+        $toc->tocSub($call);
+        $this->assertSame($expected, $document->getContent());
+    }
+
+    public function tocSubProvider()
+    {
+        return [
             'Sub-TOC and no preceding header' => [
                 <<<TAG
 @toc.sub@
@@ -48,7 +71,7 @@ class TOCTest extends \PHPUnit_Framework_TestCase
 ## 2-2
 # ignore me
 TAG
-,
+                ,
                 <<<TAG
 - [2-1](#2-1)
 - [2-2](#2-2)
@@ -65,7 +88,7 @@ TAG
 ## sub 1
 # ignore me again
 TAG
-,
+                ,
                 <<<TAG
 # ignore me
 - [sub 1](#sub-1)

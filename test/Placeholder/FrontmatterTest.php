@@ -8,21 +8,21 @@ use nochso\WriteMe\Placeholder\Frontmatter;
 class FrontmatterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @dataProvider callProvider
+     * @dataProvider wildcardProvider
      *
      * @param string $expected
      * @param string $input
      */
-    public function testCall($expected, $input)
+    public function testWildcard($expected, $input)
     {
         $document = new Document($input);
         $frontmatter = new Frontmatter();
         $call = Call::extractFirstCall($document);
-        $frontmatter->call($call);
+        $frontmatter->wildcard($call);
         $this->assertSame($expected, $document->getContent());
     }
 
-    public function callProvider()
+    public function wildcardProvider()
     {
         return [
             ['bar', "---\nfoo: bar\n---\n@foo@"],
@@ -30,12 +30,12 @@ class FrontmatterTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    public function testCall_WhenFrontmatterIsUnknown_MustNotBeReplaced()
+    public function testWildcard_WhenFrontmatterIsUnknown_MustNotBeReplaced()
     {
         $document = new Document('@foo@');
         $frontmatter = new Frontmatter();
         $call = Call::extractFirstCall($document);
-        $frontmatter->call($call);
+        $frontmatter->wildcard($call);
         $this->assertFalse($call->isReplaced());
         $this->assertSame('@foo@', $document->getContent());
     }
