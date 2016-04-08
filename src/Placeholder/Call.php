@@ -120,6 +120,17 @@ class Call
     }
 
     /**
+     * getDotName of the method call by combining identifier and method.
+     *
+     * @return string
+     */
+    public function getDotName()
+    {
+        $name = $this->getIdentifier() . '.' . $this->getMethod();
+        return trim($name, '.');
+    }
+
+    /**
      * @return \mixed[]|array List of parameter values. Can consist of (an array of) any PHP scalar value.
      */
     public function getParameters()
