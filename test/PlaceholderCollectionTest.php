@@ -43,25 +43,25 @@ class PlaceholderCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame([Placeholder::PRIORITY_FIRST, Placeholder::PRIORITY_LAST], $collection->getPriorities(), 'Priorities must be sorted low to high');
     }
 
-    public function testGetPlaceholdersForCall_WhenNoPlaceholdersFound_MustReturnEmptyArray()
+    public function testGetMethodsForCall_WhenNoMethodsFound_MustReturnEmptyArray()
     {
         $collection = new PlaceholderCollection();
         $call = new Call();
-        $this->assertSame([], $collection->getPlaceholdersForCall($call)->toArray());
+        $this->assertSame([], $collection->getMethodsForCall($call));
     }
 
-    public function testGetPlaceholdersForCall_SpecificPlaceholdersHavePriorityOverPotentialFrontmatter()
+    public function testGetMethodsForCall_SpecificPlaceholdersHavePriorityOverPotentialFrontmatter()
     {
         // Frontmatter must not accidentally replace a @toc@ call even though it *theoretically* would be frontmatter.
         $collection = new PlaceholderCollection([new TOC(), new Frontmatter()]);
         $document = new Document("---\ntoc: foo\n---\n@toc@");
         $call = Call::extractFirstCall($document, Placeholder::PRIORITY_FIRST);
-        $placeholders = $collection->getPlaceholdersForCall($call)->toArray();
-        $this->assertCount(0, $placeholders);
+        $methods = $collection->getMethodsForCall($call);
+        $this->assertCount(0, $methods);
 
         $tocCall = Call::extractFirstCall($document, Placeholder::PRIORITY_LAST);
-        $placeholders = $collection->getPlaceholdersForCall($tocCall)->toArray();
-        $this->assertCount(1, $placeholders);
-        $this->assertSame(TOC::class, get_class($placeholders[0]));
+        $methods = $collection->getMethodsForCall($tocCall);
+        $this->assertCount(1, $methods);
+        $this->assertSame(TOC::class, get_class($methods[0]->getPlaceholder()));
     }
 }

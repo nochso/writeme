@@ -50,10 +50,10 @@ final class Converter
         $offset = 0;
         $call = Call::extractFirstCall($document, $priority, $offset);
         while ($call !== null) {
-            $callPlaceholders = $placeholders->getPlaceholdersForCall($call);
+            $methods = $placeholders->getMethodsForCall($call);
             $isReplaced = false;
-            foreach ($callPlaceholders->toArray() as $placeholder) {
-                $placeholder->call($call);
+            foreach ($methods as $method) {
+                $method->call($call);
                 if ($call->isReplaced()) {
                     $isReplaced = true;
                     break;

@@ -75,28 +75,28 @@ class PlaceholderCollection
     }
 
     /**
-     * getPlaceholdersForCall returns all placeholders that could potentially handle this call.
+     * getMethodsForCall by Call method name and priority.
      *
      * @param \nochso\WriteMe\Placeholder\Call $call
      *
-     * @return \nochso\WriteMe\Placeholder\PlaceholderCollection
+     * @return \nochso\WriteMe\Placeholder\Method[] A list of matching methods of this collection.
      */
-    public function getPlaceholdersForCall(Call $call)
+    public function getMethodsForCall(Call $call)
     {
-        // Catch-all placeholders as fallback 
-        $identifier = Placeholder::IDENTIFIER_MATCH_ALL;
-        // Use a more specific placeholder if possible
-        if (isset($this->placeholderMap[$call->getIdentifier()])) {
-            $identifier = $call->getIdentifier();
+        $name = $call->getDotName();
+        if (!isset($this->methods[$name])) {
+            $name = Method::WILDCARD_METHOD_NAME;
         }
-        $placeholders = Dot::get($this->placeholderMap, $identifier, []);
-        $priorityPlaceholders = [];
-        foreach ($placeholders as $placeholder) {
-            if (in_array($call->getPriority(), $placeholder->getCallPriorities())) {
-                $priorityPlaceholders[] = $placeholder;
+        if (!isset($this->methods[$name])) {
+            return [];
+        }
+        $methods = [];
+        foreach ($this->methods[$name] as $method) {
+            if ($method->hasPriorityOfCall($call)) {
+                $methods[] = $method;
             }
         }
-        return new self($priorityPlaceholders);
+        return $methods;
     }
 
     /**
