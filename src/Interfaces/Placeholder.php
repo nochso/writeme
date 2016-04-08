@@ -1,6 +1,7 @@
 <?php
 namespace nochso\WriteMe\Interfaces;
 
+use nochso\WriteMe\Document;
 use nochso\WriteMe\Placeholder\Call;
 
 /**
@@ -45,6 +46,14 @@ interface Placeholder
      * @param \nochso\WriteMe\Placeholder\Call $call Contains an optional method name and parameters
      */
     public function call(Call $call);
+
+
+    /**
+     * Prepare a placeholder before calling its methods.
+     *
+     * @param \nochso\WriteMe\Document $document
+     */
+    public function prepare(Document $document);
 
     /**
      * getDefaultOptionList returns the list of **default** options that are
