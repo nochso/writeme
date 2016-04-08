@@ -1,6 +1,7 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
+use nochso\Omni\Arrays;
 use nochso\Omni\Dot;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
@@ -91,17 +92,13 @@ class PlaceholderCollection
     }
 
     /**
-     * toArray returns a flat array of all placeholders.
+     * toArray returns all placeholders.
      * 
      * @return \nochso\WriteMe\Interfaces\Placeholder[]
      */
     public function toArray()
     {
-        $allPlaceholders = [];
-        foreach (array_values($this->placeholderMap) as $placeholders) {
-            $allPlaceholders = array_merge($allPlaceholders, $placeholders);
-        }
-        return $allPlaceholders;
+        return Arrays::flatten($this->placeholderMap);
     }
 
     /**
