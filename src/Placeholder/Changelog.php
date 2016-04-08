@@ -23,37 +23,6 @@ class Changelog extends AbstractPlaceholder
         return 'changelog';
     }
 
-    public function call(Call $call)
-    {
-        parent::call($call);
-
-        $changelogPath = $this->findChangelog($call->getDocument());
-        $changelog = Document::fromFile($changelogPath);
-        $parser = new HeaderParser();
-        $headerContentList = $parser->extractHeaderContents($changelog);
-        $maxChanges = $this->options->getValue('changelog.max-changes');
-        $releaseLevel = $this->options->getValue('changelog.release-level');
-        $changes = 0;
-        $latestChanges = '';
-        /** @var HeaderContent $headerContent */
-        foreach ($headerContentList->getHeaders() as $headerContent) {
-            // This header marks a release
-            if ($headerContent->getLevel() === $releaseLevel) {
-                $changes++;
-                // Stop if we reached the max amount of changes.
-                if ($changes > $maxChanges) {
-                    break;
-                }
-                $latestChanges .= $headerContent->toMarkdown() . "\n";
-            }
-            // Keep adding sub-HeaderContent if we're within a release
-            if ($changes > 0 && $headerContent->getLevel() > $releaseLevel) {
-                $latestChanges .= $headerContent->toMarkdown() . "\n";
-            }
-        }
-        $call->replace($latestChanges);
-    }
-
     public function changelog(Call $call)
     {
         $changelogPath = $this->findChangelog($call->getDocument());

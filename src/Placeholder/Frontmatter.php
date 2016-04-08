@@ -39,18 +39,6 @@ class Frontmatter extends AbstractPlaceholder
         return Placeholder::IDENTIFIER_MATCH_ALL;
     }
 
-    public function call(Call $call)
-    {
-        $path = $call->getIdentifier();
-        if ($call->getMethod() !== null) {
-            $path .= '.' . $call->getMethod();
-        }
-        $value = $call->getDocument()->getFrontmatter()->get($path);
-        if ($value !== null) {
-            $call->replace($value);
-        }
-    }
-
     public function wildcard(Call $call)
     {
         $path = $call->getIdentifier();

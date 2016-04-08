@@ -19,12 +19,6 @@ abstract class AbstractPlaceholder implements Placeholder
      */
     abstract public function getIdentifier();
 
-    public function call(\nochso\WriteMe\Placeholder\Call $call)
-    {
-        $this->options = $this->getDefaultOptionList();
-        $this->options->prepare($call->getDocument()->getFrontmatter());
-    }
-
     /**
      * Prepare options by merging default options with frontmatter.
      *

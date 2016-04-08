@@ -38,19 +38,6 @@ class API extends AbstractPlaceholder
         return 'api';
     }
 
-    public function call(Call $call)
-    {
-        parent::call($call);
-        if (!in_array($call->getMethod(), ['summary', 'full', 'short'])) {
-            $call->replace('');
-            return;
-        }
-        $classes = $this->getClasses($call->getDocument());
-        $template = new Template();
-        $template->prepare($classes, $call->getDocument()->getFrontmatter());
-        $call->replace($template->render($call->getMethod() . '.php'));
-    }
-
     public function api(Call $call, $templateName)
     {
         $classes = $this->getClasses($call->getDocument());
