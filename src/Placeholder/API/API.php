@@ -74,32 +74,6 @@ class API extends AbstractPlaceholder
     }
 
     /**
-     * @param \BetterReflection\Reflection\ReflectionClass[] $classes
-     * @param \nochso\WriteMe\Frontmatter                    $frontmatter
-     *
-     * @return string
-     */
-    private function createAPISummary(array $classes, Frontmatter $frontmatter)
-    {
-        $template = new Template();
-        $template->prepare($classes, $frontmatter);
-        return $template->render('summary.php');
-    }
-
-    /**
-     * @param \BetterReflection\Reflection\ReflectionClass[] $classes
-     * @param \nochso\WriteMe\Frontmatter                    $frontmatter
-     *
-     * @return string
-     */
-    private function createFullAPI(array $classes, Frontmatter $frontmatter)
-    {
-        $template = new Template();
-        $template->prepare($classes, $frontmatter);
-        return $template->render('full.php');
-    }
-
-    /**
      * @param \nochso\WriteMe\Document $doc
      *
      * @return \Nette\Utils\Finder
