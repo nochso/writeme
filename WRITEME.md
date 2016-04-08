@@ -82,7 +82,7 @@ target: DOCS.md
 ```
 
 # Available placeholders
-@placeholder-docs@
+@writeme.placeholder.docs@
 
 # License
 @package@ is released under the @license.name@ license. See the [LICENSE](@license.file@) for the full license text.
