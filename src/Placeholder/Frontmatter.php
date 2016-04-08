@@ -51,6 +51,18 @@ class Frontmatter extends AbstractPlaceholder
         }
     }
 
+    public function wildcard(Call $call)
+    {
+        $path = $call->getIdentifier();
+        if ($call->getMethod() !== null) {
+            $path .= '.' . $call->getMethod();
+        }
+        $value = $call->getDocument()->getFrontmatter()->get($path);
+        if ($value !== null) {
+            $call->replace($value);
+        }
+    }
+
     /**
      * getCallPriorities defining when a Placeholder is supposed to be called between multiple passes.
      *

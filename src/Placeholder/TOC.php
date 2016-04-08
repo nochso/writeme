@@ -62,6 +62,27 @@ class TOC extends AbstractPlaceholder
         $call->replace($toc);
     }
 
+    public function toc(Call $call)
+    {
+        $parser = new Markdown\HeaderParser();
+        $headerList = $parser->extractHeaders($call->getDocument());
+        $maxDepth = $this->options->getValue('toc.max-depth');
+        $headers = $headerList->getHeadersWithinMaxDepth($maxDepth);
+        $toc = $this->formatTOC($headers);
+        $call->replace($toc);
+    }
+
+    public function tocSub(Call $call)
+    {
+        $parser = new Markdown\HeaderParser();
+        $headerList = $parser->extractHeaders($call->getDocument());
+        $lines = Multiline::create($call->getDocument()->getContent());
+        $lineIndex = $lines->getLineIndexByCharacterPosition($call->getStartPositionOfRawCall());
+        $headers = $headerList->getHeadersBelowLine($lineIndex);
+        $toc = $this->formatTOC($headers);
+        $call->replace($toc);
+    }
+
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList[]
      */

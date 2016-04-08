@@ -51,6 +51,14 @@ class API extends AbstractPlaceholder
         $call->replace($template->render($call->getMethod() . '.php'));
     }
 
+    public function api(Call $call, $templateName)
+    {
+        $classes = $this->getClasses($call->getDocument());
+        $template = new Template();
+        $template->prepare($classes, $call->getDocument()->getFrontmatter());
+        $call->replace($template->render($templateName . '.php'));
+    }
+
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList
      */

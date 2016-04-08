@@ -58,6 +58,20 @@ class PlaceholderDocs extends AbstractPlaceholder
         $call->replace($docs);
     }
 
+    public function writemePlaceholderDocs(Call $call)
+    {
+        $classes = [];
+        foreach ($this->placeholders as $placeholder) {
+            $classes[$placeholder->getIdentifier()] = ReflectionClass::createFromInstance($placeholder);
+        }
+        $template = new TemplateData();
+        $template->setHeaderStartLevel($this->options->getValue('placeholder-docs.header-depth'));
+        $template->prepare($classes, $this->placeholders);
+        $docs = $template->render('full.php');
+        $docs = (new Converter())->escape($docs);
+        $call->replace($docs);
+    }
+
     /**
      * @return \nochso\WriteMe\Placeholder\OptionList
      */
