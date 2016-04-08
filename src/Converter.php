@@ -14,6 +14,7 @@ final class Converter
      */
     public function convert(Document $document, PlaceholderCollection $placeholders)
     {
+        $placeholders->preparePlaceholders($document);
         $this->applyPlaceholders($document, $placeholders);
         // Unescape left-over placeholders.
         $document->setContent($this->unescape($document->getContent()));

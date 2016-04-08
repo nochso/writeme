@@ -1,6 +1,7 @@
 <?php
 namespace nochso\WriteMe\Placeholder;
 
+use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 
 /**
@@ -22,6 +23,17 @@ abstract class AbstractPlaceholder implements Placeholder
     {
         $this->options = $this->getDefaultOptionList();
         $this->options->prepare($call->getDocument()->getFrontmatter());
+    }
+
+    /**
+     * Prepare options by merging default options with frontmatter.
+     *
+     * @param \nochso\WriteMe\Document $document
+     */
+    public function prepare(Document $document)
+    {
+        $this->options = $this->getDefaultOptionList();
+        $this->options->prepare($document->getFrontmatter());
     }
 
     /**

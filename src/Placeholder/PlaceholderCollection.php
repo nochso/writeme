@@ -2,6 +2,7 @@
 namespace nochso\WriteMe\Placeholder;
 
 use nochso\Omni\Dot;
+use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 
 /**
@@ -47,6 +48,20 @@ class PlaceholderCollection
     {
         foreach ($placeholders as $placeholder) {
             $this->add($placeholder);
+        }
+    }
+
+    /**
+     * preparePlaceholders with the document they're going to be working with.
+     *
+     * Should be called once before any Calls take place.
+     *
+     * @param \nochso\WriteMe\Document $document
+     */
+    public function preparePlaceholders(Document $document)
+    {
+        foreach ($this->toArray() as $placeholder) {
+            $placeholder->prepare($document);
         }
     }
 
