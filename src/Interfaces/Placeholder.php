@@ -41,14 +41,6 @@ interface Placeholder
     public function getIdentifier();
 
     /**
-     * Call a method on the placeholder and expect it to modify the document.
-     *
-     * @param \nochso\WriteMe\Placeholder\Call $call Contains an optional method name and parameters
-     */
-    public function call(Call $call);
-
-
-    /**
      * Prepare a placeholder before calling its methods.
      *
      * @param \nochso\WriteMe\Document $document
