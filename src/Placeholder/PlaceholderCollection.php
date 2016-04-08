@@ -15,6 +15,10 @@ class PlaceholderCollection
      * @var \nochso\WriteMe\Interfaces\Placeholder[][] Identifier => array of Placeholders
      */
     private $placeholderMap = [];
+    /**
+     * @var \nochso\WriteMe\Placeholder\Method[][] dotted method name => array of Method objects
+     */
+    private $methods = [];
 
     /**
      * Construct a new collection of Placeholder objects.
@@ -38,6 +42,10 @@ class PlaceholderCollection
             $this->placeholderMap[$placeholder->getIdentifier()] = [];
         }
         $this->placeholderMap[$placeholder->getIdentifier()][] = $placeholder;
+        $methods = (new MethodFactory())->createFromPlaceholder($placeholder);
+        foreach ($methods as $method) {
+            $this->methods[$method->getDotName()][] = $method;
+        }
     }
 
     /**
