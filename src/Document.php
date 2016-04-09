@@ -82,11 +82,11 @@ class Document
     }
 
     /**
-     * @param string|null $overrideTarget
+     * @param string $overrideTarget
      *
      * @return string
      */
-    public function saveTarget($overrideTarget = null)
+    public function getTargetFilepath($overrideTarget)
     {
         $target = $overrideTarget;
         // --target is optional. If empty, try the frontmatter key.
@@ -111,6 +111,17 @@ class Document
         if ($target === null) {
             throw new \RuntimeException(sprintf('Could not guess target file name from CLI option, frontmatter key "target" or source file name "%s".', $this->filepath));
         }
+        return $target;
+    }
+
+    /**
+     * @param string|null $overrideTarget
+     *
+     * @return string
+     */
+    public function saveTarget($overrideTarget = null)
+    {
+        $target = $this->getTargetFilepath($overrideTarget);
         file_put_contents($target, $this->content);
         return $target;
     }
