@@ -116,6 +116,11 @@ key has dots: yes
 Using dots in the keys themselves is possible by escaping them with backslashes. See the `Dot` class provided by
 [nochso/omni](https://github.com/nochso/omni).
 
+### `@*@`
+
+
+
+
 ### Default options
 This placeholder has no default options.
 
@@ -124,12 +129,16 @@ This placeholder has no default options.
 
 TOC placeholder creates a table of contents from Markdown headers.
 
-There are two types of tables:
+### `@toc@`
 
-`@toc@` collects **all** Markdown headers contained in the document with a
+Collects **all** Markdown headers contained in the document with a
 configurable maximum depth.
 
+
+### `@toc.sub@`
+
 `@toc.sub@` collects Markdown headers that are **below** the placeholder and on the same or deeper level.
+
 If there's a header above the placeholder, its depth will be used as a minimum depth.
 If there's no header above the placeholder, the first header after the placeholder will be used for the minimum depth.
 There is currently no maximum depth for `@toc.sub@`.
@@ -151,6 +160,7 @@ is converted into
 # ignore me again
 ```
 
+
 ### Default options
 ```yaml
 toc:
@@ -166,14 +176,17 @@ API creates documentation from your PHP code.
 
 By default it will search for all `*.php` files in your project excluding the Composer `vendor` and `test*` folders.
 
-Currently there are two placeholders, each with a different template:
+Available template names:
 
-- `@api.summary@`
-    - Indented list of namespaces, classes and methods including the first line of PHPDocs.
-- `@api.short@`
-    - Indented list of namespaces and classes including the first line of PHPDocs.
-- `@api.full@`
-    - Verbose documentation for each class and methods.
+- `summary` - Indented list of namespaces, classes and methods including the first line of PHPDocs.
+- `short` - Indented list of namespaces and classes including the first line of PHPDocs.
+- `full` - Verbose documentation for each class and methods.
+
+### `@api($templateName)@`
+
+
+* string `$templateName` 'summary', 'short' or 'full'
+
 
 ### Default options
 ```yaml
@@ -197,6 +210,11 @@ Changelog fetches the most recent release notes from a CHANGELOG written in Mark
 This placeholder is intended for changelogs following the [keep-a-changelog](http://keepachangelog.com/) conventions.
 However it should work for any Markdown formatted list of releases: each release is identified by a Markdown header.
 What kind of header marks a release can be specified by the `changelog.release-level` option.
+
+### `@changelog@`
+
+
+
 
 ### Default options
 ```yaml
