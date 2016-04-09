@@ -6,6 +6,7 @@ use Aura\Cli\Context\Getopt;
 use Aura\Cli\Context\OptionFactory;
 use Aura\Cli\Help;
 use Aura\Cli\Status;
+use nochso\Diff;
 use nochso\Omni\VersionInfo;
 use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
@@ -111,7 +112,11 @@ final class Application
             }
             $doc = Document::fromFile($sourceFile);
             $this->converter->convert($doc, $this->placeholders);
-            $targetFile = $doc->saveTarget($getopt->get('--target'));
+            $targetFile = $doc->getTargetFilepath($getopt->get('--target'));
+            if ($getopt->get('--diff')) {
+                $this->showDiff($doc, $targetFile);
+            }
+            $doc->saveTarget($targetFile);
             $this->stdio->outln(sprintf('Saved output from <<green>>%s<<reset>> to <<green>>%s<<reset>>.', $doc->getFilepath(), $targetFile));
         } catch (\Exception $e) {
             $this->stdio->exception($e);
@@ -127,6 +132,19 @@ final class Application
         $explode = explode(DIRECTORY_SEPARATOR, getcwd());
         list($dir, $parentDir) = array_slice($explode, count($explode) - 2, 2);
         return $dir . DIRECTORY_SEPARATOR . $parentDir;
+    }
+
+    private function showDiff(Document $document, $existingFilepath)
+    {
+        $before = file_get_contents($existingFilepath);
+        $after = $document->getContent();
+        $diff = Diff\Diff::create($before, $after);
+        if (!count($diff->getDiffLines())) {
+            $this->stdio->outln('Existing file did not change.');
+            return;
+        }
+        $t = new Diff\Format\Template\POSIX();
+        $this->stdio->out($t->format($diff));
     }
 
     /**
@@ -148,6 +166,7 @@ final class Application
             'init' => 'Initialize an Interactive session to generate a README.md file from questions',
             '#file' => 'Input file to be converted.',
             't,target:' => 'Path or name of output file. Optional if the name can be inferred otherwise (see description).',
+            'diff' => 'Show differences to existing output.',
         ];
     }
 
