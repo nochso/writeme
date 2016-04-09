@@ -104,7 +104,7 @@ class PlaceholderCollection
     public function getMethodsForPlaceholder(Placeholder $placeholder)
     {
         $methods = [];
-        /** @var Method $method */
+        /** @var \nochso\WriteMe\Placeholder\Method $method */
         foreach (Arrays::flatten($this->methods) as $method) {
             if ($method->getPlaceholder() === $placeholder) {
                 $methods[] = $method;
