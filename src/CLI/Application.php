@@ -157,7 +157,11 @@ final class Application
         }
         $this->stdio->outln();
         $this->stdio->outln();
-        $t = new Diff\Format\Template\POSIX();
+        if ($this->stdio->getStdout()->isPosix()) {
+            $t = new Diff\Format\Template\POSIX();
+        } else {
+            $t = new Diff\Format\Template\Text();
+        }
         $this->stdio->outln($t->format($diff));
         $this->stdio->outln();
     }
