@@ -100,6 +100,23 @@ class PlaceholderCollection
     }
 
     /**
+     * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder
+     *
+     * @return \nochso\WriteMe\Placeholder\Method[] Methods belonging to a placeholder.
+     */
+    public function getMethodsForPlaceholder(Placeholder $placeholder)
+    {
+        $methods = [];
+        /** @var Method $method */
+        foreach (Arrays::flatten($this->methods) as $method) {
+            if ($method->getPlaceholder() === $placeholder) {
+                $methods[] = $method;
+            }
+        }
+        return $methods;
+    }
+
+    /**
      * toArray returns all placeholders.
      * 
      * @return \nochso\WriteMe\Interfaces\Placeholder[]
