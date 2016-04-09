@@ -7,6 +7,7 @@ use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Markdown\DocBlock;
 use nochso\WriteMe\Markdown\Template as MarkdownTemplate;
 use nochso\WriteMe\Placeholder\OptionList;
+use nochso\WriteMe\Placeholder\PlaceholderCollection;
 use Symfony\Component\Yaml\Yaml;
 
 class TemplateData extends MarkdownTemplate
@@ -16,15 +17,15 @@ class TemplateData extends MarkdownTemplate
      */
     private $classes;
     /**
-     * @var \nochso\WriteMe\Interfaces\Placeholder[]
+     * @var \nochso\WriteMe\Placeholder\PlaceholderCollection
      */
     private $placeholders;
 
     /**
-     * @param \BetterReflection\Reflection\ReflectionClass[] $classes
-     * @param \nochso\WriteMe\Interfaces\Placeholder[]       $placeholders
+     * @param \BetterReflection\Reflection\ReflectionClass[]    $classes
+     * @param \nochso\WriteMe\Placeholder\PlaceholderCollection $placeholders
      */
-    public function prepare(array $classes, array $placeholders)
+    public function prepare(array $classes, PlaceholderCollection $placeholders)
     {
         $this->baseFolder = __DIR__ . '/Template';
         $this->classes = $classes;
@@ -46,7 +47,7 @@ class TemplateData extends MarkdownTemplate
      */
     public function getClassForPlaceholder(Placeholder $placeholder)
     {
-        return $this->classes[$placeholder->getIdentifier()];
+        return $this->classes[get_class($placeholder)];
     }
 
     /**

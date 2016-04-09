@@ -55,7 +55,7 @@ final class Application
             new Changelog(),
         ]);
         $placeholderDocs = new PlaceholderDocs();
-        $placeholderDocs->setPlaceholders($this->placeholders->toArray());
+        $placeholderDocs->setPlaceholderCollection($this->placeholders);
         $this->placeholders->add($placeholderDocs);
         $this->converter = new Converter();
     }

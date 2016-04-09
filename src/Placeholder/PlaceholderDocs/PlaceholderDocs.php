@@ -7,6 +7,7 @@ use nochso\WriteMe\Placeholder\AbstractPlaceholder;
 use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\Option;
 use nochso\WriteMe\Placeholder\OptionList;
+use nochso\WriteMe\Placeholder\PlaceholderCollection;
 
 /**
  * PlaceholderDocs creates documentation for registered placeholders.
@@ -18,20 +19,16 @@ use nochso\WriteMe\Placeholder\OptionList;
 class PlaceholderDocs extends AbstractPlaceholder
 {
     /**
-     * @var \nochso\WriteMe\Interfaces\Placeholder[]
+     * @var \nochso\WriteMe\Placeholder\PlaceholderCollection
      */
     private $placeholders;
 
     /**
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $placeholders
+     * @param \nochso\WriteMe\Placeholder\PlaceholderCollection $placeholders
      */
-    public function setPlaceholders(array $placeholders)
+    public function setPlaceholderCollection(PlaceholderCollection $placeholders)
     {
-        // Don't output documentation about this placeholder itself.
-        // It's only for internal usage.
-        $this->placeholders = array_filter($placeholders, function ($p) {
-            return !$p instanceof self;
-        });
+        $this->placeholders = $placeholders;
     }
 
     /**
@@ -45,8 +42,8 @@ class PlaceholderDocs extends AbstractPlaceholder
     public function writemePlaceholderDocs(Call $call)
     {
         $classes = [];
-        foreach ($this->placeholders as $placeholder) {
-            $classes[$placeholder->getIdentifier()] = ReflectionClass::createFromInstance($placeholder);
+        foreach ($this->placeholders->toArray() as $placeholder) {
+            $classes[get_class($placeholder)] = ReflectionClass::createFromInstance($placeholder);
         }
         $template = new TemplateData();
         $template->setHeaderStartLevel($this->options->getValue('placeholder-docs.header-depth'));
