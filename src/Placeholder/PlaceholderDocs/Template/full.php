@@ -1,5 +1,5 @@
 <?php /** @var \nochso\WriteMe\Placeholder\PlaceholderDocs\TemplateData $this */ ?>
-<?php foreach ($this->getPlaceholders() as $placeholder): ?>
+<?php foreach ($this->getRelevantPlaceholders() as $placeholder): ?>
 <?php $class = $this->getClassForPlaceholder($placeholder); ?>
 <?php $docBlock = $this->getClassDocBlock($class); ?>
 

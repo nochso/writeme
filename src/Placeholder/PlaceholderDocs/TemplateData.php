@@ -35,9 +35,15 @@ class TemplateData extends MarkdownTemplate
     /**
      * @return \nochso\WriteMe\Interfaces\Placeholder[]
      */
-    public function getPlaceholders()
+    public function getRelevantPlaceholders()
     {
-        return $this->placeholders;
+        $placeholders = [];
+        foreach ($this->placeholders->toArray() as $placeholder) {
+            if (!$placeholder instanceof PlaceholderDocs) {
+                $placeholders[] = $placeholder;
+            }
+        }
+        return $placeholders;
     }
 
     /**
