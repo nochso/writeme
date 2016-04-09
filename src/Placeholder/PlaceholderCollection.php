@@ -2,7 +2,6 @@
 namespace nochso\WriteMe\Placeholder;
 
 use nochso\Omni\Arrays;
-use nochso\Omni\Dot;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 

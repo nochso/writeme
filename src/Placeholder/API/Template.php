@@ -223,9 +223,9 @@ class Template extends MarkdownTemplate
     /**
      * godoc-style merging of a class or method name with the phpdoc short description.
      *
-     * @param                                    $name
-     * @param \phpDocumentor\Reflection\DocBlock $doc
-     * @param null                               $displayName
+     * @param string                            $name
+     * @param \nochso\WriteMe\Markdown\DocBlock $doc
+     * @param string|null                       $displayName
      *
      * @return string
      */
