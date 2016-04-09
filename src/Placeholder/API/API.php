@@ -8,7 +8,6 @@ use BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Nette\Utils\Finder;
 use nochso\Omni\Path;
 use nochso\WriteMe\Document;
-use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Placeholder\AbstractPlaceholder;
 use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Placeholder\Option;

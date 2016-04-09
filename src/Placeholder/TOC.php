@@ -9,11 +9,6 @@ use nochso\WriteMe\Markdown;
  */
 class TOC extends AbstractPlaceholder
 {
-    /**
-     * @var \nochso\WriteMe\Document
-     */
-    private $document;
-
     public function getIdentifier()
     {
         return 'toc';
@@ -96,26 +91,6 @@ class TOC extends AbstractPlaceholder
 )?                     # both are optional
 /x";
         return preg_replace($regex, '$1', $markdown);
-    }
-
-    /**
-     * @param \nochso\WriteMe\Markdown\HeaderList $headerList
-     *
-     * @return string
-     */
-    private function createTOC(Markdown\HeaderList $headerList)
-    {
-        $maxDepth = $this->options->getValue('toc.max-depth');
-        $headers = $headerList->getHeadersWithinMaxDepth($maxDepth);
-        return $this->formatTOC($headers);
-    }
-
-    private function createSubTOC(Call $call, Markdown\HeaderList $headerList)
-    {
-        $lines = Multiline::create($call->getDocument()->getContent());
-        $lineIndex = $lines->getLineIndexByCharacterPosition($call->getStartPositionOfRawCall());
-        $headers = $headerList->getHeadersBelowLine($lineIndex);
-        return $this->formatTOC($headers);
     }
 
     /**
