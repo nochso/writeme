@@ -103,7 +103,7 @@ class Template extends MarkdownTemplate
      */
     public function getVisibleMethods(ReflectionClass $class)
     {
-        return array_filter($class->getImmediateMethods(), [$this, 'isMethodVisible']);
+        return array_filter($class->getMethods(), [$this, 'isMethodVisible']);
     }
 
     /**
