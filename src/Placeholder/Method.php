@@ -95,11 +95,15 @@ class Method
     }
 
     /**
-     * @return \BetterReflection\Reflection\ReflectionParameter[]
+     * @return \nochso\WriteMe\Placeholder\Parameter[]
      */
     public function getParametersWithoutCall()
     {
-        return array_slice($this->method->getParameters(), 1);
+        $parameters = [];
+        foreach (array_slice($this->method->getParameters(), 1) as $param) {
+            $parameters[] = new Parameter($param);
+        }
+        return $parameters;
     }
 
     /**
