@@ -4,8 +4,8 @@ namespace nochso\WriteMe\Placeholder\API;
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use nochso\WriteMe\Frontmatter;
-use nochso\WriteMe\Markdown\DocBlock;
 use nochso\WriteMe\Markdown\Template as MarkdownTemplate;
+use nochso\WriteMe\Reflection\DocBlock;
 
 /**
  * Template to help write custom API templates.
@@ -223,9 +223,9 @@ class Template extends MarkdownTemplate
     /**
      * godoc-style merging of a class or method name with the phpdoc short description.
      *
-     * @param string                            $name
-     * @param \nochso\WriteMe\Markdown\DocBlock $doc
-     * @param string|null                       $displayName
+     * @param string                              $name
+     * @param \nochso\WriteMe\Reflection\DocBlock $doc
+     * @param string|null                         $displayName
      *
      * @return string
      */

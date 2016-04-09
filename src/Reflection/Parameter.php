@@ -2,7 +2,6 @@
 namespace nochso\WriteMe\Reflection;
 
 use BetterReflection\Reflection\ReflectionParameter;
-use nochso\WriteMe\Markdown\DocBlock;
 
 class Parameter
 {

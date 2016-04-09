@@ -1,5 +1,5 @@
 <?php
-namespace nochso\WriteMe\Markdown;
+namespace nochso\WriteMe\Reflection;
 
 use nochso\Omni\Multiline;
 use nochso\Omni\Strings;

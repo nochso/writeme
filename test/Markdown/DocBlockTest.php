@@ -1,7 +1,7 @@
 <?php
 namespace nochso\WriteMe\Test\Markdown;
 
-use nochso\WriteMe\Markdown\DocBlock;
+use nochso\WriteMe\Reflection\DocBlock;
 
 // To make sure existing tests of reflection-docblock still pass, the test is
 // extended. Since the test class itself is used for reflection, the DocBlock
