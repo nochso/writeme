@@ -5,6 +5,7 @@ use nochso\Omni\Arrays;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Reflection\Method;
+use nochso\WriteMe\Reflection\MethodFactory;
 
 /**
  * PlaceholderCollection for storing and querying Placeholder objects.

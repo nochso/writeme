@@ -1,8 +1,9 @@
 <?php
-namespace nochso\WriteMe\Placeholder;
+namespace nochso\WriteMe\Reflection;
 
 use BetterReflection\Reflection;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Placeholder\Call;
 use nochso\WriteMe\Reflection\Method;
 
 class MethodFactory
