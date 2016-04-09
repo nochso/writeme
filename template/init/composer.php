@@ -19,7 +19,7 @@ Installation through [Composer](https://getcomposer.org/) is preferred:
 <?php if ($this->getStdio()->confirm('Would you like to add a summary of all PHP classes and their methods?')): ?>
 <?php $this->askForCustomPlaceholderOptionList('api'); ?>
 # API summary
-@api.summary@
+@api('summary')@
 <?php endif; ?>
 
 <?php if ($this->ask('license.name', 'Enter the license name e.g. MIT, BSD2, etc. (optional)') !== ''): ?>
