@@ -4,6 +4,7 @@ namespace nochso\WriteMe\Placeholder;
 use nochso\Omni\Arrays;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Reflection\Method;
 
 /**
  * PlaceholderCollection for storing and querying Placeholder objects.
@@ -15,7 +16,7 @@ class PlaceholderCollection
      */
     private $placeholderMap = [];
     /**
-     * @var \nochso\WriteMe\Placeholder\Method[][] dotted method name => array of Method objects
+     * @var \nochso\WriteMe\Reflection\Method[][] dotted method name => array of Method objects
      */
     private $methods = [];
 
@@ -76,7 +77,7 @@ class PlaceholderCollection
      *
      * @param \nochso\WriteMe\Placeholder\Call $call
      *
-     * @return \nochso\WriteMe\Placeholder\Method[] A list of matching methods of this collection.
+     * @return \nochso\WriteMe\Reflection\Method[] A list of matching methods of this collection.
      */
     public function getMethodsForCall(Call $call)
     {
@@ -99,12 +100,12 @@ class PlaceholderCollection
     /**
      * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder
      *
-     * @return \nochso\WriteMe\Placeholder\Method[] Methods belonging to a placeholder.
+     * @return \nochso\WriteMe\Reflection\Method[] Methods belonging to a placeholder.
      */
     public function getMethodsForPlaceholder(Placeholder $placeholder)
     {
         $methods = [];
-        /** @var \nochso\WriteMe\Placeholder\Method $method */
+        /** @var \nochso\WriteMe\Reflection\Method $method */
         foreach (Arrays::flatten($this->methods) as $method) {
             if ($method->getPlaceholder() === $placeholder) {
                 $methods[] = $method;

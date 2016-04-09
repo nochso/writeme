@@ -3,6 +3,7 @@ namespace nochso\WriteMe\Placeholder;
 
 use BetterReflection\Reflection;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Reflection\Method;
 
 class MethodFactory
 {
@@ -11,7 +12,7 @@ class MethodFactory
      *
      * Methods must be public and take a Call object as the first argument.
      *
-     * @return \nochso\WriteMe\Placeholder\Method[]
+     * @return \nochso\WriteMe\Reflection\Method[]
      */
     public function createFromPlaceholder(Placeholder $placeholder)
     {

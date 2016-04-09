@@ -49,7 +49,7 @@ class TemplateData extends MarkdownTemplate
     /**
      * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder
      *
-     * @return \nochso\WriteMe\Placeholder\Method[]
+     * @return \nochso\WriteMe\Reflection\Method[]
      */
     public function getMethodsForPlaceholder(Placeholder $placeholder)
     {
