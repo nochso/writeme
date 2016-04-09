@@ -12,7 +12,7 @@ class PlaceholderCollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function testToArray()
     {
-        $list = [new TOC(), new Frontmatter()];
+        $list = [TOC::class => new TOC(), Frontmatter::class => new Frontmatter()];
         $collection = new PlaceholderCollection($list);
         $this->assertSame($list, $collection->toArray());
     }
@@ -22,12 +22,12 @@ class PlaceholderCollectionTest extends \PHPUnit_Framework_TestCase
         $placeholder = new TOC();
         $collection = new PlaceholderCollection();
         $collection->add($placeholder);
-        $this->assertSame([$placeholder], $collection->toArray());
+        $this->assertSame([TOC::class => $placeholder], $collection->toArray());
     }
 
     public function testAddMany()
     {
-        $list = [new TOC(), new Frontmatter()];
+        $list = [TOC::class => new TOC(), Frontmatter::class => new Frontmatter()];
         $collection = new PlaceholderCollection();
         $collection->addMany($list);
         $this->assertSame($list, $collection->toArray());

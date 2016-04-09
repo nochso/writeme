@@ -22,13 +22,13 @@ class InteractiveTemplate extends Template
      */
     private $frontmatter;
     /**
-     * @var \nochso\WriteMe\Interfaces\Placeholder[]
+     * @var \nochso\WriteMe\Placeholder\PlaceholderCollection
      */
     private $placeholders;
 
     /**
-     * @param \nochso\WriteMe\CLI\Stdio                $stdio
-     * @param \nochso\WriteMe\Interfaces\Placeholder[] $placeholders
+     * @param \nochso\WriteMe\CLI\Stdio                         $stdio
+     * @param \nochso\WriteMe\Placeholder\PlaceholderCollection $placeholders
      */
     public function __construct(Stdio $stdio, $placeholders)
     {
@@ -67,10 +67,10 @@ class InteractiveTemplate extends Template
      */
     public function askForCustomPlaceholderOptionList($placeholderIdentifier)
     {
-        if (!isset($this->placeholders[$placeholderIdentifier])) {
+        $placeholder = $this->placeholders->getPlaceholderByClassName($placeholderIdentifier);
+        if ($placeholder === null) {
             return false;
         }
-        $placeholder = $this->placeholders[$placeholderIdentifier];
         $defaults = $placeholder->getDefaultOptionList();
         $continue = true;
         while ($continue) {

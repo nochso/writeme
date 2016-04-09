@@ -12,7 +12,7 @@ use nochso\WriteMe\Interfaces\Placeholder;
 class PlaceholderCollection
 {
     /**
-     * @var \nochso\WriteMe\Interfaces\Placeholder[][] Identifier => array of Placeholders
+     * @var \nochso\WriteMe\Interfaces\Placeholder[] Class name => Placeholder object
      */
     private $placeholderMap = [];
     /**
@@ -33,15 +33,13 @@ class PlaceholderCollection
 
     /**
      * Add a single placeholder.
-     * 
+     *
      * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder
      */
     public function add(Placeholder $placeholder)
     {
-        if (!isset($this->placeholderMap[$placeholder->getIdentifier()])) {
-            $this->placeholderMap[$placeholder->getIdentifier()] = [];
-        }
-        $this->placeholderMap[$placeholder->getIdentifier()][] = $placeholder;
+        $className = get_class($placeholder);
+        $this->placeholderMap[$className] = $placeholder;
         $methods = (new MethodFactory())->createFromPlaceholder($placeholder);
         foreach ($methods as $method) {
             $this->methods[$method->getDotName()][] = $method;
@@ -117,13 +115,26 @@ class PlaceholderCollection
     }
 
     /**
+     * @param string $className
+     *
+     * @return \nochso\WriteMe\Interfaces\Placeholder
+     */
+    public function getPlaceholderByClassName($className)
+    {
+        if (!isset($this->placeholderMap[$className])) {
+            return null;
+        }
+        return $this->placeholderMap[$className];
+    }
+
+    /**
      * toArray returns all placeholders.
      * 
-     * @return \nochso\WriteMe\Interfaces\Placeholder[]
+     * @return \nochso\WriteMe\Interfaces\Placeholder[] Placeholder class name => Placeholder object
      */
     public function toArray()
     {
-        return Arrays::flatten($this->placeholderMap);
+        return $this->placeholderMap;
     }
 
     /**
