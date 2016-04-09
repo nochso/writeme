@@ -139,12 +139,17 @@ final class Application
         $before = file_get_contents($existingFilepath);
         $after = $document->getContent();
         $diff = Diff\Diff::create($before, $after);
+        $this->stdio->out('Differences to existing file:');
         if (!count($diff->getDiffLines())) {
-            $this->stdio->outln('Existing file did not change.');
+            $this->stdio->outln(' <<yellow>>None<<reset>>');
+            $this->stdio->outln();
             return;
         }
+        $this->stdio->outln();
+        $this->stdio->outln();
         $t = new Diff\Format\Template\POSIX();
-        $this->stdio->out($t->format($diff));
+        $this->stdio->outln($t->format($diff));
+        $this->stdio->outln();
     }
 
     /**
