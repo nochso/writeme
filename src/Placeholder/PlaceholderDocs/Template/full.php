@@ -7,6 +7,18 @@
 
 <?= $docBlock->getText() ?>
 
+<?php foreach ($this->getMethodsForPlaceholder($placeholder) as $method): ?>
+
+<?= $this->header(2) ?> `<?= $method->getDotSignature() ?>`
+
+<?= $method->getDocBlock()->getText() ?>
+
+<?php foreach ($method->getParametersWithoutCall() as $parameter): ?>
+* <?= $parameter->getHints() ?> `$<?= $parameter->getName() ?>` <?= $parameter->getDescription() ?>
+
+<?php endforeach; ?>
+
+<?php endforeach; ?>
 
 <?= $this->header(2, 'Default options') ?>
 

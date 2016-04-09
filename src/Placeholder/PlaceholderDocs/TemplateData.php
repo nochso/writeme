@@ -49,6 +49,16 @@ class TemplateData extends MarkdownTemplate
     /**
      * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder
      *
+     * @return \nochso\WriteMe\Placeholder\Method[]
+     */
+    public function getMethodsForPlaceholder(Placeholder $placeholder)
+    {
+        return $this->placeholders->getMethodsForPlaceholder($placeholder);
+    }
+
+    /**
+     * @param \nochso\WriteMe\Interfaces\Placeholder $placeholder
+     *
      * @return \BetterReflection\Reflection\ReflectionClass
      */
     public function getClassForPlaceholder(Placeholder $placeholder)
