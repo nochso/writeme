@@ -82,11 +82,11 @@ class Document
     }
 
     /**
-     * @param string $overrideTarget
+     * @param string|null $overrideTarget
      *
      * @return string
      */
-    public function getTargetFilepath($overrideTarget)
+    public function getTargetFilepath($overrideTarget = null)
     {
         $target = $overrideTarget;
         // --target is optional. If empty, try the frontmatter key.
