@@ -116,7 +116,17 @@ final class Application
             if ($getopt->get('--diff')) {
                 $this->showDiff($doc, $targetFile);
             }
-            $doc->saveTarget($targetFile);
+            if ($getopt->get('--dry-run')) {
+                // Show full output when diff is not wanted
+                if (!$getopt->get('--diff')) {
+                    $this->stdio->outln('Output:');
+                    $this->stdio->outln('<<green>>---<<reset>>');
+                    $this->stdio->outln($doc->getContent());
+                    $this->stdio->outln('<<green>>---<<reset>>');
+                }
+            } else {
+                $doc->saveTarget($targetFile);
+            }
             $this->stdio->outln(sprintf('Saved output from <<green>>%s<<reset>> to <<green>>%s<<reset>>.', $doc->getFilepath(), $targetFile));
         } catch (\Exception $e) {
             $this->stdio->exception($e);
@@ -171,7 +181,8 @@ final class Application
             'init' => 'Initialize an Interactive session to generate a README.md file from questions',
             '#file' => 'Input file to be converted.',
             't,target:' => 'Path or name of output file. Optional if the name can be inferred otherwise (see description).',
-            'diff' => 'Show differences to existing output.',
+            'diff' => 'Show differences to existing file. Can be combined with --dry-run.',
+            'dry-run' => 'Display the output and do not overwrite existing file. Can be combined with --diff.',
         ];
     }
 
