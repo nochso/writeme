@@ -4,6 +4,7 @@ namespace nochso\WriteMe\Placeholder;
 use BetterReflection\Reflection;
 use nochso\WriteMe\Interfaces\Placeholder;
 use nochso\WriteMe\Markdown\DocBlock;
+use nochso\WriteMe\Reflection\Parameter;
 
 /**
  * Method links a template call and the matching class method.
@@ -95,7 +96,7 @@ class Method
     }
 
     /**
-     * @return \nochso\WriteMe\Placeholder\Parameter[]
+     * @return \nochso\WriteMe\Reflection\Parameter[]
      */
     public function getParametersWithoutCall()
     {
