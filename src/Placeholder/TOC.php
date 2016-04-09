@@ -6,33 +6,6 @@ use nochso\WriteMe\Markdown;
 
 /**
  * TOC placeholder creates a table of contents from Markdown headers.
- *
- * There are two types of tables:
- *
- * `@toc@` collects **all** Markdown headers contained in the document with a
- * configurable maximum depth.
- *
- * `@toc.sub@` collects Markdown headers that are **below** the placeholder and on the same or deeper level.
- * If there's a header above the placeholder, its depth will be used as a minimum depth.
- * If there's no header above the placeholder, the first header after the placeholder will be used for the minimum depth.
- * There is currently no maximum depth for `@toc.sub@`.
- *
- * e.g.
- * ```markdown
- * # ignore me
- *
- * @toc.sub@
- * ## sub 1
- * # ignore me again
- * ```
- * is converted into
- *
- * ```markdown
- * # ignore me
- * - [sub 1](#sub-1)
- * ## sub 1
- * # ignore me again
- * ```
  */
 class TOC extends AbstractPlaceholder
 {
@@ -46,6 +19,10 @@ class TOC extends AbstractPlaceholder
         return 'toc';
     }
 
+    /**
+     * Collects **all** Markdown headers contained in the document with a
+     * configurable maximum depth.
+     */
     public function toc(Call $call)
     {
         $parser = new Markdown\HeaderParser();
@@ -55,7 +32,29 @@ class TOC extends AbstractPlaceholder
         $toc = $this->formatTOC($headers);
         $call->replace($toc);
     }
-
+    /**
+     * `@toc.sub@` collects Markdown headers that are **below** the placeholder and on the same or deeper level.
+     * If there's a header above the placeholder, its depth will be used as a minimum depth.
+     * If there's no header above the placeholder, the first header after the placeholder will be used for the minimum depth.
+     * There is currently no maximum depth for `@toc.sub@`.
+     *
+     * e.g.
+     * ```markdown
+     * # ignore me
+     *
+     * @toc.sub@
+     * ## sub 1
+     * # ignore me again
+     * ```
+     * is converted into
+     *
+     * ```markdown
+     * # ignore me
+     * - [sub 1](#sub-1)
+     * ## sub 1
+     * # ignore me again
+     * ```
+     */
     public function tocSub(Call $call)
     {
         $parser = new Markdown\HeaderParser();

@@ -19,14 +19,11 @@ use nochso\WriteMe\Placeholder\OptionList;
  *
  * By default it will search for all `*.php` files in your project excluding the Composer `vendor` and `test*` folders.
  *
- * Currently there are two placeholders, each with a different template:
+ * Available template names:
  *
- * - `@api.summary@`
- *     - Indented list of namespaces, classes and methods including the first line of PHPDocs.
- * - `@api.short@`
- *     - Indented list of namespaces and classes including the first line of PHPDocs.
- * - `@api.full@`
- *     - Verbose documentation for each class and methods.
+ * - `summary` - Indented list of namespaces, classes and methods including the first line of PHPDocs.
+ * - `short` - Indented list of namespaces and classes including the first line of PHPDocs.
+ * - `full` - Verbose documentation for each class and methods.
  */
 class API extends AbstractPlaceholder
 {
@@ -38,6 +35,10 @@ class API extends AbstractPlaceholder
         return 'api';
     }
 
+    /**
+     * @param \nochso\WriteMe\Placeholder\Call $call
+     * @param string                           $templateName 'summary', 'short' or 'full'
+     */
     public function api(Call $call, $templateName)
     {
         $classes = $this->getClasses($call->getDocument());
