@@ -3,6 +3,7 @@ namespace nochso\WriteMe\Placeholder;
 
 use BetterReflection\Reflection;
 use nochso\WriteMe\Interfaces\Placeholder;
+use nochso\WriteMe\Markdown\DocBlock;
 
 /**
  * Method links a template call and the matching class method.
@@ -55,6 +56,50 @@ class Method
     public function hasPriorityOfCall(Call $call)
     {
         return in_array($call->getPriority(), $this->getPlaceholder()->getCallPriorities());
+    }
+
+    public function getDotSignature()
+    {
+        $params = [];
+        $parameters = array_slice($this->method->getParameters(), 1);
+        /** @var Reflection\ReflectionParameter $parameter */
+        foreach ($parameters as $parameter) {
+            $params[] = '$' . $parameter->getName();
+        }
+        if (count($params) > 0) {
+            $params = '(' . implode(', ', $params) . ')';
+        } else {
+            $params = '';
+        }
+        $dotName = $this->getDotName();
+        if ($dotName === self::WILDCARD_METHOD_NAME) {
+            $dotName = '*';
+        }
+        return sprintf('@%s%s@', $dotName, $params);
+    }
+
+    /**
+     * @return \BetterReflection\Reflection\ReflectionMethod
+     */
+    public function getReflectionMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return \nochso\WriteMe\Markdown\DocBlock
+     */
+    public function getDocBlock()
+    {
+        return new DocBlock($this->method->getDocComment());
+    }
+
+    /**
+     * @return \BetterReflection\Reflection\ReflectionParameter[]
+     */
+    public function getParametersWithoutCall()
+    {
+        return array_slice($this->method->getParameters(), 1);
     }
 
     /**
