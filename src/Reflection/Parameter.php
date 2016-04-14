@@ -2,6 +2,7 @@
 namespace nochso\WriteMe\Reflection;
 
 use BetterReflection\Reflection\ReflectionParameter;
+use nochso\Omni\Multiline;
 
 class Parameter
 {
@@ -52,7 +53,9 @@ class Parameter
         $paramTags = $docBlock->getTagsByName('param');
         foreach ($paramTags as $paramTag) {
             if ($paramTag->getVariableName() === '$' . $this->reflectionParameter->getName()) {
-                return $paramTag->getDescription();
+                $lines = Multiline::create($paramTag->getDescription());
+                $lines->apply('ltrim');
+                return (string)$lines;
             }
         }
         return '';
