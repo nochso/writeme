@@ -3,6 +3,7 @@ namespace nochso\WriteMe\Placeholder\API;
 
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
+use BetterReflection\Reflector\Exception\IdentifierNotFound;
 use nochso\WriteMe\Frontmatter;
 use nochso\WriteMe\Markdown\Template as MarkdownTemplate;
 use nochso\WriteMe\Reflection\DocBlock;
@@ -103,7 +104,12 @@ class Template extends MarkdownTemplate
      */
     public function getVisibleMethods(ReflectionClass $class)
     {
-        return array_filter($class->getMethods(), [$this, 'isMethodVisible']);
+        try {
+            $methods = $class->getMethods();
+        } catch (IdentifierNotFound $e) {
+            $methods = $class->getImmediateMethods();
+        }
+        return array_filter($methods, [$this, 'isMethodVisible']);
     }
 
     /**
