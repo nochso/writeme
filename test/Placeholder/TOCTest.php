@@ -87,6 +87,7 @@ TAG
 @toc.sub@
 ## sub 1
 # ignore me again
+## ignore me again
 TAG
                 ,
                 <<<TAG
@@ -94,6 +95,7 @@ TAG
 - [sub 1](#sub-1)
 ## sub 1
 # ignore me again
+## ignore me again
 TAG
 
             ],
