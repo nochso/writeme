@@ -1,7 +1,7 @@
 # nochso/writeme
 
 [![GitHub tag](https://img.shields.io/github/tag/nochso/writeme.svg)](https://github.com/nochso/writeme/releases)
-@badge.writeme@
+[![write me to read me](https://img.shields.io/badge/writeme-readme-blue.svg)](https://github.com/nochso/writeme)
 
 nochso/writeme is a PHP CLI utility for maintaining README and related files.
 
@@ -21,6 +21,7 @@ For example the following table of contents was generated from the `@toc@` place
     - [TOC `@toc@`](#toc-toc)
     - [API `@api@`](#api-api)
     - [Changelog `@changelog@`](#changelog-changelog)
+    - [Badge `@badge@`](#badge-badge)
 - [License](#license)
 
 # Introduction
@@ -134,7 +135,7 @@ Collects **all** Markdown headers contained in the document with a
 configurable maximum depth.
 
 
-### `@toc.sub@`
+### `@toc.sub($maxDepth)@`
 
 `@toc.sub@` collects Markdown headers that are **below** the placeholder and on the same or deeper level.
 
@@ -158,6 +159,9 @@ is converted into
 ## sub 1
 # ignore me again
 ```
+* `$maxDepth = 0`  `int`
+    * How many levels of headers you'd like to keep.
+Defaults to zero, meaning all sub-headers are kept.
 
 
 ### Default options
@@ -221,6 +225,7 @@ What kind of header marks a release can be specified by the `changelog.release-l
 changelog:
     max-changes: 2
     release-level: 2
+    shift-level: 0
     file: CHANGELOG.md
     search-depth: 2
 ```
@@ -229,10 +234,95 @@ changelog:
     * Maximum amount of releases to include.
 * `changelog.release-level`
     * The header level that represents a release header.
+* `changelog.shift-level`
+    * Amount of levels to add when displaying headers.
 * `changelog.file`
     * Filename of the CHANGELOG to extract releases from.
 * `changelog.search-depth`
     * How deep the folders should be searched.
+
+## Badge `@badge@`
+
+
+
+### `@image($imageUrl, $altText, $url)@`
+
+
+* `$imageUrl`  `string`
+    * URL to a badge image.
+* `$altText`  `string`
+    * Alternative text for image.
+* `$url = NULL`  `string|null`
+    * Optional URL the image will link to. If null, no link will
+be created.
+
+
+### `@badge($subject, $status, $color, $altText, $url)@`
+
+Badge creation via shields.io.
+* `$subject`  `string`
+    * Subject to the left of the badge.
+* `$status`  `string`
+    * Status to the right of the badge.
+* `$color = 'lightgrey'`  `string`
+    * Optional status color. Defaults to lightgrey. Can be any hex
+color, e.g. `0000FF` or one of the following: brightgreen,
+green, yellowgreen, yellow, orange, red, lightgrey or blue.
+* `$altText = NULL`  `string|null`
+    * Optional alternative text for image. Defaults to
+`subject - status`.
+* `$url = NULL`  `string|null`
+    * Optional URL the badge will link to. If null, no link will be
+created.
+
+
+### `@badge.writeme@`
+
+Bonus badge for mentioning writeme.
+
+
+### `@badge.travis($userRepository, $branch)@`
+
+Travis CI build status.
+* `$userRepository = NULL`  `string|null`
+    * User/repository, e.g. `nochso/writeme`. Defaults to `composer.name`
+* `$branch = NULL`  `string|null`
+    * Optional branch name.
+
+
+### `@badge.license($userRepository)@`
+
+
+* `$userRepository = NULL` 
+
+
+
+### `@badge.scrutinizer($userRepository, $branch)@`
+
+scrutinizer.
+* `$userRepository = NULL`  `null`
+    * Github user/repository.
+* `$branch = NULL`  `null`
+
+
+
+### `@badge.coveralls($userRepository, $branch)@`
+
+
+* `$userRepository = NULL` 
+
+* `$branch = NULL` 
+
+
+
+### `@badge.tag($userRepository)@`
+
+
+* `$userRepository = NULL` 
+
+
+
+
 
 
 # License
