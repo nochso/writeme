@@ -25,29 +25,11 @@ class Changelog extends AbstractPlaceholder
 
     public function changelog(Call $call)
     {
-        $changelogPath = $this->findChangelog($call->getDocument());
-        $changelog = Document::fromFile($changelogPath);
-        $parser = new HeaderParser();
-        $headerContentList = $parser->extractHeaderContents($changelog);
-        $maxChanges = $this->options->getValue('changelog.max-changes');
-        $releaseLevel = $this->options->getValue('changelog.release-level');
-        $changes = 0;
+        $headers = $this->getHeaderContents($call);
         $latestChanges = '';
-        /** @var HeaderContent $headerContent */
-        foreach ($headerContentList->getHeaders() as $headerContent) {
-            // This header marks a release
-            if ($headerContent->getLevel() === $releaseLevel) {
-                $changes++;
-                // Stop if we reached the max amount of changes.
-                if ($changes > $maxChanges) {
-                    break;
-                }
-                $latestChanges .= $headerContent->toMarkdown() . "\n";
-            }
-            // Keep adding sub-HeaderContent if we're within a release
-            if ($changes > 0 && $headerContent->getLevel() > $releaseLevel) {
-                $latestChanges .= $headerContent->toMarkdown() . "\n";
-            }
+        foreach ($headers as $header) {
+            $header->shiftLevel($this->options->getValue('changelog.shift-level'));
+            $latestChanges .= $header->toMarkdown() . "\n";
         }
         $call->replace($latestChanges);
     }
@@ -60,6 +42,7 @@ class Changelog extends AbstractPlaceholder
         return new OptionList([
             new Option('changelog.max-changes', 'Maximum amount of releases to include.', 2),
             new Option('changelog.release-level', 'The header level that represents a release header.', 2),
+            new Option('changelog.shift-level', 'Amount of levels to add when displaying headers.', 0),
             new Option('changelog.file', 'Filename of the CHANGELOG to extract releases from.', 'CHANGELOG.md'),
             new Option('changelog.search-depth', 'How deep the folders should be searched.', 2),
         ]);
@@ -91,5 +74,39 @@ class Changelog extends AbstractPlaceholder
             throw new \RuntimeException(sprintf("Unable to find changelog '%s' in folder '%s'", $changelogName, $folder));
         }
         return $files->current();
+    }
+
+    /**
+     * @param \nochso\WriteMe\Placeholder\Call $call
+     *
+     * @return \nochso\WriteMe\Markdown\HeaderContent[]
+     */
+    private function getHeaderContents(Call $call) {
+        $changelogPath = $this->findChangelog($call->getDocument());
+        $changelog = Document::fromFile($changelogPath);
+        $parser = new HeaderParser();
+        $headerContentList = $parser->extractHeaderContents($changelog);
+        $maxChanges = $this->options->getValue('changelog.max-changes');
+        $releaseLevel = $this->options->getValue('changelog.release-level');
+        $changes = 0;
+        /** @var HeaderContent[] $displayHeaders */
+        $displayHeaders = [];
+        /** @var HeaderContent $headerContent */
+        foreach ($headerContentList->getHeaders() as $headerContent) {
+            // This header marks a release
+            if ($headerContent->getLevel() === $releaseLevel) {
+                $changes++;
+                // Stop if we reached the max amount of changes.
+                if ($changes > $maxChanges) {
+                    break;
+                }
+                $displayHeaders[] = $headerContent;
+            }
+            // Keep adding sub-HeaderContent if we're within a release
+            if ($changes > 0 && $headerContent->getLevel() > $releaseLevel) {
+                $displayHeaders[] = $headerContent;
+            }
+        }
+        return $displayHeaders;
     }
 }

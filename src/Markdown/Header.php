@@ -64,6 +64,15 @@ class Header
     }
 
     /**
+     * shiftLevel of header up or down.
+     *
+     * @param int $amount Positive to increase, negative to decrease the level by amount.
+     */
+    public function shiftLevel($amount) {
+        $this->level += $amount;
+    }
+
+    /**
      * @return string
      */
     public function getText()
