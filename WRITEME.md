@@ -38,11 +38,22 @@ You could even write your own by implementing the `Placeholder` interface. For e
 placeholder is automatically generated from the PHPDocs of the placeholder classes. That way this README is easily
 updated.
 # Installation
-Installation through [Composer](https://getcomposer.org/) is preferred:
+For end-users the PHAR version is preferred. To install it **globally**:
 
-    composer require @package@
+1. Download the PHAR file from the
+   [latest release](https://github.com/nochso/writeme/releases).
+2. Make it executable: `chmod +x writeme.phar`
+3. Move it somewhere within your `PATH`: `sudo cp writeme.phar /usr/local/bin/writeme`
 
-The `writeme` executable PHP file is now available in the `vendor/bin` directory.
+As **local Composer development** dependency per project:
+```
+composer require --dev nochso/writeme
+```
+
+As **global** Composer dependency:
+```
+composer global require nochso/writeme
+```
 
 # Requirements
 This project is written for and tested with PHP 5.6, 7.0 and HHVM.
