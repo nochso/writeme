@@ -12,6 +12,7 @@ use nochso\WriteMe\Converter;
 use nochso\WriteMe\Document;
 use nochso\WriteMe\Markdown\InteractiveTemplate;
 use nochso\WriteMe\Placeholder\API\API;
+use nochso\WriteMe\Placeholder\Badge;
 use nochso\WriteMe\Placeholder\Changelog;
 use nochso\WriteMe\Placeholder\Frontmatter;
 use nochso\WriteMe\Placeholder\PlaceholderCollection;
@@ -54,6 +55,7 @@ final class Application
             new TOC(),
             new API(),
             new Changelog(),
+            new Badge(),
         ]);
         $placeholderDocs = new PlaceholderDocs();
         $placeholderDocs->setPlaceholderCollection($this->placeholders);
