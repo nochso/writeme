@@ -1,8 +1,9 @@
 # nochso/writeme
 
 [![GitHub tag](https://img.shields.io/github/tag/nochso/writeme.svg)](https://github.com/nochso/writeme/releases)
+@badge.writeme@
 
-nochso/writeme makes creating and maintaining READMEs easier by combining frontmatter and Markdown.
+nochso/writeme is a PHP CLI utility for maintaining README and related files.
 
 For example the following table of contents was generated from the `@toc@` placeholder in [WRITEME.md](WRITEME.md).
 
@@ -121,8 +122,6 @@ Using dots in the keys themselves is possible by escaping them with backslashes.
 
 
 
-### Default options
-This placeholder has no default options.
 
 
 ## TOC `@toc@`
@@ -185,7 +184,8 @@ Available template names:
 ### `@api($templateName)@`
 
 
-* string `$templateName` 'summary', 'short' or 'full'
+* `$templateName`  `string`
+    * 'summary', 'short' or 'full'
 
 
 ### Default options

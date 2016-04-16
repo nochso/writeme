@@ -9,8 +9,9 @@ toc:
 # @package@
 
 [![GitHub tag](https://img.shields.io/github/tag/@package@.svg)](https://github.com/@package@/releases)
+@badge.writeme@
 
-@package@ makes creating and maintaining READMEs easier by combining frontmatter and Markdown.
+@package@ is a PHP CLI utility for maintaining README and related files.
 
 For example the following table of contents was generated from the `\@toc\@` placeholder in [WRITEME.md](WRITEME.md).
 
