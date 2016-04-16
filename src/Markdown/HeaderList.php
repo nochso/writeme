@@ -72,9 +72,13 @@ class HeaderList
                     $parentLevel = $header->getLevel();
                 }
             }
-            // Collect headers below parent, but ignore headers that are too "big"
-            if ($below && $header->getLevel() > $parentLevel) {
-                $headers[] = $header;
+            // Collect headers below parent and stop if gone too far
+            if ($below) {
+                if ($header->getLevel() > $parentLevel) {
+                    $headers[] = $header;
+                } else {
+                    break;
+                }
             }
         }
         return $headers;
