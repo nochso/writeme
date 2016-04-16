@@ -2,7 +2,6 @@
 namespace nochso\WriteMe\Placeholder;
 
 use nochso\WriteMe\Document;
-use nochso\WriteMe\Interfaces\Placeholder;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\ParserFactory;
@@ -78,7 +77,7 @@ class Call
      *
      * @return Call|null
      */
-    public static function extractFirstCall(Document $document, $priority = Placeholder::PRIORITY_FIRST, $offset = 0)
+    public static function extractFirstCall(Document $document, $priority = \nochso\WriteMe\Interfaces\Placeholder::PRIORITY_FIRST, $offset = 0)
     {
         $call = null;
         $content = $document->getContent();
