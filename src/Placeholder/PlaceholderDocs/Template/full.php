@@ -14,17 +14,20 @@
 <?= $method->getDocBlock()->getText() ?>
 
 <?php foreach ($method->getParametersWithoutCall() as $parameter): ?>
-* <?= $parameter->getHints() ?> `$<?= $parameter->getName() ?>` <?= $parameter->getDescription() ?>
+* `$<?= $parameter->getName() ?>
+<?php if ($parameter->getReflectionParameter()->isDefaultValueAvailable()): ?>
+ = <?= $parameter->getReflectionParameter()->getDefaultValueAsString() ?>
+<?php endif; ?>` <?= strlen($parameter->getHints()) ? ' `' . $parameter->getHints() . '`' : '' ?>
+
+<?php if (strlen($parameter->getDescription())): ?><?= $this->indent(1, '* ' . $parameter->getDescription()) ?><?php endif; ?>
 
 <?php endforeach; ?>
 
 <?php endforeach; ?>
 
+<?php if (count($placeholder->getDefaultOptionList()->getOptions())): ?>
 <?= $this->header(2, 'Default options') ?>
 
-<?php if (count($placeholder->getDefaultOptionList()->getOptions()) === 0): ?>
-This placeholder has no default options.
-<?php else: ?>
 ```yaml
 <?= $this->getOptionListYaml($placeholder->getDefaultOptionList()) ?>
 ```
