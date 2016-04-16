@@ -49,14 +49,25 @@ class TOC extends AbstractPlaceholder
      * ## sub 1
      * # ignore me again
      * ```
+     *
+     * @param \nochso\WriteMe\Placeholder\Call $call
+     * @param int                              $maxDepth How many levels of headers you'd like to keep.
+     *                                                   Defaults to zero, meaning all sub-headers are kept.
      */
-    public function tocSub(Call $call)
+    public function tocSub(Call $call, $maxDepth = 0)
     {
         $parser = new Markdown\HeaderParser();
         $headerList = $parser->extractHeaders($call->getDocument());
         $lines = Multiline::create($call->getDocument()->getContent());
         $lineIndex = $lines->getLineIndexByCharacterPosition($call->getStartPositionOfRawCall());
         $headers = $headerList->getHeadersBelowLine($lineIndex);
+        if ($maxDepth > 0) {
+            $minDepth = $this->getMinimumDepth($headers);
+            // Filter headers that are relatively too deep
+            $headers = array_filter($headers, function (Markdown\Header $header) use ($minDepth, $maxDepth) {
+                return $header->getLevel() - $minDepth < $maxDepth;
+            });
+        }
         $toc = $this->formatTOC($headers);
         $call->replace($toc);
     }
@@ -94,20 +105,17 @@ class TOC extends AbstractPlaceholder
     }
 
     /**
-     * @param Markdown\Header[] $headers
+     * @param \nochso\WriteMe\Markdown\Header[] $headers
      *
-     * @return mixed
+     * @return string
      */
     private function formatTOC(array $headers)
     {
         $toc = '';
-        // Normalize indentation of headers
-        $minLevel = PHP_INT_MAX;
+        $minDepth = $this->getMinimumDepth($headers);
         foreach ($headers as $header) {
-            $minLevel = min($minLevel, $header->getLevel());
-        }
-        foreach ($headers as $header) {
-            $indent = str_repeat('    ', $header->getLevel() - $minLevel);
+            // Normalize / unindent headers
+            $indent = str_repeat('    ', $header->getLevel() - $minDepth);
             // Recreate the header without Markdown links
             $cleanHeader = clone $header;
             $cleanHeader->setText($this->convertMarkdownLinksToText($header->getText()));
@@ -124,5 +132,20 @@ class TOC extends AbstractPlaceholder
     public function getCallPriorities()
     {
         return [self::PRIORITY_LAST];
+    }
+
+    /**
+     * getMinimumDepth of all headers.
+     *
+     * @param \nochso\WriteMe\Markdown\Header[] $headers
+     *
+     * @return int The depth of the biggest header.
+     */
+    private function getMinimumDepth(array $headers) {
+        $minDepth = PHP_INT_MAX;
+        foreach ($headers as $header) {
+            $minDepth = min($minDepth, $header->getLevel());
+        }
+        return $minDepth;
     }
 }

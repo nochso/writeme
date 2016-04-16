@@ -2,12 +2,10 @@
 <?php /** @var \nochso\WriteMe\Placeholder\API\Template $this */ ?>
 This is an auto-generated documentation of namespaces, classes, interfaces, traits and <?= implode('/', $this->getVisibilityList()) ?> methods.
 
-@toc.sub 1, 'this "\'works', "this \"' too"@
-
 <?php foreach ($this->getNamespaces() as $namespace): ?>
 <?= $this->header(1) ?> Namespace <?= $namespace ?>
 
-@toc.sub 1@
+@toc.sub(1)@
 
 <?php foreach ($this->getClassesInNamespace($namespace) as $class): ?>
 * * * * *
@@ -21,7 +19,7 @@ This is an auto-generated documentation of namespaces, classes, interfaces, trai
 <?= $this->getClassDocBlock($class)->getText() ?>
 
 
-@toc.sub@
+@toc.sub(1)@
 
 <?php foreach ($this->getVisibleMethods($class) as $method): ?>
 <?php $methodDoc = $this->getMethodDocBlock($method); ?>

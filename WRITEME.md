@@ -89,6 +89,3 @@ target: DOCS.md
 
 # License
 @package@ is released under the @license.name@ license. See the [LICENSE](@license.file@) for the full license text.
-
-# API
-@api.full@
