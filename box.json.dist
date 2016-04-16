@@ -1,0 +1,14 @@
+{
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": ["tests", "test"],
+            "in": "vendor"
+        }
+    ],
+    "directories": ["src", "template"],
+    "main": "bin/writeme",
+    "output": "writeme.phar",
+    "chmod": "0775",
+    "stub": true
+}
