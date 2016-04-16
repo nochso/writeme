@@ -7,7 +7,7 @@
         "symfony/yaml": "^3.0",
         "aura/cli": "^2.1",
         "nette/finder": "^2.3",
-        "roave/better-reflection": "^1.0",
+        "roave/better-reflection": "dev-master",
         "nochso/omni": "^0.3.6",
         "nochso/diff": "dev-master"
     },
